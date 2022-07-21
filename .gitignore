@@ -1,1 +1,3 @@
 /.idea/
+/.credentials.py
+gc_reports/credentials.py
