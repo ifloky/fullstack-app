@@ -2,6 +2,19 @@
 
 
 {% block content %}
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        width: 260px;
+        margin-top: 1%;
+    }
+
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:200px;margin-right:auto;}
+    .flex-wrap button {width:250px;margin-left:auto;}
+    .flex-wrap input {width:calc(100% - 250px);}
+    .flex-wrap select {width:calc(100% - 50px);}
+    </style>
+
     <div>
         <form method="GET" action="/rocket">
               {{ months }}
