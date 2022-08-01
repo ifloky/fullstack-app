@@ -15,9 +15,9 @@
     .flex-wrap select {width:calc(100% - 50px);}
     </style>
 
-    <div>
-        <form method="GET" action="/rocket">
-              {{ months }}
+    <div style="padding:20px;margin-top:30px;">
+        <form method="GET" action="/rocket" >
+              {{ years }} {{ months }}
         <input type="submit" value="Показать количество сообщений">
     </form>
     </div>
@@ -26,13 +26,13 @@
     <table class="table table-striped">
       <thead>
         <tr align="center">
-            <th scope="col">ID чата</th>
+            <th align="center">ID чата</th>
             <th align="center">Количество сообщений</th>
         </tr>
       </thead>
       <tbody>
             <tr>
-                <td scope="col" align="center">Support&Risk</td>
+                <td align="center">Support&Risk</td>
                 <td align="center">{{ rocket_message_count }}</td>
             </tr>
       </tbody>

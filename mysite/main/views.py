@@ -43,18 +43,24 @@ def message_count_from_s_and_r(start_date, end_date):
 
 
 def rocket(request):
-    obj_id = request.GET.get('month', None)
-    if obj_id is None:
-        obj_id = "01"
+    month_id = request.GET.get('month', None)
+    if month_id is None:
+        month_id = "01"
 
-    start_date = f'2022-{obj_id}-01T03:00:00.000Z'
-    end_date = f'2022-{obj_id}-31T20:59:59.999Z'
+    year_id = request.GET.get('year', None)
+    if year_id is None:
+        year_id = "2022"
+
+    start_date = f'{year_id}-{month_id}-01T03:00:00.000Z'
+    end_date = f'{year_id}-{month_id}-31T20:59:59.999Z'
 
     message_count = message_count_from_s_and_r(start_date, end_date)
-    months = MonthForm()
+    months = MonthsForm()
+    years = YearsForm()
 
     return render(request, 'main/rocket.html',
-                  {'title': 'Rocket Chat', 'rocket_message_count': message_count, 'months': months, 'obj_id': obj_id})
+                  {'title': 'Rocket Chat', 'rocket_message_count': message_count,
+                   'months': months, 'years': years})
 
 
 def register_request(request):

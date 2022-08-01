@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -27,8 +29,29 @@ class NewUserForm(UserCreationForm):
         return user
 
 
-class MonthForm(forms.Form):
+class MonthsForm(forms.Form):
     months = [('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'), ('05', 'May'),
               ('06', 'June'), ('07', 'July'), ('08', 'August'), ('09', 'September'),
               ('10', 'October'), ('11', 'November'), ('12', 'December'), ]
-    month = forms.ChoiceField(choices=months, widget=forms.Select(attrs={'class': 'form-control'}))
+    month = forms.ChoiceField(choices=months, label='')
+
+    def __init__(self, *args, **kwargs):
+        super(MonthsForm, self).__init__(*args, **kwargs)
+        self.fields['month'].initial = '08'
+        self.fields['month'].widget.attrs['class'] = 'form-control'
+        self.fields['month'].widget.attrs['label'] = 'Month:'
+        self.fields['month'].widget.attrs['id'] = 'month'
+        self.fields['month'].widget.attrs['name'] = 'month'
+
+
+class YearsForm(forms.Form):
+    years = [('2021', '2021'), ('2022', '2022'), ('2023', '2023'), ]
+    year = forms.ChoiceField(choices=years, label='')
+
+    def __init__(self, *args, **kwargs):
+        super(YearsForm, self).__init__(*args, **kwargs)
+        self.fields['year'].initial = '2022'
+        self.fields['year'].widget.attrs['class'] = 'form-control'
+        self.fields['year'].widget.attrs['label'] = 'Year:'
+        self.fields['year'].widget.attrs['id'] = 'year'
+        self.fields['year'].widget.attrs['name'] = 'year'
