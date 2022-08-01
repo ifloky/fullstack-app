@@ -1,3 +1,5 @@
 /.idea/
 mysite/credentials.py
 /mysite/credentials.py
+/credentials.py
+credentials.py

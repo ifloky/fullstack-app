@@ -1,19 +1,15 @@
 {% extends 'main/header.html' %}
 
 
-  {% block content %}
+{% block content %}
     <div>
-        <form method="GET" action="/lan_list">
-              {{ form.date }}
-        <input type="submit" value="Показать информацию">
+        <form method="GET" action="/rocket">
+              {{ months }}
+        <input type="submit" value="Показать количество сообщений">
     </form>
     </div>
 
-    <div>
-        <h1>Информация по: {{ obj_id }}</h1>
-    </div>
-
-  <div style="padding:20px;margin-top:30px;">
+    <div style="padding:20px;margin-top:30px;">
     <table class="table table-striped">
       <thead>
         <tr align="center">
@@ -28,5 +24,5 @@
             </tr>
       </tbody>
     </table>
-  </div>
-  {% endblock %}
+    </div>
+{% endblock %}

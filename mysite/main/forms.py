@@ -1,9 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.forms import ModelForm
-
-from .models import *
 
 
 class NewUserForm(UserCreationForm):
@@ -21,3 +18,10 @@ class NewUserForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class MonthForm(forms.Form):
+    months = [('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'), ('05', 'May'),
+              ('06', 'June'), ('07', 'July'), ('08', 'August'), ('09', 'September'),
+              ('10', 'October'), ('11', 'November'), ('12', 'December'), ]
+    month = forms.ChoiceField(choices=months, widget=forms.Select(attrs={'class': 'form-control'}))
