@@ -1,31 +1,74 @@
 <!--Navbar-->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Home Page</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="False" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarText">
-    <ul class="navbar-nav mr-auto">
-      {% if user.is_authenticated %}
+<style>
+body {margin:0;}
 
-      <li class="nav-item">
-        <a class="nav-link" href="/logout">Logout</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/">Welcome, {{user.username}}</a>
-      </li>
+.fixed {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
 
-      {% else %}
+.nav-item {
+    float: left;
+}
 
-      <li class="nav-item">
-        <a class="nav-link" href="/login">Login</a>
-      </li>
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
 
-      <li class="nav-item">
-        <a class="nav-link" href="/register">Create an account</a>
-      </li>
+li a:hover:not(.active) {
+    color: white;
+    background-color: #111;
+}
 
-      {% endif %}
+.active {
+    color: white;
+    background-color: #4CAF50;
+}
+</style>
+
+    <ul class="fixed">
+        {% if user.is_authenticated %}
+
+        <li class="nav-item">
+          <a class="nav-link" href="/reports">Home</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/rocket">RocketChat</a>
+        </li>
+
+        <li style="float:right" class="nav-item">
+          <a class="nav-link" href="/logout">Log out</a>
+        </li>
+
+        <li style="float:right" class="nav-item">
+          <a class="nav-link" href="/reports">Welcome, {{user.username}}</a>
+        </li>
+
+
+        {% else %}
+
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+
+        <li style="float:right" class="nav-item">
+          <a class="nav-link" href="/login">Log in</a>
+        </li>
+
+        <li style="float:right" class="nav-item">
+          <a class="nav-link" href="/register">Create account</a>
+        </li>
+
+        {% endif %}
     </ul>
-  </div>
-</nav>

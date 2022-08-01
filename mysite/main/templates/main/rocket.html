@@ -1,0 +1,32 @@
+{% extends 'main/header.html' %}
+
+
+  {% block content %}
+    <div>
+        <form method="GET" action="/lan_list">
+              {{ form.date }}
+        <input type="submit" value="Показать информацию">
+    </form>
+    </div>
+
+    <div>
+        <h1>Информация по: {{ obj_id }}</h1>
+    </div>
+
+  <div style="padding:20px;margin-top:30px;">
+    <table class="table table-striped">
+      <thead>
+        <tr align="center">
+            <th scope="col">ID чата</th>
+            <th align="center">Количество сообщений</th>
+        </tr>
+      </thead>
+      <tbody>
+            <tr>
+                <td scope="col" align="center">Support&Risk</td>
+                <td align="center">{{ rocket_message_count }}</td>
+            </tr>
+      </tbody>
+    </table>
+  </div>
+  {% endblock %}
