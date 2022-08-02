@@ -46,6 +46,44 @@ def message_count_from_s_and_r(start_date, end_date):
     return len(rc_msg.json()['messages'])
 
 
+def message_count_from_crm(start_date, end_date):
+    """
+    Calculates the number of messages in the inbox.
+    """
+    headers = {
+        'X-Auth-Token': credentials.token,
+        'X-User-Id': credentials.user_id,
+        'Content-Type': 'application/json; charset=utf-8',
+        }
+
+    url = credentials.site_url + '/api/v1/channels.history?roomName'
+    count = 0
+    room_name = 'CRM_RISK_SUPPORT'
+
+    rc_msg = requests.get(f'{url}={room_name}&count={count}&latest={end_date}&oldest={start_date}', headers=headers)
+
+    return len(rc_msg.json()['messages'])
+
+
+def message_count_from_ver(start_date, end_date):
+    """
+    Calculates the number of messages in the inbox.
+    """
+    headers = {
+        'X-Auth-Token': credentials.token,
+        'X-User-Id': credentials.user_id,
+        'Content-Type': 'application/json; charset=utf-8',
+        }
+
+    url = credentials.site_url + '/api/v1/channels.history?roomName'
+    count = 0
+    room_name = 'VERIFICATION'
+
+    rc_msg = requests.get(f'{url}={room_name}&count={count}&latest={end_date}&oldest={start_date}', headers=headers)
+
+    return len(rc_msg.json()['messages'])
+
+
 def rocket(request):
     now_date = datetime.datetime.now() - relativedelta(months=1)
     last_month = now_date.month, now_date.year
@@ -66,13 +104,15 @@ def rocket(request):
 
     print(start_date, end_date)
 
-    message_count = message_count_from_s_and_r(start_date, end_date)
+    message_count_s_and_r = message_count_from_s_and_r(start_date, end_date)
+    message_count_crm = message_count_from_crm(start_date, end_date)
+    message_count_ver = message_count_from_ver(start_date, end_date)
     months = MonthsForm()
     years = YearsForm()
 
     return render(request, 'main/rocket.html',
-                  {'title': 'Rocket Chat', 'rocket_message_count': message_count,
-                   'months': months, 'years': years})
+                  {'title': 'Rocket Chat', 'message_count_s_and_r': message_count_s_and_r,
+                   'message_count_crm': message_count_crm, 'message_count_ver': message_count_ver,'months': months, 'years': years})
 
 
 def register_request(request):
