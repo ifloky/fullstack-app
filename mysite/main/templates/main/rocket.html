@@ -32,20 +32,24 @@
         <tr align="center">
             <th align="center">ID чата</th>
             <th align="center">Количество сообщений</th>
+            <th align="center">Период</th>
         </tr>
       </thead>
       <tbody>
         <tr>
             <td align="center">Support&Risk</td>
             <td align="center">{{ message_count_s_and_r }}</td>
+            <td align="center">{{ month_id }} {{ year_id }}</td>
         </tr>
         <tr>
             <td align="center">CRM_RISK_SUPPORT</td>
             <td align="center">{{ message_count_crm }}</td>
+            <td align="center">{{ month_id }} {{ year_id }}</td>
         </tr>
         <tr>
             <td align="center">VERIFICATION</td>
             <td align="center">{{ message_count_ver }}</td>
+            <td align="center">{{ month_id }} {{ year_id }}</td>
         </tr>
       </tbody>
     </table>

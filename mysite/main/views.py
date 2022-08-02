@@ -112,7 +112,8 @@ def rocket(request):
 
     return render(request, 'main/rocket.html',
                   {'title': 'Rocket Chat', 'message_count_s_and_r': message_count_s_and_r,
-                   'message_count_crm': message_count_crm, 'message_count_ver': message_count_ver,'months': months, 'years': years})
+                   'message_count_crm': message_count_crm, 'message_count_ver': message_count_ver,
+                   'months': months, 'years': years, 'month_id': month_id, 'year_id': year_id})
 
 
 def register_request(request):
