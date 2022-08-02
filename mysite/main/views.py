@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
@@ -10,9 +11,12 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.contrib import messages
+from dateutil.relativedelta import relativedelta
+from .forms import NewUserForm, MonthsForm, YearsForm
+
 import requests
 import credentials
-from .forms import *
+import datetime
 
 
 def homepage(request):
@@ -43,16 +47,24 @@ def message_count_from_s_and_r(start_date, end_date):
 
 
 def rocket(request):
+    now_date = datetime.datetime.now() - relativedelta(months=1)
+    last_month = now_date.month, now_date.year
+
     month_id = request.GET.get('month', None)
     if month_id is None:
-        month_id = "01"
+        month_id = f'0{last_month[0]}'
 
     year_id = request.GET.get('year', None)
     if year_id is None:
-        year_id = "2022"
+        year_id = last_month[1]
+
+    if len(month_id) > 2:
+        month_id = month_id[1:]
 
     start_date = f'{year_id}-{month_id}-01T03:00:00.000Z'
     end_date = f'{year_id}-{month_id}-31T20:59:59.999Z'
+
+    print(start_date, end_date)
 
     message_count = message_count_from_s_and_r(start_date, end_date)
     months = MonthsForm()

@@ -1,8 +1,8 @@
-from datetime import datetime
-
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+
+import datetime
 
 
 class NewUserForm(UserCreationForm):
@@ -29,6 +29,10 @@ class NewUserForm(UserCreationForm):
         return user
 
 
+now_date = datetime.datetime.now()
+last_month = now_date.month, now_date.year
+
+
 class MonthsForm(forms.Form):
     months = [('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'), ('05', 'May'),
               ('06', 'June'), ('07', 'July'), ('08', 'August'), ('09', 'September'),
@@ -36,8 +40,13 @@ class MonthsForm(forms.Form):
     month = forms.ChoiceField(choices=months, label='')
 
     def __init__(self, *args, **kwargs):
+        month_id = f'0{last_month[0]}'
+
+        if len(month_id) > 2:
+            month_id = month_id[1:]
+
         super(MonthsForm, self).__init__(*args, **kwargs)
-        self.fields['month'].initial = '08'
+        self.fields['month'].initial = month_id
         self.fields['month'].widget.attrs['class'] = 'form-control'
         self.fields['month'].widget.attrs['label'] = 'Month:'
         self.fields['month'].widget.attrs['id'] = 'month'
@@ -49,8 +58,10 @@ class YearsForm(forms.Form):
     year = forms.ChoiceField(choices=years, label='')
 
     def __init__(self, *args, **kwargs):
+        year_id = last_month[1]
+
         super(YearsForm, self).__init__(*args, **kwargs)
-        self.fields['year'].initial = '2022'
+        self.fields['year'].initial = year_id
         self.fields['year'].widget.attrs['class'] = 'form-control'
         self.fields['year'].widget.attrs['label'] = 'Year:'
         self.fields['year'].widget.attrs['id'] = 'year'
