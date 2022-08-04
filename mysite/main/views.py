@@ -108,7 +108,7 @@ def rocket(request):
     months = MonthsForm()
     years = YearsForm()
 
-    m = int(now_date.month)
+    m = int(month_id)
     a = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь',
          'Декабрь']
     month_name = a[m - 1 % 12]
