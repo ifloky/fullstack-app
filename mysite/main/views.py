@@ -102,18 +102,19 @@ def rocket(request):
     start_date = f'{year_id}-{month_id}-01T03:00:00.000Z'
     end_date = f'{year_id}-{month_id}-31T20:59:59.999Z'
 
-    print(start_date, end_date)
-
     message_count_s_and_r = message_count_from_s_and_r(start_date, end_date)
     message_count_crm = message_count_from_crm(start_date, end_date)
     message_count_ver = message_count_from_ver(start_date, end_date)
     months = MonthsForm()
     years = YearsForm()
 
+    d = datetime.datetime(now_date.year, now_date.month, 1)
+    month_name = d.strftime("%B")
+
     return render(request, 'main/rocket.html',
                   {'title': 'Rocket Chat', 'message_count_s_and_r': message_count_s_and_r,
                    'message_count_crm': message_count_crm, 'message_count_ver': message_count_ver,
-                   'months': months, 'years': years, 'month_id': month_id, 'year_id': year_id})
+                   'months': months, 'years': years, 'month_id': month_name, 'year_id': year_id})
 
 
 def register_request(request):
