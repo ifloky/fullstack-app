@@ -108,8 +108,10 @@ def rocket(request):
     months = MonthsForm()
     years = YearsForm()
 
-    d = datetime.datetime(now_date.year, now_date.month, 1)
-    month_name = d.strftime("%B")
+    m = int(now_date.month)
+    a = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь',
+         'Декабрь']
+    month_name = a[m - 1 % 12]
 
     return render(request, 'main/rocket.html',
                   {'title': 'Rocket Chat', 'message_count_s_and_r': message_count_s_and_r,
