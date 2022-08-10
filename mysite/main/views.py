@@ -124,7 +124,7 @@ def payment(request):
     if tracking_id == '' or tracking_id is None:
         tracking_id = 'Введите номер отслеживания'
         payment_status = 'Нет платежа'
-        payment_url = 'Нет ссылки'
+        payment_url = '/payment'
         holder_name = 'Нет имени'
         card_number = 'Нет номера'
     else:
@@ -138,7 +138,7 @@ def payment(request):
         try:
             payment_url = rc_msg_tracking.json()['transactions'][0]['receipt_url']
         except IndexError:
-            payment_url = 'Нет ссылки'
+            payment_url = '/payment'
         try:
             holder_name = rc_msg_tracking.json()['transactions'][0]['credit_card']['holder']
         except IndexError:
