@@ -121,35 +121,33 @@ def rocket(request):
 
 def payment(request):
     tracking_id = request.GET.get('tracking', None)
-    if tracking_id == '':
-        tracking_id = None
-
-    url = 'https://gateway.bepaid.by/v2/transactions/tracking_id/'
-
-    tracking_url = f'{url}{tracking_id}'
-
-    rc_msg_tracking = requests.get(tracking_url, auth=(credentials.bepaid_shop_id, credentials.bepaid_secret_key))
-
-    try:
-        payment_status = rc_msg_tracking.json()['transactions'][0]['status']
-    except IndexError:
-        payment_status = 'Не оплачено'
-
-    try:
-        payment_url = rc_msg_tracking.json()['transactions'][0]['receipt_url']
-    except IndexError:
+    if tracking_id == '' or tracking_id is None:
+        tracking_id = 'Введите номер отслеживания'
+        payment_status = 'Нет платежа'
         payment_url = 'Нет ссылки'
-
-    try:
-        holder_name = rc_msg_tracking.json()['transactions'][0]['credit_card']['holder']
-    except IndexError:
         holder_name = 'Нет имени'
-
-    try:
-        card_number = rc_msg_tracking.json()['transactions'][0]['credit_card']['bin'] + ' XXXX ' + \
-                      rc_msg_tracking.json()['transactions'][0]['credit_card']['last_4']
-    except IndexError:
         card_number = 'Нет номера'
+    else:
+        url = 'https://gateway.bepaid.by/v2/transactions/tracking_id/'
+        tracking_url = f'{url}{tracking_id}'
+        rc_msg_tracking = requests.get(tracking_url, auth=(credentials.bepaid_shop_id, credentials.bepaid_secret_key))
+        try:
+            payment_status = rc_msg_tracking.json()['transactions'][0]['status']
+        except IndexError:
+            payment_status = 'Нет платежа'
+        try:
+            payment_url = rc_msg_tracking.json()['transactions'][0]['receipt_url']
+        except IndexError:
+            payment_url = 'Нет ссылки'
+        try:
+            holder_name = rc_msg_tracking.json()['transactions'][0]['credit_card']['holder']
+        except IndexError:
+            holder_name = 'Нет имени'
+        try:
+            card_number = rc_msg_tracking.json()['transactions'][0]['credit_card']['bin'] + ' XXXX ' + \
+                          rc_msg_tracking.json()['transactions'][0]['credit_card']['last_4']
+        except IndexError:
+            card_number = 'Нет номера'
 
     return render(request, 'main/payment.html', {'title': 'Payment', 'tracking_id': tracking_id,
                                                  'payment_status': payment_status, 'payment_url': payment_url,
