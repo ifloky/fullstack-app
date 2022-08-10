@@ -25,7 +25,6 @@ def homepage(request):
     return render(request=request, template_name="main/home.html",
                   context={"support": support_users, "risks": risks_users})
 
-
 def reports(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
@@ -132,7 +131,7 @@ def payment(request):
     tracking_id = request.GET.get('tracking', None)
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
-    # admins = Group.objects.get(name="admins").user_set.all()
+
     if tracking_id == '' or tracking_id is None:
         status = 0
         tracking_id = 'Нет номера отслеживания'
@@ -170,6 +169,43 @@ def payment(request):
                                                  'holder_name': holder_name, 'card_number': card_number,
                                                  'status': status, 'support': support_users,
                                                  'risks': risks_users})
+
+
+def get_info_by_ip(ip):
+    try:
+        get_ingo = requests.get(url=f'http://ip-api.com/json/{ip}').json()
+
+    except requests.exceptions.ConnectionError:
+        print('[!] Please check your connection!')
+
+    return get_ingo
+
+
+def info_by_ip(request):
+    support_users = User.objects.filter(groups__name='support')
+    risks_users = User.objects.filter(groups__name='risks')
+
+    ip_address = request.GET.get('object')
+
+    if ip_address == '' or ip_address is None:
+        status = 0
+        ip_info = get_info_by_ip(ip_address)
+    else:
+        status = 1
+        ip_info = get_info_by_ip(ip_address)
+
+    return render(request, 'main/ip_info.html',
+                  {'status': status,
+                   'IP': ip_info.get('query'),
+                   'Int_prov': ip_info.get('isp'),
+                   'Org': ip_info.get('org'),
+                   'Country': ip_info.get('country'),
+                   'Region_Name': ip_info.get('regionName'),
+                   'City': ip_info.get('city'),
+                   'ZIP': ip_info.get('zip'),
+                   'Lat': str(ip_info.get('lat')).replace(",", "."),
+                   'Lon': str(ip_info.get('lon')).replace(",", "."),
+                   'support': support_users, 'risks': risks_users})
 
 
 def register_request(request):

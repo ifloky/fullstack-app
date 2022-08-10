@@ -1,0 +1,60 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+    <div style="padding:20px;margin-top:30px;">
+    <form method="GET" action="/ip_info">
+        <label for="ip_address">Введите IP адрес: </label>
+        <input id="ip_address" type="text" name="object" value=""> <!-- В "value=", можно внести значение по умолчанию -->
+        <input type="submit" value="OK">
+    </form>
+    </div>
+{% if status == 0 %}
+    <div>
+    </div>
+{% elif status == 1 %}
+    <div style="padding:20px;margin-top:30px;">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>IP - адрес:</td>
+                    <td>Интернет провайдер:</td>
+                    <td>Организация:</td>
+                    <td>Страна:</td>
+                    <td>Регион:</td>
+                    <td>Город:</td>
+                    <td>Почтовый индекс:</td>
+                    <td>Координаты:</td>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>{{ IP }}</td>
+                    <td>{{ Int_prov }}</td>
+                    <td>{{ Org }}</td>
+                    <td>{{ Country }}</td>
+                    <td>{{ Region_Name }}</td>
+                    <td>{{ City }}</td>
+                    <td>{{ ZIP }}</td>
+                    <td>{{ Lat }}, {{ Lon }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div align="center" id='map' style='width: 100%; height: 600px;'></div>
+            <script>
+              mapboxgl.accessToken = 'pk.eyJ1IjoiYXRyaWRlcyIsImEiOiJjbDZub29zcWEwMnZxM2pxcHdicmZmZTZuIn0.Spd_kV58-mYo34Leb8MUsg';
+              const map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [{{ Lon }}, {{ Lat }}], // starting position [lng, lat]
+                zoom: 14 // starting zoom
+              });
+              // Create a default Marker and add it to the map.
+                const marker1 = new mapboxgl.Marker()
+                .setLngLat([{{ Lon }}, {{ Lat }}])
+                .addTo(map);
+            </script>
+    </div>
+
+{% endif %}
+{% endblock %}

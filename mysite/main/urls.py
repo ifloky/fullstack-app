@@ -12,4 +12,5 @@ urlpatterns = [
     path("password_reset/", views.password_reset_request, name="password_reset"),
     path("rocket/", views.rocket, name="rocket"),
     path("payment/", views.payment, name="payment"),
+    path('ip_info/', views.info_by_ip, name='ip_info'),
 ]
