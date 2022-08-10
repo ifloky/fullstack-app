@@ -1,0 +1,50 @@
+{% extends 'main/header.html' %}
+
+
+{% block content %}
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        width: 260px;
+        margin-top: 1%;
+    }
+
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:200px;margin-right:auto;}
+    .flex-wrap button {width:250px;margin-left:auto;}
+    .flex-wrap input {width:calc(100% - 250px);}
+    .flex-wrap select {width:calc(100% - 50px);}
+
+    form {display:flex;width:100%;}
+    label {margin-left:auto;width:30%;}
+    input {width:30%;}
+    </style>
+
+    <div style="padding:20px;margin-top:30px;">
+        <form method="GET" action="/payment" >
+            <label for="tracking">Введите номер транзакции:</label>
+            <input id="tracking" type="text" name="tracking" value="">
+            <input type="submit" value="Проверить транзакцию">
+        </form>
+    </div>
+
+    <div style="padding:20px;margin-top:30px;">
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th align="center">ID платежа</th>
+                <th align="center">Статус платежа</th>
+                <th align="center">Ссылка на чек</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+                <td align="center">{{ tracking_id }}</td>
+                <td align="center">{{ payment_status }}</td>
+                <td align="center"><a href="{{ payment_url }}" target="_blank">Нажми сюда</a></td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+
+  {% endblock %}

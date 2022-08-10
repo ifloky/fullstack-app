@@ -119,6 +119,31 @@ def rocket(request):
                    'months': months, 'years': years, 'month_id': month_name, 'year_id': year_id})
 
 
+def payment(request):
+    tracking_id = request.GET.get('tracking', None)
+    if tracking_id is None:
+        tracking_id = credentials.tracking_id
+
+    url = 'https://gateway.bepaid.by/v2/transactions/tracking_id/'
+
+    tracking_url = f'{url}{tracking_id}'
+
+    rc_msg_tracking = requests.get(tracking_url, auth=(credentials.bepaid_shop_id, credentials.bepaid_secret_key))
+
+    try:
+        payment_status = rc_msg_tracking.json()['transactions'][0]['status']
+    except IndexError:
+        payment_status = 'Не оплачено'
+
+    try:
+        payment_url = rc_msg_tracking.json()['transactions'][0]['receipt_url']
+    except IndexError:
+        payment_url = 'Нет ссылки'
+
+    return render(request, 'main/payment.html', {'title': 'Payment', 'tracking_id': tracking_id,
+                                                 'payment_status': payment_status, 'payment_url': payment_url})
+
+
 def register_request(request):
     if request.method == "POST":
         form = NewUserForm(request.POST)
