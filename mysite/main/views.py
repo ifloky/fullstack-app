@@ -121,10 +121,8 @@ def rocket(request):
 
 def payment(request):
     tracking_id = request.GET.get('tracking', None)
-    if tracking_id is None:
-        tracking_id = credentials.tracking_id
-    elif tracking_id == '':
-        tracking_id = credentials.tracking_id
+    if tracking_id == '':
+        tracking_id = None
 
     url = 'https://gateway.bepaid.by/v2/transactions/tracking_id/'
 
