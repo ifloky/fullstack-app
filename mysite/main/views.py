@@ -122,19 +122,23 @@ def rocket(request):
 def payment(request):
     tracking_id = request.GET.get('tracking', None)
     if tracking_id == '' or tracking_id is None:
+        status = 0
         tracking_id = 'Нет номера отслеживания'
         payment_status = 'Нет статуса платежа'
         payment_url = '/payment'
         holder_name = 'Нет имени'
         card_number = 'Нет номера карты'
     else:
+        status = 1
         url = 'https://gateway.bepaid.by/v2/transactions/tracking_id/'
         tracking_url = f'{url}{tracking_id}'
         rc_msg_tracking = requests.get(tracking_url, auth=(credentials.bepaid_shop_id, credentials.bepaid_secret_key))
         try:
             payment_status = rc_msg_tracking.json()['transactions'][0]['status']
         except IndexError:
+            tracking_id = 'Неверный номер отслеживания'
             payment_status = 'Нет статуса платежа'
+            status = 2
         try:
             payment_url = rc_msg_tracking.json()['transactions'][0]['receipt_url']
         except IndexError:
@@ -151,7 +155,8 @@ def payment(request):
 
     return render(request, 'main/payment.html', {'title': 'Payment', 'tracking_id': tracking_id,
                                                  'payment_status': payment_status, 'payment_url': payment_url,
-                                                 'holder_name': holder_name, 'card_number': card_number})
+                                                 'holder_name': holder_name, 'card_number': card_number,
+                                                 'status': status})
 
 
 def register_request(request):

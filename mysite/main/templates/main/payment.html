@@ -21,12 +21,21 @@
 
     <div style="padding:20px;margin-top:30px;">
         <form method="GET" action="/payment" >
-            <label for="tracking">Введите номер отслеживания:</label>
+            <label for="tracking">Введите номер отслеживания bePaid:</label>
             <input id="tracking" type="text" name="tracking" value="">
             <input type="submit" value="Проверить транзакцию">
         </form>
     </div>
+{% if status == 0 %}
+    <div>
+    </div>
 
+{% elif status == 2 %}
+    <div style="padding:20px;margin-top:30px;">
+        <h1>Транзакция не найдена, или не bePaid!</h1>
+    </div>
+
+{% else %}
     <div style="padding:20px;margin-top:30px;">
         <table class="table table-striped">
           <thead>
@@ -50,5 +59,6 @@
           </tbody>
         </table>
     </div>
+{% endif %}
 
-  {% endblock %}
+{% endblock %}
