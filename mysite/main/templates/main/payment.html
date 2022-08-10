@@ -32,6 +32,8 @@
           <thead>
             <tr align="center">
                 <th align="center">ID платежа</th>
+                <th align="center">Имя плательщика</th>
+                <th align="center">Номер карты</th>
                 <th align="center">Статус платежа</th>
                 <th align="center">Ссылка на чек</th>
             </tr>
@@ -40,6 +42,8 @@
           <tbody>
             <tr>
                 <td align="center">{{ tracking_id }}</td>
+                <td align="center">{{ holder_name }}</td>
+                <td align="center">{{ card_number }}</td>
                 <td align="center">{{ payment_status }}</td>
                 <td align="center"><a href="{{ payment_url }}" target="_blank">Нажми сюда</a></td>
             </tr>

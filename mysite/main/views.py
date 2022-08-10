@@ -140,8 +140,20 @@ def payment(request):
     except IndexError:
         payment_url = 'Нет ссылки'
 
+    try:
+        holder_name = rc_msg_tracking.json()['transactions'][0]['credit_card']['holder']
+    except IndexError:
+        holder_name = 'Нет имени'
+
+    try:
+        card_number = rc_msg_tracking.json()['transactions'][0]['credit_card']['bin'] + ' XXXX ' + \
+                      rc_msg_tracking.json()['transactions'][0]['credit_card']['last_4']
+    except IndexError:
+        card_number = 'Нет номера'
+
     return render(request, 'main/payment.html', {'title': 'Payment', 'tracking_id': tracking_id,
-                                                 'payment_status': payment_status, 'payment_url': payment_url})
+                                                 'payment_status': payment_status, 'payment_url': payment_url,
+                                                 'holder_name': holder_name, 'card_number': card_number})
 
 
 def register_request(request):
