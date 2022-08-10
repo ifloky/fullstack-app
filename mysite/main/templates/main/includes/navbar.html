@@ -43,13 +43,13 @@ li a:hover:not(.active) {
           <a class="nav-link" href="/reports">Home</a>
         </li>
 
-        {% if user in support or admins %}
+        {% if user in support %}
         <li class="nav-item">
           <a class="nav-link" href="/rocket">RocketChat</a>
         </li>
         {% endif %}
 
-        {% if user in risks or admins %}
+        {% if user in risks %}
         <li class="nav-item">
           <a class="nav-link" href="/payment">Check payment</a>
         </li>

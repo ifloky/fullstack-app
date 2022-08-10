@@ -22,17 +22,15 @@ import datetime
 def homepage(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
-    admins_users = User.objects.filter(groups__name='admins')
     return render(request=request, template_name="main/home.html",
-                  context={"support": support_users, "risks": risks_users, "admins": admins_users})
+                  context={"support": support_users, "risks": risks_users})
 
 
 def reports(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
-    admins_users = User.objects.filter(groups__name='admins')
     return render(request=request, template_name="main/reports.html",
-                  context={"support": support_users, "risks": risks_users, "admins": admins_users})
+                  context={"support": support_users, "risks": risks_users})
 
 
 def message_count_from_s_and_r(start_date, end_date):
@@ -95,7 +93,6 @@ def message_count_from_ver(start_date, end_date):
 def rocket(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
-    admins_users = User.objects.filter(groups__name='admins')
     now_date = datetime.datetime.now() - relativedelta(months=1)
     last_month = now_date.month, now_date.year
 
@@ -128,14 +125,13 @@ def rocket(request):
                   {'title': 'Rocket Chat', 'message_count_s_and_r': message_count_s_and_r,
                    'message_count_crm': message_count_crm, 'message_count_ver': message_count_ver,
                    'months': months, 'years': years, 'month_id': month_name, 'year_id': year_id,
-                   'support': support_users, 'risks': risks_users, 'admins': admins_users})
+                   'support': support_users, 'risks': risks_users})
 
 
 def payment(request):
     tracking_id = request.GET.get('tracking', None)
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
-    admins_users = User.objects.filter(groups__name='admins')
     # admins = Group.objects.get(name="admins").user_set.all()
     if tracking_id == '' or tracking_id is None:
         status = 0
@@ -173,7 +169,7 @@ def payment(request):
                                                  'payment_status': payment_status, 'payment_url': payment_url,
                                                  'holder_name': holder_name, 'card_number': card_number,
                                                  'status': status, 'support': support_users,
-                                                 'risks': risks_users, 'admins': admins_users})
+                                                 'risks': risks_users})
 
 
 def register_request(request):
