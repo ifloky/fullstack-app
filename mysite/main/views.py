@@ -194,6 +194,8 @@ def info_by_ip(request):
         get_lon = None
     else:
         status = 1
+        ip_address = ip_address.replace(' ', '')
+        ip_address = ip_address.replace(',', '.')
         ip_info = requests.get(url=f'http://ip-api.com/json/{ip_address}')
         get_ip = ip_info.json()['query']
         try:
