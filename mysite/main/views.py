@@ -43,7 +43,7 @@ def message_count_from_s_and_r(start_date, end_date):
         'X-Auth-Token': credentials.token,
         'X-User-Id': credentials.user_id,
         'Content-Type': 'application/json; charset=utf-8',
-        }
+    }
 
     url = credentials.site_url + '/api/v1/channels.history?roomName'
     count = 0
@@ -62,7 +62,7 @@ def message_count_from_crm(start_date, end_date):
         'X-Auth-Token': credentials.token,
         'X-User-Id': credentials.user_id,
         'Content-Type': 'application/json; charset=utf-8',
-        }
+    }
 
     url = credentials.site_url + '/api/v1/channels.history?roomName'
     count = 0
@@ -81,7 +81,7 @@ def message_count_from_ver(start_date, end_date):
         'X-Auth-Token': credentials.token,
         'X-User-Id': credentials.user_id,
         'Content-Type': 'application/json; charset=utf-8',
-        }
+    }
 
     url = credentials.site_url + '/api/v1/channels.history?roomName'
     count = 0
@@ -179,19 +179,19 @@ def info_by_ip(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
 
-    ip_address = request.GET.get('object').replace(",", ".")
+    ip_address = request.GET.get('object')
 
     if ip_address == '' or ip_address is None:
         status = 0
-        get_ip = None,
-        get_int_prov = None,
-        get_org = None,
-        get_country = None,
-        get_region_name = None,
-        get_city = None,
-        get_zip_code = None,
-        get_lat = None,
-        get_lon = None,
+        get_ip = None
+        get_int_prov = None
+        get_org = None
+        get_country = None
+        get_region_name = None
+        get_city = None
+        get_zip_code = None
+        get_lat = None
+        get_lon = None
     else:
         status = 1
         ip_info = requests.get(url=f'http://ip-api.com/json/{ip_address}')
@@ -199,7 +199,7 @@ def info_by_ip(request):
         try:
             get_int_prov = ip_info.json()['isp']
         except KeyError:
-            get_int_prov = 'Это локальный адрес'
+            get_int_prov = 'Это локальный адрес!'
         try:
             get_org = ip_info.json()['org']
         except KeyError:
