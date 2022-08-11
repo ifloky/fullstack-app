@@ -22,12 +22,15 @@ import datetime
 def homepage(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
+
     return render(request=request, template_name="main/home.html",
                   context={"support": support_users, "risks": risks_users})
+
 
 def reports(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
+
     return render(request=request, template_name="main/reports.html",
                   context={"support": support_users, "risks": risks_users})
 
@@ -92,6 +95,7 @@ def message_count_from_ver(start_date, end_date):
 def rocket(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
+
     now_date = datetime.datetime.now() - relativedelta(months=1)
     last_month = now_date.month, now_date.year
 
@@ -128,10 +132,10 @@ def rocket(request):
 
 
 def payment(request):
-    tracking_id = request.GET.get('tracking', None)
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
 
+    tracking_id = request.GET.get('tracking', None)
     if tracking_id == '' or tracking_id is None:
         status = 0
         tracking_id = 'Нет номера отслеживания'
@@ -141,9 +145,10 @@ def payment(request):
         card_number = 'Нет номера карты'
     else:
         status = 1
+        auth = (credentials.bepaid_shop_id, credentials.bepaid_secret_key)
         url = 'https://gateway.bepaid.by/v2/transactions/tracking_id/'
         tracking_url = f'{url}{tracking_id}'
-        rc_msg_tracking = requests.get(tracking_url, auth=(credentials.bepaid_shop_id, credentials.bepaid_secret_key))
+        rc_msg_tracking = requests.get(url=tracking_url, auth=auth)
         try:
             payment_status = rc_msg_tracking.json()['transactions'][0]['status']
         except IndexError:
@@ -164,21 +169,10 @@ def payment(request):
         except IndexError:
             card_number = 'Нет номера карты'
 
-    return render(request, 'main/payment.html', {'title': 'Payment', 'tracking_id': tracking_id,
-                                                 'payment_status': payment_status, 'payment_url': payment_url,
-                                                 'holder_name': holder_name, 'card_number': card_number,
-                                                 'status': status, 'support': support_users,
-                                                 'risks': risks_users})
-
-
-def get_info_by_ip(ip):
-    try:
-        get_ingo = requests.get(url=f'http://ip-api.com/json/{ip}').json()
-
-    except requests.exceptions.ConnectionError:
-        print('[!] Please check your connection!')
-
-    return get_ingo
+    return render(request, 'main/payment.html', {'tracking_id': tracking_id, 'payment_status': payment_status,
+                                                 'payment_url': payment_url, 'holder_name': holder_name,
+                                                 'card_number': card_number, 'status': status,
+                                                 'support': support_users, 'risks': risks_users})
 
 
 def info_by_ip(request):
@@ -189,23 +183,33 @@ def info_by_ip(request):
 
     if ip_address == '' or ip_address is None:
         status = 0
-        ip_info = get_info_by_ip(ip_address)
+        get_ip = None,
+        get_int_prov = None,
+        get_org = None,
+        get_country = None,
+        get_region_name = None,
+        get_city = None,
+        get_zip_code = None,
+        get_lat = None,
+        get_lon = None,
     else:
         status = 1
-        ip_info = get_info_by_ip(ip_address)
+        ip_info = requests.get(url=f'http://ip-api.com/json/{ip_address}')
+        get_ip = ip_info.json()['query']
+        get_int_prov = ip_info.json()['isp']
+        get_org = ip_info.json()['org']
+        get_country = ip_info.json()['country']
+        get_region_name = ip_info.json()['regionName']
+        get_city = ip_info.json()['city']
+        get_zip_code = ip_info.json()['zip']
+        get_lat = str(ip_info.json()['lat']).replace(",", ".")
+        get_lon = str(ip_info.json()['lon']).replace(",", ".")
 
-    return render(request, 'main/ip_info.html',
-                  {'status': status,
-                   'IP': ip_info.get('query'),
-                   'Int_prov': ip_info.get('isp'),
-                   'Org': ip_info.get('org'),
-                   'Country': ip_info.get('country'),
-                   'Region_Name': ip_info.get('regionName'),
-                   'City': ip_info.get('city'),
-                   'ZIP': ip_info.get('zip'),
-                   'Lat': str(ip_info.get('lat')).replace(",", "."),
-                   'Lon': str(ip_info.get('lon')).replace(",", "."),
-                   'support': support_users, 'risks': risks_users})
+    return render(request, 'main/ip_info.html', {'status': status,
+                                                 'IP': get_ip, 'Int_prov': get_int_prov, 'Org': get_org,
+                                                 'Country': get_country, 'Region_Name': get_region_name,
+                                                 'City': get_city, 'ZIP': get_zip_code, 'Lat': get_lat, 'Lon': get_lon,
+                                                 'support': support_users, 'risks': risks_users})
 
 
 def register_request(request):
