@@ -193,41 +193,34 @@ def info_by_ip(request):
         get_lat = None
         get_lon = None
     else:
-        status = 1
         ip_address = ip_address.replace(' ', '')
         ip_address = ip_address.replace(',', '.')
-        ip_info = requests.get(url=f'http://ip-api.com/json/{ip_address}')
-        get_ip = ip_info.json()['query']
-        try:
+        url = f'http://ip-api.com/json/{ip_address}'
+        print(url)
+        ip_info = requests.get(url=url)
+
+        if ip_info.json()['status'] == 'fail':
+            status = 1
+            get_ip = 'Неверный IP или адрес не найден'
+            get_int_prov = 'Нет интернет провайдера'
+            get_org = 'Нет организации'
+            get_country = 'Нет страны'
+            get_region_name = 'Нет региона'
+            get_city = 'Нет города'
+            get_zip_code = 'Нет почтового индекса'
+            get_lat = 'Нет координаты'
+            get_lon = 'Нет координаты'
+        else:
+            status = 1
+            get_ip = ip_info.json()['query']
             get_int_prov = ip_info.json()['isp']
-        except KeyError:
-            get_int_prov = 'Это локальный адрес!'
-        try:
             get_org = ip_info.json()['org']
-        except KeyError:
-            get_org = 'Нет информации'
-        try:
             get_country = ip_info.json()['country']
-        except KeyError:
-            get_country = 'Нет информации'
-        try:
             get_region_name = ip_info.json()['regionName']
-        except KeyError:
-            get_region_name = 'Нет информации'
-        try:
             get_city = ip_info.json()['city']
-        except KeyError:
-            get_city = 'Нет информации'
-        try:
             get_zip_code = ip_info.json()['zip']
-        except KeyError:
-            get_zip_code = 'Нет информации'
-        try:
             get_lat = str(ip_info.json()['lat']).replace(",", ".")
             get_lon = str(ip_info.json()['lon']).replace(",", ".")
-        except KeyError:
-            get_lat = 'Нет информации'
-            get_lon = 'Нет информации'
 
     return render(request, 'main/ip_info.html', {'status': status,
                                                  'IP': get_ip, 'Int_prov': get_int_prov, 'Org': get_org,
