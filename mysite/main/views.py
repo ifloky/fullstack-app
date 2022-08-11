@@ -152,9 +152,9 @@ def payment(request):
         try:
             payment_status = rc_msg_tracking.json()['transactions'][0]['status']
         except IndexError:
+            status = 2
             tracking_id = 'Неверный номер отслеживания'
             payment_status = 'Нет статуса платежа'
-            status = 2
         try:
             payment_url = rc_msg_tracking.json()['transactions'][0]['receipt_url']
         except IndexError:
