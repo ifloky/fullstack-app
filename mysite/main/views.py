@@ -179,7 +179,7 @@ def info_by_ip(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
 
-    ip_address = request.GET.get('object')
+    ip_address = request.GET.get('object').replace(",", ".")
 
     if ip_address == '' or ip_address is None:
         status = 0
@@ -196,14 +196,36 @@ def info_by_ip(request):
         status = 1
         ip_info = requests.get(url=f'http://ip-api.com/json/{ip_address}')
         get_ip = ip_info.json()['query']
-        get_int_prov = ip_info.json()['isp']
-        get_org = ip_info.json()['org']
-        get_country = ip_info.json()['country']
-        get_region_name = ip_info.json()['regionName']
-        get_city = ip_info.json()['city']
-        get_zip_code = ip_info.json()['zip']
-        get_lat = str(ip_info.json()['lat']).replace(",", ".")
-        get_lon = str(ip_info.json()['lon']).replace(",", ".")
+        try:
+            get_int_prov = ip_info.json()['isp']
+        except KeyError:
+            get_int_prov = 'Это локальный адрес'
+        try:
+            get_org = ip_info.json()['org']
+        except KeyError:
+            get_org = 'Нет информации'
+        try:
+            get_country = ip_info.json()['country']
+        except KeyError:
+            get_country = 'Нет информации'
+        try:
+            get_region_name = ip_info.json()['regionName']
+        except KeyError:
+            get_region_name = 'Нет информации'
+        try:
+            get_city = ip_info.json()['city']
+        except KeyError:
+            get_city = 'Нет информации'
+        try:
+            get_zip_code = ip_info.json()['zip']
+        except KeyError:
+            get_zip_code = 'Нет информации'
+        try:
+            get_lat = str(ip_info.json()['lat']).replace(",", ".")
+            get_lon = str(ip_info.json()['lon']).replace(",", ".")
+        except KeyError:
+            get_lat = 'Нет информации'
+            get_lon = 'Нет информации'
 
     return render(request, 'main/ip_info.html', {'status': status,
                                                  'IP': get_ip, 'Int_prov': get_int_prov, 'Org': get_org,
