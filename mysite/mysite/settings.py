@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-from credentials import username as db_username, password as db_password, secret_key as sec_key
-from credentials import host as db_host, port as db_port, database as db_database
+from credentials import db_username, db_password, secret_key as sec_key
+from credentials import db_host, db_port, db_name
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': db_database,
+        'NAME': db_name,
         'USER': db_username,
         'PASSWORD': db_password,
         'HOST': db_host,
