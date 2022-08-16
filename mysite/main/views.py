@@ -196,7 +196,6 @@ def info_by_ip(request):
         ip_address = ip_address.replace(' ', '')
         ip_address = ip_address.replace(',', '.')
         url = f'http://ip-api.com/json/{ip_address}'
-        print(url)
         ip_info = requests.get(url=url)
 
         if ip_info.json()['status'] == 'fail':
