@@ -14,9 +14,13 @@ from django.contrib import messages
 from dateutil.relativedelta import relativedelta
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, RiskReportDayForm
 
+
 import requests
 import credentials
 import datetime
+import psycopg2 as pg
+
+from .models import RiskReport, RiskReportDay
 
 
 def homepage(request):
@@ -301,6 +305,13 @@ def password_reset_request(request):
                   context={"password_reset_form": password_reset_form})
 
 
+def check_db_record_personal(date, user):
+    if RiskReport.objects.filter(shift_date=date, user_name=user).exists():
+        return True
+    else:
+        return False
+
+
 def add_personal_report(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
@@ -311,9 +322,13 @@ def add_personal_report(request):
         form = RiskReportForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect('main:add_personal_report')
-
+            if check_db_record_personal(form.cleaned_data.get('shift_date'), form.cleaned_data.get('user_name')):
+                shift_date = form.cleaned_data.get('shift_date')
+                user_name = form.cleaned_data.get('user_name')
+                error_text = f'Данные смены {user_name} за {shift_date} уже присутствуют в Базе Данных'
+            else:
+                form.save()
+                return redirect('main:add_personal_report')
         else:
             error_text = form.errors
 
@@ -329,6 +344,13 @@ def add_personal_report(request):
     return render(request, "main/add_personal_report.html", data)
 
 
+def check_db_record_day(date, user):
+    if RiskReportDay.objects.filter(shift_date=date, user_name=user).exists():
+        return True
+    else:
+        return False
+
+
 def add_day_report(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
@@ -339,9 +361,12 @@ def add_day_report(request):
         form = RiskReportDayForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect('main:add_day_report')
-
+            if check_db_record_day(form.cleaned_data.get('shift_date'), form.cleaned_data.get('user_name')):
+                shift_date = form.cleaned_data.get('shift_date')
+                error_text = f'Данные смены за {shift_date} уже присутствуют в Базе Данных'
+            else:
+                form.save()
+                return redirect('main:add_day_report')
         else:
             error_text = form.errors
 

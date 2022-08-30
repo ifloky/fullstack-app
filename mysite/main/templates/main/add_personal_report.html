@@ -38,7 +38,7 @@
         <label>OAPI:</label>{{ form.oapi_requests }}<p class="flex-wrap">
         <label>"Внесено в базу. Выявлено схем":</label>{{ form.schemes_revealed }}<p class="flex-wrap">
         <label>Заполнено пользователем:</label>{{ form.user_name }}Имя пользователя -> <b>{{user.first_name}} {{user.last_name}}</b><p class="flex-wrap">
-        <span>{{ error_text }}</span>
+        <span><b>{{ error_text }}</b></span><p class="flex-wrap"></p>
         <button class="btn btn-success" type="submit">Отправить личный отчет за смену</button>
       </form>
 

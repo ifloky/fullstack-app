@@ -36,7 +36,7 @@
         <label>GGR Casino (продажи):</label>{{ form.ggr_casino }}<p class="flex-wrap">
         <label>Информация о выводах свыше 5000 BYN:</label>{{ form.withdrawals_5000 }}<p class="flex-wrap">
         <label>Заполнено пользователем:</label>{{ form.user_name }}Имя пользователя -> <b>{{user.first_name}} {{user.last_name}}</b><p class="flex-wrap">
-        <span>{{ error_text }}</span>
+        <span><b>{{ error_text }}</b></span><p class="flex-wrap"></p>
         <button class="btn btn-success" type="submit">Отправить отчет за сутки</button>
       </form>
 

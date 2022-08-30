@@ -3,6 +3,7 @@ from django.db import models
 
 class RiskReport(models.Model):
 
+    objects = None
     shift_date = models.DateField()
     shift_type = models.CharField(max_length=10)
     verified_clients = models.IntegerField()
@@ -24,6 +25,7 @@ class RiskReport(models.Model):
 
 
 class RiskReportDay(models.Model):
+    objects = None
     shift_date = models.DateField()
     foto_clients = models.IntegerField()
     deposits_sum = models.IntegerField()
