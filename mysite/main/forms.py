@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.forms import ModelForm
+from .models import RiskReport, RiskReportDay
 
 import datetime
 
@@ -66,3 +68,83 @@ class YearsForm(forms.Form):
         self.fields['year'].widget.attrs['label'] = 'Year:'
         self.fields['year'].widget.attrs['id'] = 'year'
         self.fields['year'].widget.attrs['name'] = 'year'
+
+
+class RiskReportForm(ModelForm):
+    class Meta:
+        model = RiskReport
+
+        fields = ['shift_date', 'shift_type', 'verified_clients', 're_verified_clients', 'processed_conclusions',
+                  'processed_support_requests', 'tacks_help_desk', 'oapi_requests', 'schemes_revealed', 'user_name']
+
+        widgets = {
+            'shift_date':
+                forms.DateInput(attrs={'class': 'form-control', 'id': 'shift_date', 'name': 'shift_date',
+                                       'placeholder': '01.01.2021'}),
+            'shift_type':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'shift_type', 'name': 'shift_type',
+                                       'placeholder': 'День / Ночь'}),
+            'verified_clients':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'verified_clients', 'name': 'verified_clients',
+                                         'placeholder': 'Тут пишем количество верифицированных клиентов'}),
+            're_verified_clients':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 're_verified_clients',
+                                         'name': 're_verified_clients',
+                                         'placeholder': 'Тут пишем количество повторно верифицированных клиентов'}),
+            'processed_conclusions':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'processed_conclusions',
+                                         'name': 'processed_conclusions',
+                                         'placeholder': 'Тут пишем количество обработанных заключений'}),
+            'processed_support_requests':
+                forms.NumberInput(attrs={'class': 'form-control',
+                                         'id': 'processed_support_requests', 'name': 'processed_support_requests',
+                                         'placeholder': 'Тут пишем количество обработанных запросов поддержки'}),
+            'tacks_help_desk':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'tacks_help_desk', 'name': 'tacks_help_desk',
+                                         'placeholder': 'Тут пишем количество заявок в помощь дежурному отделу'}),
+            'oapi_requests':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'oapi_requests', 'name': 'oapi_requests',
+                                         'placeholder': 'Тут пишем количество заявок в ОАПИ'}),
+            'schemes_revealed':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'schemes_revealed', 'name': 'schemes_revealed',
+                                         'placeholder': 'Тут пишем количество открытых схем'}),
+            'user_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'name': 'user_name',
+                                       'placeholder': 'Вставьте имя пользователя из строки ниже'}),
+
+        }
+
+
+class RiskReportDayForm(ModelForm):
+    class Meta:
+        model = RiskReportDay
+
+        fields = ['shift_date', 'foto_clients', 'deposits_sum', 'withdrawals_sum', 'ggr_sport',
+                  'ggr_casino', 'withdrawals_5000', 'user_name']
+
+        widgets = {
+            'shift_date':
+                forms.DateInput(attrs={'class': 'form-control', 'id': 'shift_date', 'name': 'shift_date',
+                                       'placeholder': '01.01.2021'}),
+            'foto_clients':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'foto_clients', 'name': 'foto_clients',
+                                         'placeholder': 'Тут пишем количество предоставивших фото для верификации'}),
+            'deposits_sum':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'deposits_sum', 'name': 'deposits_sum',
+                                         'placeholder': 'Тут пишем общую сумму депозитов'}),
+            'withdrawals_sum':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'withdrawals_sum', 'name': 'withdrawals_sum',
+                                         'placeholder': 'Тут пишем общую сумму выводов'}),
+            'ggr_sport':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'ggr_sport', 'name': 'ggr_sport',
+                                         'placeholder': 'Тут пишем общую сумму депозитов в GGR Спорт'}),
+            'ggr_casino':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'ggr_casino', 'name': 'ggr_casino',
+                                         'placeholder': 'Тут пишем общую сумму депозитов в GGR Казино'}),
+            'withdrawals_5000':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'withdrawals_5000', 'name': 'withdrawals_5000',
+                                         'placeholder': 'Тут пишем количество выводов на сумму более 5000 BYN'}),
+            'user_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'name': 'user_name',
+                                       'placeholder': 'Вставьте имя пользователя из строки ниже'}),
+        }

@@ -1,0 +1,46 @@
+{% extends 'main/header.html' %}
+
+
+{% block content %}
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        margin-left: 12%;
+        width: 80%;
+        margin-top: 1%;
+    }
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
+  </style>
+  <script>
+    $(document).ready(function() {
+            $(document).keypress(function(event) {
+                if(event.keyCode==13){
+                    $(event.target).parent().next().find('input').focus();
+                    event.preventDefault();
+                }
+            });
+        });
+  </script>
+    <div style="padding:5px;margin-top:30px;">
+
+      <form action="{% url 'main:add_personal_report' %}" method="post">
+        {% csrf_token %}<p class="flex-wrap">
+        <label>Дата:</label>{{ form.shift_date }}<p class="flex-wrap">
+        <label>Смена:</label>{{ form.shift_type }}<p class="flex-wrap">
+        <label>Верифицировано клиентов:</label>{{ form.verified_clients }}<p class="flex-wrap">
+        <label>Повторная верификация:</label>{{ form.re_verified_clients }}<p class="flex-wrap">
+        <label>Обработанные выводы:</label>{{ form.processed_conclusions }}<p class="flex-wrap">
+        <label>Обработанные запросы от отдела поддержки:</label>{{ form.processed_support_requests }}<p class="flex-wrap">
+        <label>Таск Help Desk:</label>{{ form.tacks_help_desk }}<p class="flex-wrap">
+        <label>OAPI:</label>{{ form.oapi_requests }}<p class="flex-wrap">
+        <label>"Внесено в базу. Выявлено схем":</label>{{ form.schemes_revealed }}<p class="flex-wrap">
+        <label>Заполнено пользователем:</label>{{ form.user_name }}Имя пользователя -> <b>{{user.first_name}} {{user.last_name}}</b><p class="flex-wrap">
+        <span>{{ error_text }}</span>
+        <button class="btn btn-success" type="submit">Отправить личный отчет за смену</button>
+      </form>
+
+    </div>
+{% endblock %}

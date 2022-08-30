@@ -1,0 +1,44 @@
+{% extends 'main/header.html' %}
+
+
+{% block content %}
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        margin-left: 12%;
+        width: 80%;
+        margin-top: 1%;
+    }
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
+  </style>
+  <script>
+    $(document).ready(function() {
+            $(document).keypress(function(event) {
+                if(event.keyCode==13){
+                    $(event.target).parent().next().find('input').focus();
+                    event.preventDefault();
+                }
+            });
+        });
+  </script>
+    <div style="padding:5px;margin-top:30px;">
+
+      <form action="{% url 'main:add_day_report' %}" method="post">
+        {% csrf_token %}<p class="flex-wrap">
+        <label>Дата:</label>{{ form.shift_date }}<p class="flex-wrap">
+        <label>Количество клиентов, предоставивших фото для верификации:</label>{{ form.foto_clients }}<p class="flex-wrap">
+        <label>СУММА депозитов:</label>{{ form.deposits_sum }}<p class="flex-wrap">
+        <label>СУММА выводов:</label>{{ form.withdrawals_sum }}<p class="flex-wrap">
+        <label>GGR SPORT (продажи):</label>{{ form.ggr_sport }}<p class="flex-wrap">
+        <label>GGR Casino (продажи):</label>{{ form.ggr_casino }}<p class="flex-wrap">
+        <label>Информация о выводах свыше 5000 BYN:</label>{{ form.withdrawals_5000 }}<p class="flex-wrap">
+        <label>Заполнено пользователем:</label>{{ form.user_name }}Имя пользователя -> <b>{{user.first_name}} {{user.last_name}}</b><p class="flex-wrap">
+        <span>{{ error_text }}</span>
+        <button class="btn btn-success" type="submit">Отправить отчет за сутки</button>
+      </form>
+
+    </div>
+{% endblock %}

@@ -12,7 +12,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
-from .forms import NewUserForm, MonthsForm, YearsForm
+from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, RiskReportDayForm
 
 import requests
 import credentials
@@ -299,3 +299,59 @@ def password_reset_request(request):
     password_reset_form = PasswordResetForm()
     return render(request=request, template_name="main/password/password_reset.html",
                   context={"password_reset_form": password_reset_form})
+
+
+def add_personal_report(request):
+    support_users = User.objects.filter(groups__name='support')
+    risks_users = User.objects.filter(groups__name='risks')
+
+    error_text = ''
+
+    if request.method == "POST":
+        form = RiskReportForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('main:add_personal_report')
+
+        else:
+            error_text = form.errors
+
+    form = RiskReportForm()
+
+    data = {
+        'form': form,
+        'support': support_users,
+        'risks': risks_users,
+        'error_text': error_text,
+    }
+
+    return render(request, "main/add_personal_report.html", data)
+
+
+def add_day_report(request):
+    support_users = User.objects.filter(groups__name='support')
+    risks_users = User.objects.filter(groups__name='risks')
+
+    error_text = ''
+
+    if request.method == "POST":
+        form = RiskReportDayForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('main:add_day_report')
+
+        else:
+            error_text = form.errors
+
+    form = RiskReportDayForm()
+
+    data = {
+        'form': form,
+        'support': support_users,
+        'risks': risks_users,
+        'error_text': error_text,
+    }
+
+    return render(request, "main/add_day_report.html", data)
