@@ -18,7 +18,6 @@ from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, RiskRepor
 import requests
 import credentials
 import datetime
-import psycopg2 as pg
 
 from .models import RiskReport, RiskReportDay
 
