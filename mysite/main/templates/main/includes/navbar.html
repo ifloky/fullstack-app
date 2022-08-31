@@ -39,18 +39,18 @@ li a:hover:not(.active) {
     <ul class="fixed">
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link" href="/reports">Home</a>
+          <a class="nav-link" href="/reports">Главная</a>
         </li>
 
         {% if user in risks %}
         <li class="nav-item">
-          <a class="nav-link" href="/add_personal_report">Shift personal report</a>
+          <a class="nav-link" href="/add_personal_report">Персональный отчет</a>
         </li>
         {% endif %}
 
         {% if user in risks %}
         <li class="nav-item">
-          <a class="nav-link" href="/add_day_report">Shift day report</a>
+          <a class="nav-link" href="/add_day_report">Отчет за сутки</a>
         </li>
         {% endif %}
 
@@ -62,34 +62,34 @@ li a:hover:not(.active) {
 
         {% if user in risks %}
         <li class="nav-item">
-          <a class="nav-link" href="/payment">Check payment</a>
+          <a class="nav-link" href="/payment">Проверка платежа</a>
         </li>
         {% endif %}
 
         <li class="nav-item">
-          <a class="nav-link" href="/ip_info">Check IP</a>
+          <a class="nav-link" href="/ip_info">Проверка адреса</a>
         </li>
 
         <li style="float:right" class="nav-item">
-          <a class="nav-link" href="/logout">Log out</a>
+          <a class="nav-link" href="/logout">Выйти</a>
         </li>
 
         <li style="float:right" class="nav-item">
-          <a class="nav-link" href="/reports">Welcome, {{user.first_name}}</a>
+          <a class="nav-link" href="/reports">Приветствую, {{user.first_name}}</a>
         </li>
 
         {% else %}
 
         <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/">Главная</a>
         </li>
 
         <li style="float:right" class="nav-item">
-          <a class="nav-link" href="/login">Log in</a>
+          <a class="nav-link" href="/login">Войти</a>
         </li>
 
         <li style="float:right" class="nav-item">
-          <a class="nav-link" href="/register">Create account</a>
+          <a class="nav-link" href="/register">Создать учетную запись</a>
         </li>
 
         {% endif %}
