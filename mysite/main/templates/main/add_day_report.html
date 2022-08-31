@@ -24,6 +24,11 @@
             });
         });
   </script>
+  <script>
+    $(document).ready(function(){
+      $("#user_name").attr("value", '{{user.first_name}} {{user.last_name}}');
+    });
+  </script>
     <div style="padding:5px;margin-top:30px;">
 
       <form action="{% url 'main:add_day_report' %}" method="post">
@@ -35,8 +40,8 @@
         <label>GGR SPORT (продажи):</label>{{ form.ggr_sport }}<p class="flex-wrap">
         <label>GGR Casino (продажи):</label>{{ form.ggr_casino }}<p class="flex-wrap">
         <label>Информация о выводах свыше 5000 BYN:</label>{{ form.withdrawals_5000 }}<p class="flex-wrap">
-        <label>Заполнено пользователем:</label>{{ form.user_name }}Имя пользователя -> <b>{{user.first_name}} {{user.last_name}}</b><p class="flex-wrap">
-        <span><b>{{ error_text }}</b></span><p class="flex-wrap"></p>
+        <label>Заполнено пользователем:</label>{{ form.user_name }}<p class="flex-wrap">
+        <span><b>{{ error_text }}</b></span><p class="flex-wrap">
         <button class="btn btn-success" type="submit">Отправить отчет за сутки</button>
       </form>
 
