@@ -83,9 +83,6 @@ class RiskReportForm(ModelForm):
             'shift_date':
                 forms.DateInput(attrs={'class': 'form-control', 'id': 'shift_date', 'name': 'shift_date',
                                        'placeholder': '01.01.2021'}),
-
-            # 'shift_type': forms.ChoiceField(widget=forms.RadioSelect, choices=SHIFT_TYPES),
-
             'shift_type':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'shift_type',
                                        'placeholder': 'День / Ночь'}),
