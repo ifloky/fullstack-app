@@ -6,6 +6,7 @@ app_name = "main"
 urlpatterns = [
     path("", views.homepage, name="homepage"),
     path("reports/", views.reports, name="reports"),
+    path('risks_rep/', views.risks_rep, name='risks_rep'),
     path('add_personal_report/', views.add_personal_report, name='add_personal_report'),
     path('add_day_report/', views.add_day_report, name='add_day_report'),
     path("register/", views.register_request, name="register"),

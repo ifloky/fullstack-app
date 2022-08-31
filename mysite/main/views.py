@@ -25,17 +25,19 @@ from .models import RiskReport, RiskReportDay
 def homepage(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
+    heads_users = User.objects.filter(groups__name='Heads')
 
     return render(request=request, template_name="main/home.html",
-                  context={"support": support_users, "risks": risks_users})
+                  context={"support": support_users, "risks": risks_users, "heads": heads_users})
 
 
 def reports(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
+    heads_users = User.objects.filter(groups__name='Heads')
 
     return render(request=request, template_name="main/reports.html",
-                  context={"support": support_users, "risks": risks_users})
+                  context={"support": support_users, "risks": risks_users, "heads": heads_users})
 
 
 def message_count_from_s_and_r(start_date, end_date):
@@ -98,6 +100,7 @@ def message_count_from_ver(start_date, end_date):
 def rocket(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
+    heads_users = User.objects.filter(groups__name='Heads')
 
     now_date = datetime.datetime.now() - relativedelta(months=1)
     last_month = now_date.month, now_date.year
@@ -131,12 +134,13 @@ def rocket(request):
                   {'title': 'Rocket Chat', 'message_count_s_and_r': message_count_s_and_r,
                    'message_count_crm': message_count_crm, 'message_count_ver': message_count_ver,
                    'months': months, 'years': years, 'month_id': month_name, 'year_id': year_id,
-                   'support': support_users, 'risks': risks_users})
+                   'support': support_users, 'risks': risks_users, 'heads': heads_users})
 
 
 def payment(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
+    heads_users = User.objects.filter(groups__name='Heads')
 
     tracking_id = request.GET.get('tracking', None)
     if tracking_id == '' or tracking_id is None:
@@ -175,12 +179,13 @@ def payment(request):
     return render(request, 'main/payment.html', {'tracking_id': tracking_id, 'payment_status': payment_status,
                                                  'payment_url': payment_url, 'holder_name': holder_name,
                                                  'card_number': card_number, 'status': status,
-                                                 'support': support_users, 'risks': risks_users})
+                                                 'support': support_users, 'risks': risks_users, 'heads': heads_users})
 
 
 def info_by_ip(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
+    heads_users = User.objects.filter(groups__name='Heads')
 
     ip_address = request.GET.get('object')
 
@@ -228,7 +233,7 @@ def info_by_ip(request):
                                                  'IP': get_ip, 'Int_prov': get_int_prov, 'Org': get_org,
                                                  'Country': get_country, 'Region_Name': get_region_name,
                                                  'City': get_city, 'ZIP': get_zip_code, 'Lat': get_lat, 'Lon': get_lon,
-                                                 'support': support_users, 'risks': risks_users})
+                                                 'support': support_users, 'risks': risks_users, 'heads': heads_users})
 
 
 def register_request(request):
@@ -314,6 +319,7 @@ def check_db_record(model, date, user):
 def add_personal_report(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
+    heads_users = User.objects.filter(groups__name='Heads')
 
     error_text = ''
 
@@ -339,6 +345,7 @@ def add_personal_report(request):
         'form': form,
         'support': support_users,
         'risks': risks_users,
+        'heads': heads_users,
         'error_text': error_text,
     }
 
@@ -348,6 +355,7 @@ def add_personal_report(request):
 def add_day_report(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
+    heads_users = User.objects.filter(groups__name='Heads')
 
     error_text = ''
 
@@ -372,7 +380,21 @@ def add_day_report(request):
         'form': form,
         'support': support_users,
         'risks': risks_users,
+        'heads': heads_users,
         'error_text': error_text,
     }
 
     return render(request, "main/add_day_report.html", data)
+
+
+def risks_rep(request):
+    support_users = User.objects.filter(groups__name='support')
+    risks_users = User.objects.filter(groups__name='risks')
+    heads_users = User.objects.filter(groups__name='Heads')
+
+    data = {
+        'support': support_users,
+        'risks': risks_users,
+        'heads': heads_users,
+    }
+    return render(request, "main/risks_rep.html", data)
