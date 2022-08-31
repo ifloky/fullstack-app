@@ -25,14 +25,7 @@ class RiskReport(models.Model):
 
 
 class RiskReportDay(models.Model):
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(args, kwargs)
-    #     self.user = None
-    #     self.shift_date = None
-
     objects = None
-    # id = models.AutoField(primary_key=True)
     shift_date = models.DateField()
     foto_clients = models.IntegerField()
     deposits_sum = models.IntegerField()
