@@ -417,16 +417,59 @@ def get_risks_report():
     return risks_report_list
 
 
+def get_personal_risks_report():
+    """ This function get data from risk_report db table and return it as list of dicts """
+    cursor, connection = None, None
+
+    report_list = []
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(f'''
+            SELECT user_name,
+                sum(verified_clients) AS verified_clients,
+                sum(re_verified_clients) AS re_verified_clients,
+                sum(processed_conclusions) AS processed_conclusions,
+                sum(processed_support_requests) AS processed_support_requests,
+                sum(tacks_help_desk) AS tacks_help_desk,
+                sum(oapi_requests) AS oapi_requests,
+                sum(schemes_revealed) AS schemes_revealed
+            FROM main_riskreport
+            GROUP BY user_name
+            ORDER BY user_name ASC''')
+
+        report_list = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgreSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return report_list
+
+
 def risks_rep(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
     heads_users = User.objects.filter(groups__name='Heads')
     report = get_risks_report()
+    pers_report = get_personal_risks_report()
 
     data = {
         'support': support_users,
         'risks': risks_users,
         'heads': heads_users,
         'risk_reports': report,
+        'pers_reports': pers_report,
     }
     return render(request, "main/risks_rep.html", data)

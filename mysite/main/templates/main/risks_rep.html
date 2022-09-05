@@ -3,7 +3,32 @@
 
   {% block content %}
     <div style="padding:20px;margin-top:30px;">
-          <table class="table table-striped">
+    <table class="table table-striped">
+      <thead>
+        <tr align="center">
+            <th scope="col" width="200">Оператор</th>
+            <th scope="col">Верефицировано клиентов</th>
+            <th scope="col">Повторно верефицировано клиентов</th>
+            <th scope="col">Обработанных заключений</th>
+            <th scope="col">Обработанных запросов поддержки</th>
+            <th scope="col">Заявок в Help Desk</th>
+            <th scope="col">Заявок в ОАПИ</th>
+            <th scope="col">Выявленно схем</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in pers_reports %}
+            <tr>
+                {% for x in report %} <td align="center">{{ x }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+
+    <div style="padding:20px;margin-top:30px;">
+    <table class="table table-striped">
       <thead>
         <tr align="center">
             <th scope="col" width="170">Дата</th>
