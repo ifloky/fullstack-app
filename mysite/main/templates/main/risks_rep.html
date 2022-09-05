@@ -3,8 +3,33 @@
 
   {% block content %}
     <div style="padding:20px;margin-top:30px;">
-      <div class="text-center">
-        <h1>This is template page to Report of the risks department.</h1><br>
-      </div>
+          <table class="table table-striped">
+      <thead>
+        <tr align="center">
+            <th scope="col" width="170">Дата</th>
+            <th scope="col">Верефицировано клиентов</th>
+            <th scope="col">Повторно верефицировано клиентов</th>
+            <th scope="col">Обработанных заключений</th>
+            <th scope="col">Обработанных запросов поддержки</th>
+            <th scope="col">Заявок в Help Desk</th>
+            <th scope="col">Заявок в ОАПИ</th>
+            <th scope="col">Выявленно схем</th>
+            <th scope="col">Клиентов приславших фото</th>
+            <th scope="col">Сумма депозитов</th>
+            <th scope="col">Сумма выводов</th>
+            <th scope="col">GGR Спорт</th>
+            <th scope="col">GGR Казино</th>
+            <th scope="col">Сумма выводов более 5к</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in risk_reports %}
+            <tr>
+                {% for x in report %} <td align="center">{{ x }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
     </div>
   {% endblock %}

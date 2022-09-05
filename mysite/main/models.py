@@ -42,3 +42,28 @@ class RiskReportDay(models.Model):
     class Meta:
         verbose_name = 'Отчет за сутки'
         verbose_name_plural = 'Отчет за сутки'
+
+
+class GetRiskReport(models.Model):
+    objects = None
+    shift_date = models.DateField()
+    verified_clients = models.IntegerField()
+    re_verified_clients = models.IntegerField()
+    processed_conclusions = models.IntegerField()
+    processed_support_requests = models.IntegerField()
+    tacks_help_desk = models.IntegerField()
+    oapi_requests = models.IntegerField()
+    schemes_revealed = models.IntegerField()
+    foto_clients = models.IntegerField()
+    deposits_sum = models.IntegerField()
+    withdrawals_sum = models.IntegerField()
+    ggr_sport = models.IntegerField()
+    ggr_casino = models.IntegerField()
+    withdrawals_5000 = models.IntegerField()
+
+    def __str__(self):
+        return self.shift_date
+
+    class Meta:
+        verbose_name = 'Отчет по рискам'
+        verbose_name_plural = 'Отчет по рискам'

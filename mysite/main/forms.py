@@ -74,8 +74,6 @@ class RiskReportForm(ModelForm):
     class Meta:
         model = RiskReport
 
-        SHIFT_TYPES = [('Рабочая', 'Рабочая'), ('Выходная', 'Выходная')]
-
         fields = ['shift_date', 'shift_type', 'verified_clients', 're_verified_clients', 'processed_conclusions',
                   'processed_support_requests', 'tacks_help_desk', 'oapi_requests', 'schemes_revealed', 'user_name']
 

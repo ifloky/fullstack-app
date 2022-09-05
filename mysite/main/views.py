@@ -1,3 +1,4 @@
+import psycopg2
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
@@ -13,13 +14,11 @@ from django.utils.encoding import force_bytes
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, RiskReportDayForm
-
-
-import requests
-import credentials
-import datetime
-
 from .models import RiskReport, RiskReportDay
+
+import credentials
+import requests
+import datetime
 
 
 def homepage(request):
@@ -387,14 +386,47 @@ def add_day_report(request):
     return render(request, "main/add_day_report.html", data)
 
 
+def get_risks_report():
+    """ This function get data from risk_report db table and return it as list of dicts """
+    cursor, connection = None, None
+
+    risks_report_list = []
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM public.risk_report'
+                       ' ORDER BY shift_date ASC')
+
+        risks_report_list = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgreSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return risks_report_list
+
+
 def risks_rep(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
     heads_users = User.objects.filter(groups__name='Heads')
+    report = get_risks_report()
 
     data = {
         'support': support_users,
         'risks': risks_users,
         'heads': heads_users,
+        'risk_reports': report,
     }
     return render(request, "main/risks_rep.html", data)
