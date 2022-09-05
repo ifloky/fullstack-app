@@ -411,7 +411,7 @@ def get_risks_report(start_date, end_date):
         risks_report_list = cursor.fetchall()
 
     except (Exception, psycopg2.Error) as error:
-        print("Error while connecting to PostgreSQL", error)
+        print("Error while connecting to PostgresSQL", error)
 
     finally:
         if connection:
@@ -455,7 +455,7 @@ def get_personal_risks_report(start_date, end_date):
         report_list = cursor.fetchall()
 
     except (Exception, psycopg2.Error) as error:
-        print("Error while connecting to PostgreSQL", error)
+        print("Error while connecting to PostgresSQL", error)
 
     finally:
         if connection:
@@ -488,7 +488,6 @@ def risks_rep(request):
     end_date = f'01.{month_id}.{year_id}'
     end_date = datetime.datetime.strptime(end_date, '%d.%m.%Y') + relativedelta(months=1)
     end_date = str(end_date.date()).replace('-', '.')
-    print('start_date = ', start_date, 'end_date = ', end_date)
 
     report = get_risks_report(start_date, end_date)
     pers_report = get_personal_risks_report(start_date, end_date)
