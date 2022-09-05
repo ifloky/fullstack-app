@@ -386,11 +386,16 @@ def add_day_report(request):
     return render(request, "main/add_day_report.html", data)
 
 
-def get_risks_report():
+def get_risks_report(start_date, end_date):
     """ This function get data from risk_report db table and return it as list of dicts """
     cursor, connection = None, None
 
     risks_report_list = []
+
+    sql_query = (f'''
+                    SELECT * FROM public.risk_report
+                    WHERE shift_date > '{start_date}' AND shift_date < '{end_date}'
+                    ORDER BY shift_date ASC''')
 
     try:
         connection = psycopg2.connect(database=credentials.db_name,
@@ -401,8 +406,7 @@ def get_risks_report():
                                       )
 
         cursor = connection.cursor()
-        cursor.execute('SELECT * FROM public.risk_report'
-                       ' ORDER BY shift_date ASC')
+        cursor.execute(sql_query)
 
         risks_report_list = cursor.fetchall()
 
@@ -417,11 +421,25 @@ def get_risks_report():
     return risks_report_list
 
 
-def get_personal_risks_report():
+def get_personal_risks_report(start_date, end_date):
     """ This function get data from risk_report db table and return it as list of dicts """
     cursor, connection = None, None
 
     report_list = []
+
+    sql_query = (f'''
+                SELECT user_name,
+                sum(verified_clients) AS verified_clients,
+                sum(re_verified_clients) AS re_verified_clients,
+                sum(processed_conclusions) AS processed_conclusions,
+                sum(processed_support_requests) AS processed_support_requests,
+                sum(tacks_help_desk) AS tacks_help_desk,
+                sum(oapi_requests) AS oapi_requests,
+                sum(schemes_revealed) AS schemes_revealed
+            FROM main_riskreport
+            WHERE shift_date > '{start_date}' AND shift_date < '{end_date}'
+            GROUP BY user_name
+            ORDER BY user_name ASC''')
 
     try:
         connection = psycopg2.connect(database=credentials.db_name,
@@ -432,18 +450,7 @@ def get_personal_risks_report():
                                       )
 
         cursor = connection.cursor()
-        cursor.execute(f'''
-            SELECT user_name,
-                sum(verified_clients) AS verified_clients,
-                sum(re_verified_clients) AS re_verified_clients,
-                sum(processed_conclusions) AS processed_conclusions,
-                sum(processed_support_requests) AS processed_support_requests,
-                sum(tacks_help_desk) AS tacks_help_desk,
-                sum(oapi_requests) AS oapi_requests,
-                sum(schemes_revealed) AS schemes_revealed
-            FROM main_riskreport
-            GROUP BY user_name
-            ORDER BY user_name ASC''')
+        cursor.execute(sql_query)
 
         report_list = cursor.fetchall()
 
@@ -462,8 +469,37 @@ def risks_rep(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
     heads_users = User.objects.filter(groups__name='Heads')
-    report = get_risks_report()
-    pers_report = get_personal_risks_report()
+
+    now_date = datetime.datetime.now()
+    last_month = now_date.month, now_date.year
+
+    month_id = request.GET.get('month', None)
+    if month_id is None:
+        month_id = f'0{last_month[0]}'
+
+    year_id = request.GET.get('year', None)
+    if year_id is None:
+        year_id = last_month[1]
+
+    if len(month_id) > 2:
+        month_id = month_id[1:]
+
+    start_date = f'01.{month_id}.{year_id}'
+    end_date = f'01.{month_id}.{year_id}'
+    end_date = datetime.datetime.strptime(end_date, '%d.%m.%Y') + relativedelta(months=1)
+    end_date = str(end_date.date()).replace('-', '.')
+    print('start_date = ', start_date, 'end_date = ', end_date)
+
+    report = get_risks_report(start_date, end_date)
+    pers_report = get_personal_risks_report(start_date, end_date)
+
+    months = MonthsForm()
+    years = YearsForm()
+
+    m = int(month_id)
+    a = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь',
+         'Декабрь']
+    month_name = a[m - 1 % 12]
 
     data = {
         'support': support_users,
@@ -471,5 +507,9 @@ def risks_rep(request):
         'heads': heads_users,
         'risk_reports': report,
         'pers_reports': pers_report,
+        'months': months,
+        'years': years,
+        'month_id': month_name,
+        'year_id': year_id,
     }
     return render(request, "main/risks_rep.html", data)
