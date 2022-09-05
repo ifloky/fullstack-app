@@ -394,7 +394,7 @@ def get_risks_report(start_date, end_date):
 
     sql_query = (f'''
                     SELECT * FROM public.risk_report
-                    WHERE shift_date > '{start_date}' AND shift_date < '{end_date}'
+                    WHERE shift_date >= '{start_date}' AND shift_date < '{end_date}'
                     ORDER BY shift_date ASC''')
 
     try:
@@ -437,7 +437,7 @@ def get_personal_risks_report(start_date, end_date):
                 sum(oapi_requests) AS oapi_requests,
                 sum(schemes_revealed) AS schemes_revealed
             FROM main_riskreport
-            WHERE shift_date > '{start_date}' AND shift_date < '{end_date}'
+            WHERE shift_date >= '{start_date}' AND shift_date < '{end_date}'
             GROUP BY user_name
             ORDER BY user_name ASC''')
 
