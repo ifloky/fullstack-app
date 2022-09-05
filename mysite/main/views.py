@@ -465,6 +465,55 @@ def get_personal_risks_report(start_date, end_date):
     return report_list
 
 
+def calculate_risks_report(start_date, end_date):
+    """ This function calculate risks report data and return it as list of dicts """
+    cursor, connection = None, None
+
+    report_list = []
+
+    sql_query = (f'''
+                 SELECT
+                    SUM (verified_clients) AS verified_clients,
+                    SUM (re_verified_clients) AS re_verified_clients,
+                    SUM (processed_conclusions) AS processed_conclusions,
+                    SUM (processed_support_requests) AS processed_support_requests,
+                    SUM (tacks_help_desk) AS tacks_help_desk,
+                    SUM (oapi_requests) AS oapi_requests,
+                    SUM (schemes_revealed) AS schemes_revealed,
+                    SUM (foto_clients) AS foto_clients,
+                    SUM (deposits_sum) AS deposits_sum,
+                    SUM (withdrawals_sum) AS withdrawals_sum,
+                    SUM (ggr_sport) AS ggr_sport,
+                    SUM (ggr_casino) AS ggr_casino,
+                    SUM (withdrawals_5000) AS withdrawals_5000
+                FROM public.risk_report
+                WHERE shift_date >= '{start_date}' AND shift_date < '{end_date}'
+                ''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        report_list = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return report_list
+
+
 def risks_rep(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
@@ -491,6 +540,7 @@ def risks_rep(request):
 
     report = get_risks_report(start_date, end_date)
     pers_report = get_personal_risks_report(start_date, end_date)
+    calc_report = calculate_risks_report(start_date, end_date)
 
     months = MonthsForm()
     years = YearsForm()
@@ -506,6 +556,7 @@ def risks_rep(request):
         'heads': heads_users,
         'risk_reports': report,
         'pers_reports': pers_report,
+        'calc_reports': calc_report,
         'months': months,
         'years': years,
         'month_id': month_name,

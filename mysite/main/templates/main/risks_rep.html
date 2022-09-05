@@ -70,6 +70,15 @@
         </tr>
       </thead>
       <tbody>
+        {% for report in calc_reports %}
+            <tr>
+                <td align="center"><b>{{ month_id }} {{ year_id }}</b></td>
+                {% for x in report %}
+                <td align="center"><b>{{ x }}</b></td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+
         {% for report in risk_reports %}
             <tr>
                 {% for x in report %} <td align="center">{{ x }}</td>
