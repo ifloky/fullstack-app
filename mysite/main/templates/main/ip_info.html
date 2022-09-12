@@ -1,6 +1,9 @@
 {% extends 'main/header.html' %}
 
 {% block content %}
+
+      {% if user.is_authenticated %}
+
     <div style="padding:20px;margin-top:30px;">
     <form method="GET" action="/ip_info">
         <label for="ip_address">Введите IP адрес или имя домена: </label>
@@ -57,4 +60,11 @@
     </div>
 
 {% endif %}
+
+      {% else %}
+        <div style="padding:20px;margin-top:30px;">
+            <h3>Для просмотра отчета необходимо авторизоваться</h3>
+        </div>
+      {% endif %}
+
 {% endblock %}

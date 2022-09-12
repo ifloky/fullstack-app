@@ -19,6 +19,8 @@
     input {width:30%;}
     </style>
 
+      {% if user.is_authenticated %}
+
     <div style="padding:20px;margin-top:30px;">
         <form method="GET" action="/payment" >
             <label for="tracking">Введите номер отслеживания bePaid:</label>
@@ -61,5 +63,11 @@
         </table>
     </div>
 {% endif %}
+
+      {% else %}
+        <div style="padding:20px;margin-top:30px;">
+            <h3>Для просмотра отчета необходимо авторизоваться</h3>
+        </div>
+      {% endif %}
 
 {% endblock %}

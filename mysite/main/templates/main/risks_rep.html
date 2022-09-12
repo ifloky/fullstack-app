@@ -2,6 +2,9 @@
 
 
   {% block content %}
+
+
+
   <style xmlns="http://www.w3.org/1999/html">
     form {
         width: 260px;
@@ -19,6 +22,9 @@
     input {width:30%;}
     th {vertical-align: middle !important;}
     </style>
+
+  {% if user.is_authenticated %}
+
     <div style="padding:20px;margin-top:30px;">
         <form method="GET" action="/risks_rep" >
              {{ months }} {{ years }}
@@ -89,4 +95,11 @@
       </tbody>
     </table>
     </div>
+
+  {% else %}
+    <div style="padding:20px;margin-top:30px;">
+        <h3>Для просмотра отчета необходимо авторизоваться</h3>
+    </div>
+  {% endif %}
+
   {% endblock %}
