@@ -15,47 +15,47 @@
     .flex-wrap select {width:calc(100% - 250px);}
   </style>
 
-      {% if user.is_authenticated %}
+  {% if user.is_authenticated %}
 
-  <script>
-    $(document).ready(function() {
-            $(document).keypress(function(event) {
-                if(event.keyCode==13){
-                    $(event.target).parent().next().find('input').focus();
-                    event.preventDefault();
-                }
-            });
-        });
-  </script>
-  <script>
-    $(document).ready(function(){
-      $("#user_name").attr("value", '{{user.first_name}} {{user.last_name}}');
-    });
-  </script>
-    <div style="padding:5px;margin-top:30px;">
+    <script>
+      $(document).ready(function() {
+              $(document).keypress(function(event) {
+                  if(event.keyCode==13){
+                      $(event.target).parent().next().find('input').focus();
+                      event.preventDefault();
+                  }
+              });
+          });
+    </script>
+    <script>
+      $(document).ready(function(){
+        $("#user_name").attr("value", '{{user.first_name}} {{user.last_name}}');
+      });
+    </script>
+      <div style="padding:5px;margin-top:30px;">
 
-      <form action="{% url 'main:add_personal_report' %}" method="post">
-        {% csrf_token %}<p class="flex-wrap">
-        <label>Дата:</label>{{ form.shift_date }}<p class="flex-wrap">
-        <label>Смена:</label>{{ form.shift_type }}<p class="flex-wrap">
-        <label>Верифицировано клиентов:</label>{{ form.verified_clients }}<p class="flex-wrap">
-        <label>Повторная верификация:</label>{{ form.re_verified_clients }}<p class="flex-wrap">
-        <label>Обработанные выводы:</label>{{ form.processed_conclusions }}<p class="flex-wrap">
-        <label>Обработанные запросы от отдела поддержки:</label>{{ form.processed_support_requests }}<p class="flex-wrap">
-        <label>Таск Help Desk:</label>{{ form.tacks_help_desk }}<p class="flex-wrap">
-        <label>OAPI:</label>{{ form.oapi_requests }}<p class="flex-wrap">
-        <label>Внесено в базу. Выявлено схем:</label>{{ form.schemes_revealed }}<p class="flex-wrap">
-        <label>Заполнено пользователем:</label>{{ form.user_name }}<p class="flex-wrap">
-        <span><b>{{ error_text }}</b></span><p class="flex-wrap"></p>
-        <button class="btn btn-success" type="submit">Отправить личный отчет за смену</button>
-      </form>
+        <form action="{% url 'main:add_personal_report' %}" method="post">
+          {% csrf_token %}<p class="flex-wrap">
+          <label>Дата:</label>{{ form.shift_date }}<p class="flex-wrap">
+          <label>Смена:</label>{{ form.shift_type }}<p class="flex-wrap">
+          <label>Верифицировано клиентов:</label>{{ form.verified_clients }}<p class="flex-wrap">
+          <label>Повторная верификация:</label>{{ form.re_verified_clients }}<p class="flex-wrap">
+          <label>Обработанные выводы:</label>{{ form.processed_conclusions }}<p class="flex-wrap">
+          <label>Обработанные запросы от отдела поддержки:</label>{{ form.processed_support_requests }}<p class="flex-wrap">
+          <label>Таск Help Desk:</label>{{ form.tacks_help_desk }}<p class="flex-wrap">
+          <label>OAPI:</label>{{ form.oapi_requests }}<p class="flex-wrap">
+          <label>Внесено в базу. Выявлено схем:</label>{{ form.schemes_revealed }}<p class="flex-wrap">
+          <label>Заполнено пользователем:</label>{{ form.user_name }}<p class="flex-wrap">
+          <span><b>{{ error_text }}</b></span><p class="flex-wrap"></p>
+          <button class="btn btn-success" type="submit">Отправить личный отчет за смену</button>
+        </form>
 
+      </div>
+
+  {% else %}
+    <div style="padding:20px;margin-top:30px;">
+        <h3>Для просмотра отчета необходимо авторизоваться</h3>
     </div>
-
-      {% else %}
-        <div style="padding:20px;margin-top:30px;">
-            <h3>Для просмотра отчета необходимо авторизоваться</h3>
-        </div>
-      {% endif %}
+  {% endif %}
 
 {% endblock %}

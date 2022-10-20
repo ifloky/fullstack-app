@@ -1,20 +1,28 @@
 import psycopg2
+from django.contrib import messages
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.core.mail import send_mail, BadHeaderError
-from django.http import HttpResponse
 from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail, BadHeaderError
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode
-from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
-from django.contrib import messages
+
 from dateutil.relativedelta import relativedelta
+
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.list import ListView
+
+from django.urls.base import reverse_lazy
+
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, RiskReportDayForm
-from .models import RiskReport, RiskReportDay
+from .models import RiskReport, RiskReportDay, GetRiskReport
 
 import credentials
 import requests
@@ -563,3 +571,37 @@ def risks_rep(request):
         'year_id': year_id,
     }
     return render(request, "main/risks_rep.html", data)
+
+
+class ListRisksReport(ListView):
+    model = RiskReport
+    form_class = RiskReportForm
+    template_name = 'main/list_risks_rep.html'
+    context_object_name = 'list_reports'
+    paginate_by = 10
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class
+        context['risks'] = User.objects.filter(groups__name='risks')
+        context['heads'] = User.objects.filter(groups__name='Heads')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        return context
+
+    def get_queryset(self):
+        queryset = RiskReport.objects.all().order_by('-id')
+        return queryset
+
+
+class UpdateRisksReport(UpdateView):
+    model = RiskReport
+    form_class = RiskReportForm
+    template_name = 'main/update_risks_rep.html'
+    success_url = reverse_lazy('main:list_risks_rep')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['risks'] = User.objects.filter(groups__name='risks')
+        context['heads'] = User.objects.filter(groups__name='Heads')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        return context

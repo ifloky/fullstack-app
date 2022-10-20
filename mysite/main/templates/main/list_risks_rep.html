@@ -1,0 +1,69 @@
+{% extends 'main/header.html' %}
+
+
+  {% block content %}
+
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        width: 260px;
+        margin-top: 1%;
+    }
+
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:200px;margin-right:auto;}
+    .flex-wrap button {width:250px;margin-left:auto;}
+    .flex-wrap input {width:calc(100% - 250px);}
+    .flex-wrap select {width:calc(100% - 50px);}
+
+    form {display:flex;width:100%;}
+    select {margin-right:auto;width:30%;}
+    input {width:30%;}
+    th {vertical-align: middle !important;}
+    </style>
+
+  {% if user.is_authenticated %}
+
+    <div style="padding:20px;margin-top:30px;">
+    <table class="table table-striped">
+      <thead>
+        <tr align="center">
+            <th scope="col" width="200">Дата</th>
+            <th scope="col">Смена</th>
+            <th scope="col" width="250">Оператор</th>
+            <th scope="col">Верефицировано клиентов</th>
+            <th scope="col">Повторно верефицировано клиентов</th>
+            <th scope="col">Обработанных заключений</th>
+            <th scope="col">Обработанных запросов поддержки</th>
+            <th scope="col">Заявок в Help Desk</th>
+            <th scope="col">Заявок в ОАПИ</th>
+            <th scope="col">Выявленно схем</th>.
+            <th scope="col"> </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for list in list_reports %}
+            <tr align="center">
+                <th scope="col" width="200">{{list.shift_date}}</th>
+                <th scope="col">{{list.shift_type}}</th>
+                <th scope="col" width="250">{{list.user_name}}</th>
+                <th scope="col">{{list.verified_clients}}</th>
+                <th scope="col">{{list.re_verified_clients}}</th>
+                <th scope="col">{{list.processed_conclusions}}</th>
+                <th scope="col">{{list.processed_support_requests}}</th>
+                <th scope="col">{{list.tacks_help_desk}}</th>
+                <th scope="col">{{list.oapi_requests}}</th>
+                <th scope="col">{{list.schemes_revealed}}</th>
+                <th><a href="/update_risks_rep/{{list.id}}">Редактировать</a></th>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+
+  {% else %}
+    <div style="padding:20px;margin-top:30px;">
+        <h3>Для просмотра отчета необходимо авторизоваться</h3>
+    </div>
+  {% endif %}
+
+  {% endblock %}
