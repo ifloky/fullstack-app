@@ -15,14 +15,13 @@ from django.utils.encoding import force_bytes
 
 from dateutil.relativedelta import relativedelta
 
-from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
 from django.urls.base import reverse_lazy
 
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, RiskReportDayForm
-from .models import RiskReport, RiskReportDay, GetRiskReport
+from .models import RiskReport, RiskReportDay
 
 import credentials
 import requests
