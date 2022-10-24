@@ -323,6 +323,7 @@ def check_db_record(model, date, user):
 
 
 def add_personal_report(request):
+    """Добавление персонального отчета"""
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
     heads_users = User.objects.filter(groups__name='Heads')
@@ -359,6 +360,7 @@ def add_personal_report(request):
 
 
 def add_day_report(request):
+    """Добавление дневного отчета"""
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
     heads_users = User.objects.filter(groups__name='Heads')
@@ -522,6 +524,7 @@ def calculate_risks_report(start_date, end_date):
 
 
 def risks_rep(request):
+    """ This function return risks report page """
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
     heads_users = User.objects.filter(groups__name='Heads')
@@ -573,6 +576,7 @@ def risks_rep(request):
 
 
 class ListRisksReport(ListView):
+    """ This class is used to display risks report data in table """
     model = RiskReport
     form_class = RiskReportForm
     template_name = 'main/list_risks_rep.html'
@@ -593,6 +597,7 @@ class ListRisksReport(ListView):
 
 
 class ListRisksReportDay(ListView):
+    """ This class view show list of risks report for day """
     model = RiskReportDay
     form_class = RiskReportDayForm
     template_name = 'main/list_risks_rep_day.html'
@@ -613,6 +618,7 @@ class ListRisksReportDay(ListView):
 
 
 class UpdateRisksReport(UpdateView):
+    """Обновление персонального отчета по рискам"""
     model = RiskReport
     form_class = RiskReportForm
     template_name = 'main/update_risks_rep.html'
@@ -627,6 +633,7 @@ class UpdateRisksReport(UpdateView):
 
 
 class UpdateRisksReportDay(UpdateView):
+    """Обновление отчета за день"""
     model = RiskReportDay
     form_class = RiskReportDayForm
     template_name = 'main/update_risks_rep_day.html'
