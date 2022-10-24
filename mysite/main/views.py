@@ -592,11 +592,45 @@ class ListRisksReport(ListView):
         return queryset
 
 
+class ListRisksReportDay(ListView):
+    model = RiskReportDay
+    form_class = RiskReportDayForm
+    template_name = 'main/list_risks_rep_day.html'
+    context_object_name = 'list_reports_day'
+    paginate_by = 10
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class
+        context['risks'] = User.objects.filter(groups__name='risks')
+        context['heads'] = User.objects.filter(groups__name='Heads')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        return context
+
+    def get_queryset(self):
+        queryset = RiskReportDay.objects.all().order_by('-id')
+        return queryset
+
+
 class UpdateRisksReport(UpdateView):
     model = RiskReport
     form_class = RiskReportForm
     template_name = 'main/update_risks_rep.html'
     success_url = reverse_lazy('main:list_risks_rep')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['risks'] = User.objects.filter(groups__name='risks')
+        context['heads'] = User.objects.filter(groups__name='Heads')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        return context
+
+
+class UpdateRisksReportDay(UpdateView):
+    model = RiskReportDay
+    form_class = RiskReportDayForm
+    template_name = 'main/update_risks_rep_day.html'
+    success_url = reverse_lazy('main:list_risks_rep_day')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

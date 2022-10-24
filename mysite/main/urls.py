@@ -16,6 +16,10 @@ urlpatterns = [
     path("rocket/", views.rocket, name="rocket"),
     path("payment/", views.payment, name="payment"),
     path('ip_info/', views.info_by_ip, name='ip_info'),
+
     path('list_risks_rep/', views.ListRisksReport.as_view(), name='list_risks_rep'),
     path('update_risks_rep/<int:pk>', views.UpdateRisksReport.as_view(), name='update_risks_rep'),
+
+    path('list_risks_rep_day/', views.ListRisksReportDay.as_view(), name='list_risks_rep_day'),
+    path('update_risks_rep_day/<int:pk>', views.UpdateRisksReportDay.as_view(), name='update_risks_rep_day'),
 ]
