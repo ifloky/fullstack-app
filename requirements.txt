@@ -4,3 +4,5 @@ django-crispy-forms
 requests
 credentials
 python-dateutil
+mysql-connector-python
+openpyxl
