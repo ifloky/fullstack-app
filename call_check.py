@@ -1,9 +1,10 @@
 from credentials import cc_db_host, cc_db_port, cc_db_name, cc_db_username, cc_db_password
-
+from datetime import timedelta
 from openpyxl import load_workbook
 from mysql.connector import Error, connect
 
 import pandas as pd
+import time
 
 
 def get_connection():
@@ -50,12 +51,11 @@ def check_call(phone_number, df):
 
 
 def main():
+    start_job_time = time.perf_counter()
     data = []
     wb = load_workbook('./book.xlsx')
     df = load_data()
-    print(f'Загружено из базы данных:', str(len(df)), 'записей')
     sheet = wb['фильтр']
-    print(f'Загружено из файла:', sheet.max_row, 'записей')
     max_row = str('E') + str(sheet.max_row)
     for cellObj in sheet['E3':max_row]:
         for cell in cellObj:
@@ -64,7 +64,6 @@ def main():
                 phone_number = str(phone_number)
                 phone_number = phone_number.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
                 phone_number = "+" + phone_number
-                # print("Check phone number:", phone_number)
                 data.append(check_call(phone_number, df))
                 print(data[-1])
             else:
@@ -75,7 +74,14 @@ def main():
         file.write("%s \n" % item)
     file.close()
 
+    stop_job_time = time.perf_counter()
+    working_time = stop_job_time - start_job_time
+
+    print(f'Загружено из базы данных:', str(len(df)), 'записей')
+    print(f'Загружено из файла:', sheet.max_row, 'записей')
     print("Проверено и сохранено:", len(data), "номеров")
+    print("Затрачено времени:", str(timedelta(seconds=working_time)))
+    print(f'Время выполнения: {time.perf_counter() - start_job_time:0.4f} seconds')
 
 
 if __name__ == '__main__':
