@@ -3,23 +3,7 @@ from credentials import cc_db_host, cc_db_port, cc_db_name, cc_db_username, cc_d
 from openpyxl import load_workbook
 from mysql.connector import Error, connect
 
-
-def get_clients_numbers_list():
-    wb = load_workbook('./book2.xlsx')
-    sheet = wb.get_sheet_by_name('по фильтру')
-    for cellObj in sheet['D3':'D5']:
-        for cell in cellObj:
-            if cell.value is not None:
-                phone_number = cell.value
-                phone_number = str(phone_number)
-                phone_number = phone_number.replace(' ', '')
-                phone_number = phone_number.replace('-', '')
-                phone_number = phone_number.replace('(', '')
-                phone_number = phone_number.replace(')', '')
-                phone_number = "+" + phone_number
-                print(phone_number, '-', check_call(phone_number))
-            else:
-                continue
+import pandas as pd
 
 
 def get_connection():
@@ -34,49 +18,64 @@ def get_connection():
         print(e)
 
 
-def check_call(client_number):
+def load_data():
+    df = []
     try:
         connection = get_connection()
         cursor = connection.cursor()
         query = (F'''
-                SELECT * FROM asterisk.CallsCountAll
-                WHERE TYPE = 'Исходящий' AND client = '{client_number}' 
-                LIMIT 10
+                SELECT CallDateTime, Type, Operator, Client FROM asterisk.CallsCountAll
+                WHERE TYPE = 'Исходящий' AND CallDate >= '2022-10-01'
                 ''')
         cursor.execute(query)
-        data = f'{client_number} - {cursor.fetchall()[0][0]}'
+        data = cursor.fetchall()
+        df = pd.DataFrame(data, columns=[c[0] for c in cursor.description])
         cursor.close()
         connection.close()
-    except IndexError:
-        data = f'{client_number} - No Calls'
-    return data
+    except Error as e:
+        print(e)
+    return df
+
+
+def check_call(phone_number, df):
+    for index, row in df.iterrows():
+        if row['client'] == phone_number:
+            check = row['client'], row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
+            check = str(check)
+            check = check.replace('(', '').replace(')', '').replace("'", '')
+            return check
+        else:
+            continue
+    return str(phone_number)+', ' + 'No Calls'
 
 
 def main():
     data = []
-
-    wb = load_workbook('./book2.xlsx')
-    sheet = wb['по фильтру']
-    for cellObj in sheet['D3':'D240']:
+    wb = load_workbook('./book.xlsx')
+    df = load_data()
+    print(f'Загружено из базы данных:', str(len(df)), 'записей')
+    sheet = wb['фильтр']
+    print(f'Загружено из файла:', sheet.max_row, 'записей')
+    max_row = str('E') + str(sheet.max_row)
+    for cellObj in sheet['E3':max_row]:
         for cell in cellObj:
             if cell.value is not None:
                 phone_number = cell.value
                 phone_number = str(phone_number)
-                phone_number = phone_number.replace(' ', '')
-                phone_number = phone_number.replace('-', '')
-                phone_number = phone_number.replace('(', '')
-                phone_number = phone_number.replace(')', '')
+                phone_number = phone_number.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
                 phone_number = "+" + phone_number
-                print("Check:", phone_number)
-                data.append(check_call(phone_number))
+                # print("Check phone number:", phone_number)
+                data.append(check_call(phone_number, df))
+                print(data[-1])
             else:
                 continue
-    print(data)
 
     file = open('result.txt', 'w')
     for item in data:
         file.write("%s \n" % item)
     file.close()
+
+    print("Проверено и сохранено:", len(data), "номеров")
 
 
 if __name__ == '__main__':

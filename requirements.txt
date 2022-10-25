@@ -6,3 +6,4 @@ credentials
 python-dateutil
 mysql-connector-python
 openpyxl
+pandas
