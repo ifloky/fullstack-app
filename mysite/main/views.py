@@ -581,7 +581,7 @@ class ListRisksReport(ListView):
     form_class = RiskReportForm
     template_name = 'main/list_risks_rep.html'
     context_object_name = 'list_reports'
-    paginate_by = 10
+    paginate_by = 15
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -602,7 +602,7 @@ class ListRisksReportDay(ListView):
     form_class = RiskReportDayForm
     template_name = 'main/list_risks_rep_day.html'
     context_object_name = 'list_reports_day'
-    paginate_by = 10
+    paginate_by = 15
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -53,11 +53,11 @@ def check_call(phone_number, df):
 def main():
     start_job_time = time.perf_counter()
     data = []
-    wb = load_workbook('./book.xlsx')
+    wb = load_workbook('./book2.xlsx')
     df = load_data()
-    sheet = wb['фильтр']
-    max_row = str('E') + str(sheet.max_row)
-    for cellObj in sheet['E3':max_row]:
+    sheet = wb['по фильтру']
+    max_row = str('D') + str(sheet.max_row)
+    for cellObj in sheet['D3':max_row]:
         for cell in cellObj:
             if cell.value is not None:
                 phone_number = cell.value
@@ -77,7 +77,7 @@ def main():
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
 
-    print(f'Загружено из базы данных:', str(len(df)), 'записей')
+    print(f'\n', 'Загружено из базы данных:', str(len(df)), 'записей')
     print(f'Загружено из файла:', sheet.max_row, 'записей')
     print("Проверено и сохранено:", len(data), "номеров")
     print("Затрачено времени:", str(timedelta(seconds=working_time)))
