@@ -682,7 +682,7 @@ class CallsReportView(ListView):
         return queryset
 
 
-class CallAddView(CreateView):
+class CallAddView(UpdateView):
     """ This class view add new call report """
     model = CallsCheck
     form_class = CallsCheckForm

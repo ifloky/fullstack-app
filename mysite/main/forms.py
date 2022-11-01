@@ -154,13 +154,13 @@ class CallsCheckForm(ModelForm):
 
         widgets = {
             'client_id':
-                forms.NumberInput(attrs={'class': 'form-control', 'id': 'client_id',
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'client_id', 'readonly': 'readonly',
                                          'placeholder': 'Тут пишем ID клиента', 'label': 'ID клиента'}),
             'client_name':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'client_name',
                                        'placeholder': 'Тут пишем имя клиента', 'label': 'Имя клиента'}),
             'client_phone':
-                forms.TextInput(attrs={'class': 'form-control', 'id': 'client_phone',
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'client_phone', 'readonly': 'readonly',
                                        'placeholder': 'Тут пишем номер телефона клиента', 'label': 'Номер телефона'}),
             'call_result':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'call_result',
@@ -172,4 +172,3 @@ class CallsCheckForm(ModelForm):
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly',
                                        'label': 'Имя пользователя'}),
         }
-
