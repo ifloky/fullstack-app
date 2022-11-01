@@ -155,20 +155,21 @@ class CallsCheckForm(ModelForm):
         widgets = {
             'client_id':
                 forms.NumberInput(attrs={'class': 'form-control', 'id': 'client_id',
-                                         'placeholder': 'Тут пишем ID клиента'}),
+                                         'placeholder': 'Тут пишем ID клиента', 'label': 'ID клиента'}),
             'client_name':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'client_name',
-                                       'placeholder': 'Тут пишем имя клиента'}),
+                                       'placeholder': 'Тут пишем имя клиента', 'label': 'Имя клиента'}),
             'client_phone':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'client_phone',
-                                       'placeholder': 'Тут пишем номер телефона клиента'}),
+                                       'placeholder': 'Тут пишем номер телефона клиента', 'label': 'Номер телефона'}),
             'call_result':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'call_result',
-                                       'placeholder': 'Тут пишем результат звонка'}),
+                                       'placeholder': 'Тут пишем результат звонка', 'label': 'Результат звонка'}),
             'verified_date':
                 forms.DateInput(attrs={'class': 'form-control', 'id': 'verified_date',
-                                       'placeholder': '01.01.2022'}),
+                                       'placeholder': '01.01.2022', 'label': 'Дата верификации'}),
             'user_name':
-                forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly'}),
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly',
+                                       'label': 'Имя пользователя'}),
         }
 

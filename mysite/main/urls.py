@@ -24,4 +24,5 @@ urlpatterns = [
     path('update_risks_rep_day/<int:pk>', views.UpdateRisksReportDay.as_view(), name='update_risks_rep_day'),
 
     path('calls_rep/', views.CallsReportView.as_view(), name='calls_rep'),
+    path('calls_add/', views.CallAddView.as_view(), name='calls_add'),
 ]
