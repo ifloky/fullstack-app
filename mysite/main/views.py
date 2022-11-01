@@ -678,7 +678,7 @@ class CallsReportView(ListView):
         return context
 
     def get_queryset(self):
-        queryset = CallsCheck.objects.all().order_by('-id')
+        queryset = CallsCheck.objects.all().order_by('id')
         return queryset
 
 
@@ -695,3 +695,5 @@ class CallAddView(CreateView):
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['support'] = User.objects.filter(groups__name='support')
         return context
+
+

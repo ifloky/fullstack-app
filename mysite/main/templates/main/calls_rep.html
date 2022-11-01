@@ -33,11 +33,10 @@
                 <th scope="col">Результат звонка</th>
                 <th scope="col">Дата звонка</th>
                 <th scope="col">Оператор</th>
-                <th scope="col"> </th>
             </tr>
           </thead>
           <tbody>
-            {% for list in list_reports %}
+            {% for list in list_calls_reports %}
                 <tr align="center">
                     <th scope="col" width="200">{{ list.client_id }}</th>
                     <th scope="col">{{ list.client_name }}</th>
@@ -45,7 +44,6 @@
                     <th scope="col">{{ list.call_result }}</th>
                     <th scope="col">{{ list.verified_date }}</th>
                     <th scope="col">{{ list.user_name }}</th>
-                    <th><a href="/update_risks_rep/{{list.id}}">Редактировать</a></th>
                 </tr>
             {% endfor %}
           </tbody>
