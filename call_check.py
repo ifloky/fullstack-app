@@ -8,6 +8,7 @@ import time
 
 
 def get_connection():
+    print('Connecting to MySQL database...')
     try:
         connection = connect(host=cc_db_host,
                              port=cc_db_port,
@@ -19,7 +20,8 @@ def get_connection():
         print(e)
 
 
-def load_data():
+def create_df():
+    print('Creating DataFrame...')
     df = []
     try:
         connection = get_connection()
@@ -38,36 +40,42 @@ def load_data():
     return df
 
 
+def load_phone_numbers():
+    print('Loading phone numbers...')
+    wb = load_workbook('./book2.xlsx')
+    sheet = wb['по фильтру']
+    max_row = str('D') + str(sheet.max_row)
+    phone_numbers = []
+    for cellObj in sheet['D3':max_row]:
+        for cell in cellObj:
+            if cell.value is not None:
+                phone_number = "+" + str(cell.value).replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+                phone_numbers.append(phone_number)
+            else:
+                continue
+    print('Phone Numbers Loaded', len(phone_numbers))
+    return phone_numbers
+
+
 def check_call(phone_number, df):
     for index, row in df.iterrows():
         if row['client'] == phone_number:
             check = row['client'], row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
-            check = str(check)
-            check = check.replace('(', '').replace(')', '').replace("'", '')
+            check = str(check).replace('(', '').replace(')', '').replace("'", '')
+            print(check)
             return check
-        else:
-            continue
+    print(str(phone_number) + ', ' + 'No Calls')
     return str(phone_number)+', ' + 'No Calls'
 
 
 def main():
     start_job_time = time.perf_counter()
     data = []
-    wb = load_workbook('./book2.xlsx')
-    df = load_data()
-    sheet = wb['по фильтру']
-    max_row = str('D') + str(sheet.max_row)
-    for cellObj in sheet['D3':max_row]:
-        for cell in cellObj:
-            if cell.value is not None:
-                phone_number = cell.value
-                phone_number = str(phone_number)
-                phone_number = phone_number.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
-                phone_number = "+" + phone_number
-                data.append(check_call(phone_number, df))
-                print(data[-1])
-            else:
-                continue
+    df = create_df()
+    phone_numbers = load_phone_numbers()
+
+    for phone_number in phone_numbers:
+        data.append(check_call(phone_number, df))
 
     file = open('result.txt', 'w')
     for item in data:
@@ -77,8 +85,9 @@ def main():
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
 
-    print(f'\n', 'Загружено из базы данных:', str(len(df)), 'записей')
-    print(f'Загружено из файла:', sheet.max_row, 'записей')
+    print('\n')
+    print('Загружено из базы данных:', str(len(df)), 'записей')
+    print('Загружено из файла:', len(phone_numbers), 'записей')
     print("Проверено и сохранено:", len(data), "номеров")
     print("Затрачено времени:", str(timedelta(seconds=working_time)))
     print(f'Время выполнения: {time.perf_counter() - start_job_time:0.4f} seconds')
