@@ -67,3 +67,21 @@ class GetRiskReport(models.Model):
     class Meta:
         verbose_name = 'Отчет по рискам'
         verbose_name_plural = 'Отчет по рискам'
+
+
+class CallsCheck(models.Model):
+    objects = None
+    client_id = models.IntegerField()
+    client_name = models.CharField(max_length=200)
+    client_phone = models.CharField(max_length=200)
+    call_result = models.CharField(max_length=200)
+    verified_date = models.DateField()
+    user_name = models.CharField(max_length=200)
+    form_date_upload = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.client_id
+
+    class Meta:
+        verbose_name = 'Проверка звонков'
+        verbose_name_plural = 'Проверка звонков'

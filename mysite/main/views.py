@@ -20,8 +20,8 @@ from django.views.generic.list import ListView
 
 from django.urls.base import reverse_lazy
 
-from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, RiskReportDayForm
-from .models import RiskReport, RiskReportDay
+from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, RiskReportDayForm, CallsCheckForm
+from .models import RiskReport, RiskReportDay, CallsCheck
 
 import credentials
 import requests
@@ -29,21 +29,25 @@ import datetime
 
 
 def homepage(request):
+    site_adm_users = User.objects.filter(groups__name='site_adm')
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
-    heads_users = User.objects.filter(groups__name='Heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
     return render(request=request, template_name="main/home.html",
-                  context={"support": support_users, "risks": risks_users, "heads": heads_users})
+                  context={"support": support_users, "risks": risks_users, 'risk_heads': risk_heads_users,
+                           'site_adm': site_adm_users})
 
 
 def reports(request):
+    site_adm_users = User.objects.filter(groups__name='site_adm')
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
-    heads_users = User.objects.filter(groups__name='Heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
     return render(request=request, template_name="main/reports.html",
-                  context={"support": support_users, "risks": risks_users, "heads": heads_users})
+                  context={"support": support_users, "risks": risks_users, 'risk_heads': risk_heads_users,
+                           'site_adm': site_adm_users})
 
 
 def message_count_from_s_and_r(start_date, end_date):
@@ -104,9 +108,10 @@ def message_count_from_ver(start_date, end_date):
 
 
 def rocket(request):
+    site_adm_users = User.objects.filter(groups__name='site_adm')
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
-    heads_users = User.objects.filter(groups__name='Heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
     now_date = datetime.datetime.now() - relativedelta(months=1)
     last_month = now_date.month, now_date.year
@@ -140,13 +145,15 @@ def rocket(request):
                   {'title': 'Rocket Chat', 'message_count_s_and_r': message_count_s_and_r,
                    'message_count_crm': message_count_crm, 'message_count_ver': message_count_ver,
                    'months': months, 'years': years, 'month_id': month_name, 'year_id': year_id,
-                   'support': support_users, 'risks': risks_users, 'heads': heads_users})
+                   'support': support_users, 'risks': risks_users, 'risk_heads': risk_heads_users,
+                   'site_adm': site_adm_users})
 
 
 def payment(request):
+    site_adm_users = User.objects.filter(groups__name='site_adm')
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
-    heads_users = User.objects.filter(groups__name='Heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
     tracking_id = request.GET.get('tracking', None)
     if tracking_id == '' or tracking_id is None:
@@ -185,13 +192,15 @@ def payment(request):
     return render(request, 'main/payment.html', {'tracking_id': tracking_id, 'payment_status': payment_status,
                                                  'payment_url': payment_url, 'holder_name': holder_name,
                                                  'card_number': card_number, 'status': status,
-                                                 'support': support_users, 'risks': risks_users, 'heads': heads_users})
+                                                 'support': support_users, 'risks': risks_users,
+                                                 'risk_heads': risk_heads_users, 'site_adm': site_adm_users})
 
 
 def info_by_ip(request):
+    site_adm_users = User.objects.filter(groups__name='site_adm')
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
-    heads_users = User.objects.filter(groups__name='Heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
     ip_address = request.GET.get('object')
 
@@ -239,7 +248,8 @@ def info_by_ip(request):
                                                  'IP': get_ip, 'Int_prov': get_int_prov, 'Org': get_org,
                                                  'Country': get_country, 'Region_Name': get_region_name,
                                                  'City': get_city, 'ZIP': get_zip_code, 'Lat': get_lat, 'Lon': get_lon,
-                                                 'support': support_users, 'risks': risks_users, 'heads': heads_users})
+                                                 'support': support_users, 'risks': risks_users,
+                                                 'risk_heads': risk_heads_users, 'site_adm': site_adm_users})
 
 
 def register_request(request):
@@ -324,9 +334,9 @@ def check_db_record(model, date, user):
 
 def add_personal_report(request):
     """Добавление персонального отчета"""
-    support_users = User.objects.filter(groups__name='support')
+    site_adm_users = User.objects.filter(groups__name='site_adm')
     risks_users = User.objects.filter(groups__name='risks')
-    heads_users = User.objects.filter(groups__name='Heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
     error_text = ''
 
@@ -350,9 +360,9 @@ def add_personal_report(request):
 
     data = {
         'form': form,
-        'support': support_users,
         'risks': risks_users,
-        'heads': heads_users,
+        'risk_heads': risk_heads_users,
+        'site_adm': site_adm_users,
         'error_text': error_text,
     }
 
@@ -361,9 +371,9 @@ def add_personal_report(request):
 
 def add_day_report(request):
     """Добавление дневного отчета"""
-    support_users = User.objects.filter(groups__name='support')
+    site_adm_users = User.objects.filter(groups__name='site_adm')
     risks_users = User.objects.filter(groups__name='risks')
-    heads_users = User.objects.filter(groups__name='Heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
     error_text = ''
 
@@ -386,9 +396,9 @@ def add_day_report(request):
 
     data = {
         'form': form,
-        'support': support_users,
         'risks': risks_users,
-        'heads': heads_users,
+        'risk_heads': risk_heads_users,
+        'site_adm': site_adm_users,
         'error_text': error_text,
     }
 
@@ -525,9 +535,9 @@ def calculate_risks_report(start_date, end_date):
 
 def risks_rep(request):
     """ This function return risks report page """
-    support_users = User.objects.filter(groups__name='support')
+    site_adm_users = User.objects.filter(groups__name='site_adm')
     risks_users = User.objects.filter(groups__name='risks')
-    heads_users = User.objects.filter(groups__name='Heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
     now_date = datetime.datetime.now()
     last_month = now_date.month, now_date.year
@@ -561,9 +571,9 @@ def risks_rep(request):
     month_name = a[m - 1 % 12]
 
     data = {
-        'support': support_users,
+        'site_adm': site_adm_users,
         'risks': risks_users,
-        'heads': heads_users,
+        'risk_heads': risk_heads_users,
         'risk_reports': report,
         'pers_reports': pers_report,
         'calc_reports': calc_report,
@@ -586,8 +596,9 @@ class ListRisksReport(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = self.form_class
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['risks'] = User.objects.filter(groups__name='risks')
-        context['heads'] = User.objects.filter(groups__name='Heads')
+        context['risk_heads'] = User.objects.filter(groups__name='risk_heads')
         context['superuser'] = User.objects.filter(is_superuser=True)
         return context
 
@@ -607,8 +618,9 @@ class ListRisksReportDay(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = self.form_class
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['risks'] = User.objects.filter(groups__name='risks')
-        context['heads'] = User.objects.filter(groups__name='Heads')
+        context['risk_heads'] = User.objects.filter(groups__name='risk_heads')
         context['superuser'] = User.objects.filter(is_superuser=True)
         return context
 
@@ -626,8 +638,9 @@ class UpdateRisksReport(UpdateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['risks'] = User.objects.filter(groups__name='risks')
-        context['heads'] = User.objects.filter(groups__name='Heads')
+        context['risk_heads'] = User.objects.filter(groups__name='risk_heads')
         context['superuser'] = User.objects.filter(is_superuser=True)
         return context
 
@@ -641,7 +654,29 @@ class UpdateRisksReportDay(UpdateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['risks'] = User.objects.filter(groups__name='risks')
-        context['heads'] = User.objects.filter(groups__name='Heads')
+        context['risk_heads'] = User.objects.filter(groups__name='risk_heads')
         context['superuser'] = User.objects.filter(is_superuser=True)
         return context
+
+
+class CallsReportView(ListView):
+    """ This class view show list of calls report for day """
+    model = CallsCheck
+    form_class = CallsCheckForm
+    template_name = 'main/calls_rep.html'
+    context_object_name = 'list_calls_reports'
+    paginate_by = 15
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['support'] = User.objects.filter(groups__name='support')
+        return context
+
+    def get_queryset(self):
+        queryset = CallsCheck.objects.all().order_by('-id')
+        return queryset

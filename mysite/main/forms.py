@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from .models import RiskReport, RiskReportDay
+from .models import RiskReport, RiskReportDay, CallsCheck
 
 import datetime
 
@@ -144,3 +144,31 @@ class RiskReportDayForm(ModelForm):
             'user_name':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly'}),
         }
+
+
+class CallsCheckForm(ModelForm):
+    class Meta:
+        model = CallsCheck
+
+        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'verified_date', 'user_name']
+
+        widgets = {
+            'client_id':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'client_id',
+                                         'placeholder': 'Тут пишем ID клиента'}),
+            'client_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'client_name',
+                                       'placeholder': 'Тут пишем имя клиента'}),
+            'client_phone':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'client_phone',
+                                       'placeholder': 'Тут пишем номер телефона клиента'}),
+            'call_result':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'call_result',
+                                       'placeholder': 'Тут пишем результат звонка'}),
+            'verified_date':
+                forms.DateInput(attrs={'class': 'form-control', 'id': 'verified_date',
+                                       'placeholder': '01.01.2022'}),
+            'user_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly'}),
+        }
+

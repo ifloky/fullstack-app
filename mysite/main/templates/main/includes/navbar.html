@@ -42,7 +42,41 @@ li a:hover:not(.active) {
           <a class="nav-link" href="/reports">Главная</a>
         </li>
 
-            {% if user in heads %}
+            {% if user in site_adm %}
+                <li class="nav-item">
+                  <a class="nav-link" href="/risks_rep">Отдел рисков</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/list_risks_rep">Корректировка личного отчета</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/list_risks_rep_day">Корректировка суточного отчета</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/add_personal_report">Персональный отчет</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/add_day_report">Отчет за сутки</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/payment">Проверка платежа</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/rocket">RocketChat</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/calls_rep">Поддержка</a>
+                </li>
+            {% endif %}
+
+            {% if user in risk_heads %}
             <li class="nav-item">
               <a class="nav-link" href="/risks_rep">Отдел рисков</a>
             </li>
@@ -73,6 +107,11 @@ li a:hover:not(.active) {
             {% if user in support %}
             <li class="nav-item">
               <a class="nav-link" href="/rocket">RocketChat</a>
+            </li>
+
+
+            <li class="nav-item">
+              <a class="nav-link" href="/calls_rep">Поддержка</a>
             </li>
             {% endif %}
 
