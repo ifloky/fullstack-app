@@ -24,5 +24,6 @@ urlpatterns = [
     path('update_risks_rep_day/<int:pk>', views.UpdateRisksReportDay.as_view(), name='update_risks_rep_day'),
 
     path('calls_rep/', views.CallsReportView.as_view(), name='calls_rep'),
-    path('calls_add/<int:pk>', views.CallAddView.as_view(), name='calls_add'),
+    path('update_calls/<int:pk>', views.UpdateCallView.as_view(), name='udpate_calls'),
+    # path('upload_file/', views.UploadFileForm, name='upload_file'),
 ]

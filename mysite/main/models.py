@@ -72,11 +72,11 @@ class GetRiskReport(models.Model):
 class CallsCheck(models.Model):
     objects = None
     client_id = models.IntegerField()
-    client_name = models.CharField(max_length=200)
+    client_name = models.CharField(max_length=200, blank=True, null=True)
     client_phone = models.CharField(max_length=200)
-    call_result = models.CharField(max_length=200)
-    verified_date = models.DateField()
-    user_name = models.CharField(max_length=200)
+    call_result = models.CharField(max_length=200, blank=True, null=True)
+    verified_date = models.DateField(blank=True, null=True)
+    user_name = models.CharField(max_length=200, blank=True, null=True)
     form_date_upload = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

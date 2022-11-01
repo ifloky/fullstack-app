@@ -111,6 +111,19 @@ class RiskReportForm(ModelForm):
 
         }
 
+        labels = {
+            'shift_date': 'Дата смены',
+            'shift_type': 'Смена',
+            'verified_clients': 'Верефицировано клиентов',
+            're_verified_clients': 'Повторно верефицировано клиентов',
+            'processed_conclusions': 'Обработанных заключений',
+            'processed_support_requests': 'Обработанных запросов поддержки',
+            'tacks_help_desk': 'Заявок в Help Desk',
+            'oapi_requests': 'Заявок в ОАПИ',
+            'schemes_revealed': 'Выявленно схем',
+            'user_name': 'Оператор'
+        }
+
 
 class RiskReportDayForm(ModelForm):
     class Meta:
@@ -167,8 +180,28 @@ class CallsCheckForm(ModelForm):
                                        'placeholder': 'Тут пишем результат звонка', 'label': 'Результат звонка'}),
             'verified_date':
                 forms.DateInput(attrs={'class': 'form-control', 'id': 'verified_date',
-                                       'placeholder': '01.01.2022', 'label': 'Дата верификации'}),
+                                       'placeholder': '01.01.2022', 'label': 'Дата верификации',
+                                       'blank': True, 'null': True, 'required': False}),
             'user_name':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly',
                                        'label': 'Имя пользователя'}),
+        }
+
+        labels = {
+            'client_id': 'ID клиента',
+            'client_name': 'Имя клиента',
+            'client_phone': 'Номер телефона',
+            'call_result': 'Результат звонка',
+            'verified_date': 'Дата верификации',
+            'user_name': 'Имя оператора',
+        }
+
+        blank = {
+            'client_name': True,
+            'verified_date': True,
+        }
+
+        required = {
+            'client_name': False,
+            'verified_date': False,
         }

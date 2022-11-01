@@ -15,7 +15,7 @@ from django.utils.encoding import force_bytes
 
 from dateutil.relativedelta import relativedelta
 
-from django.views.generic.edit import UpdateView, CreateView
+from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
 from django.urls.base import reverse_lazy
@@ -682,11 +682,11 @@ class CallsReportView(ListView):
         return queryset
 
 
-class CallAddView(UpdateView):
+class UpdateCallView(UpdateView):
     """ This class view add new call report """
     model = CallsCheck
     form_class = CallsCheckForm
-    template_name = 'main/calls_add.html'
+    template_name = 'main/update_calls.html'
     success_url = reverse_lazy('main:calls_rep')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -695,5 +695,3 @@ class CallAddView(UpdateView):
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['support'] = User.objects.filter(groups__name='support')
         return context
-
-
