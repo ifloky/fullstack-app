@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from .models import RiskReport, RiskReportDay, CallsCheck
+from .models import RiskReport, RiskReportDay, CallsCheck, AddDataFromText
 
 import datetime
 
@@ -205,3 +205,17 @@ class CallsCheckForm(ModelForm):
             'client_name': False,
             'verified_date': False,
         }
+
+
+class AddDataFromTextForm(forms.Form):
+    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'id': 'text'}))
+
+    def clean_text(self):
+        text = self.cleaned_data['text']
+        if not text:
+            raise forms.ValidationError('Вы не ввели текст')
+        return text
+
+    def save(self):
+        text = self.cleaned_data['text']
+        return text

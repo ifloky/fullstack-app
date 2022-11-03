@@ -14,14 +14,17 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 
 from dateutil.relativedelta import relativedelta
+from django.views import View
 
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
 from django.urls.base import reverse_lazy
 
-from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, RiskReportDayForm, CallsCheckForm
-from .models import RiskReport, RiskReportDay, CallsCheck
+from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm
+from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm
+
+from .models import RiskReport, RiskReportDay, CallsCheck, AddDataFromText
 
 import credentials
 import requests
@@ -695,3 +698,66 @@ class UpdateCallView(UpdateView):
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['support'] = User.objects.filter(groups__name='support')
         return context
+
+
+class AddDataFromTextView(View):
+    """ This class view add new data from text area """
+    model = AddDataFromText
+    form_class = AddDataFromTextForm
+    template_name = 'main/add_data.html'
+    success_url = reverse_lazy('main:calls_rep')
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        support_users = User.objects.filter(groups__name='support')
+        risks_users = User.objects.filter(groups__name='risks')
+        risk_heads_users = User.objects.filter(groups__name='risk_heads')
+        data = {
+            'site_adm': site_adm_users,
+            'support': support_users,
+            'risks': risks_users,
+            'risk_heads': risk_heads_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+        }
+        return render(request, self.template_name, data)
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            connection = psycopg2.connect(database=credentials.db_name,
+                                          user=credentials.db_username,
+                                          password=credentials.db_password,
+                                          host=credentials.db_host,
+                                          port=credentials.db_port,
+                                          )
+
+            data = form.cleaned_data.pop('text')
+            data = data.split('\n')  # split data by tabulation
+            data = [i.split(',') for i in data]  # split data by new line
+            data = [i for i in data if i != ['']]  # remove empty list
+
+            for i in data:
+                client_data = i  # get client data
+                client_data = [i.split('\t') for i in client_data]  # split client data by tabulation
+                client_data = [i for i in client_data if i != ['']]  # remove empty list
+                client_id = client_data[0][0]  # get client id
+                client_phone = '+' + client_data[0][1]  # get client phone
+                print('Данные клиента:', client_id, client_phone)
+                """ sql query added client_id and client_phone to sql table main_callscheck """
+                try:
+                    with connection.cursor() as cursor:
+                        cursor.execute("INSERT INTO main_callscheck (client_id, client_phone) "
+                                       "VALUES (%s, %s)", [client_id, client_phone])
+                        connection.commit()
+                except Exception as e:
+                    print(e)
+                    connection.rollback()
+
+            print('Добавлено', len(data), 'записей')
+
+            return redirect('main:calls_rep')
+        return render(request, self.template_name, {'form': form})

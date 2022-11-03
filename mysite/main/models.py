@@ -71,13 +71,13 @@ class GetRiskReport(models.Model):
 
 class CallsCheck(models.Model):
     objects = None
-    client_id = models.IntegerField()
+    client_id = models.IntegerField(unique=True)
     client_name = models.CharField(max_length=200, blank=True, null=True)
     client_phone = models.CharField(max_length=200)
     call_result = models.CharField(max_length=200, blank=True, null=True)
     verified_date = models.DateField(blank=True, null=True)
     user_name = models.CharField(max_length=200, blank=True, null=True)
-    form_date_upload = models.DateTimeField(auto_now_add=True)
+    # form_date_upload = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.client_id
@@ -85,3 +85,15 @@ class CallsCheck(models.Model):
     class Meta:
         verbose_name = 'Проверка звонков'
         verbose_name_plural = 'Проверка звонков'
+
+
+class AddDataFromText(models.Model):
+    objects = None
+    text = models.TextField()
+
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        verbose_name = 'Добавление данных из текста'
+        verbose_name_plural = 'Добавление данных из текста'

@@ -25,5 +25,5 @@ urlpatterns = [
 
     path('calls_rep/', views.CallsReportView.as_view(), name='calls_rep'),
     path('update_calls/<int:pk>', views.UpdateCallView.as_view(), name='update_calls'),
-    # path('upload_file/', views.UploadFileForm, name='upload_file'),
+    path('add_data/', views.AddDataFromTextView.as_view(), name='add_data'),
 ]
