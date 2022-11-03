@@ -74,6 +74,7 @@ class CallsCheck(models.Model):
     client_id = models.IntegerField(unique=True)
     client_name = models.CharField(max_length=200, blank=True, null=True)
     client_phone = models.CharField(max_length=200)
+    client_foto_checkbox = models.BooleanField(default=False)
     call_result = models.CharField(max_length=200, blank=True, null=True)
     verified_date = models.DateField(blank=True, null=True)
     user_name = models.CharField(max_length=200, blank=True, null=True)

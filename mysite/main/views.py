@@ -33,6 +33,7 @@ import datetime
 
 def homepage(request):
     site_adm_users = User.objects.filter(groups__name='site_adm')
+    heads = User.objects.filter(groups__name='heads')
     support_users = User.objects.filter(groups__name='support')
     support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
@@ -40,11 +41,12 @@ def homepage(request):
 
     return render(request=request, template_name="main/home.html",
                   context={"support": support_users, "risks": risks_users, 'risk_heads': risk_heads_users,
-                           'site_adm': site_adm_users, 'support_heads': support_heads_users})
+                           'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads})
 
 
 def reports(request):
     site_adm_users = User.objects.filter(groups__name='site_adm')
+    heads = User.objects.filter(groups__name='heads')
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
@@ -52,7 +54,7 @@ def reports(request):
 
     return render(request=request, template_name="main/reports.html",
                   context={"support": support_users, "risks": risks_users, 'risk_heads': risk_heads_users,
-                           'site_adm': site_adm_users, 'support_heads': support_heads_users})
+                           'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads})
 
 
 def message_count_from_s_and_r(start_date, end_date):
@@ -114,6 +116,7 @@ def message_count_from_ver(start_date, end_date):
 
 def rocket(request):
     site_adm_users = User.objects.filter(groups__name='site_adm')
+    heads = User.objects.filter(groups__name='heads')
     support_users = User.objects.filter(groups__name='support')
     support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
@@ -152,7 +155,7 @@ def rocket(request):
                    'message_count_crm': message_count_crm, 'message_count_ver': message_count_ver,
                    'months': months, 'years': years, 'month_id': month_name, 'year_id': year_id,
                    'support': support_users, 'risks': risks_users, 'risk_heads': risk_heads_users,
-                   'site_adm': site_adm_users, 'support_heads': support_heads_users})
+                   'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads})
 
 
 def payment(request):
@@ -546,6 +549,7 @@ def calculate_risks_report(start_date, end_date):
 def risks_rep(request):
     """ This function return risks report page """
     site_adm_users = User.objects.filter(groups__name='site_adm')
+    heads = User.objects.filter(groups__name='heads')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
@@ -582,6 +586,7 @@ def risks_rep(request):
 
     data = {
         'site_adm': site_adm_users,
+        'heads': heads,
         'risks': risks_users,
         'risk_heads': risk_heads_users,
         'risk_reports': report,
@@ -762,7 +767,7 @@ class AddDataFromTextView(View):
                         cursor.execute("INSERT INTO main_callscheck (client_id, client_phone, upload_date) "
                                        "VALUES (%s, %s, %s)", [client_id, client_phone, upload_date])
                         connection.commit()
-                    # print('Данные клиента:', client_id, client_phone)
+                    print('Данные клиента:', client_id, client_phone)
                 except Exception as e:
                     print('Данные клиента:', client_id, client_phone)
                     print(e)

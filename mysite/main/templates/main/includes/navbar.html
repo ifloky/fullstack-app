@@ -128,6 +128,15 @@ li a:hover:not(.active) {
             </li>
             {% endif %}
 
+            {% if user in heads %}
+            <li class="nav-item">
+              <a class="nav-link" href="/rocket">RocketChat</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/risks_rep">Отдел рисков</a>
+            </li>
+            {% endif %}
         <li class="nav-item">
           <a class="nav-link" href="/ip_info">Проверка адреса</a>
         </li>
