@@ -677,7 +677,7 @@ class UpdateRisksReportDay(UpdateView):
         return context
 
 
-class CallsReportView(ListView):
+class CallsView(ListView):
     """ This class view show list of calls report for day """
     model = CallsCheck
     form_class = CallsCheckForm
@@ -775,3 +775,23 @@ class AddDataFromTextView(View):
                     connection.rollback()
             return redirect('main:calls_rep')
         return render(request, self.template_name, {'form': form})
+
+
+class CallsReportView(ListView):
+    """ This class view create month report """
+    model = CallsCheck
+    form_class = CallsCheckForm
+    template_name = 'main/cc_report.html'
+    context_object_name = 'calls_report'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class
+        context['heads'] = User.objects.filter(groups__name='heads')
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        return context
+
+    def get_queryset(self):
+        """ This function get data from callscheck db table and return it as list of dicts where last month calls """
+

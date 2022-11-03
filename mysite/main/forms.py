@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from .models import RiskReport, RiskReportDay, CallsCheck, AddDataFromText
+
+from .models import RiskReport, RiskReportDay, CallsCheck
 
 import datetime
 
@@ -174,7 +175,8 @@ class CallsCheckForm(ModelForm):
                                        'placeholder': 'Тут пишем имя клиента', 'label': 'Имя клиента'}),
             'client_phone':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'client_phone', 'readonly': 'readonly',
-                                       'placeholder': 'Тут пишем номер телефона клиента', 'label': 'Номер телефона'}),
+                                       'placeholder': 'Тут пишем номер телефона клиента',
+                                       'label': 'Номер телефона клиента'}),
             'call_result':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'call_result',
                                        'placeholder': 'Тут пишем результат звонка', 'label': 'Результат звонка'}),
@@ -184,13 +186,13 @@ class CallsCheckForm(ModelForm):
                                        'blank': True, 'null': True, 'required': False}),
             'user_name':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly',
-                                       'label': 'Имя пользователя'}),
+                                       'label': 'Имя оператора'}),
         }
 
         labels = {
             'client_id': 'ID клиента',
             'client_name': 'Имя клиента',
-            'client_phone': 'Номер телефона',
+            'client_phone': 'Номер телефона клиента',
             'call_result': 'Результат звонка',
             'verified_date': 'Дата верификации',
             'user_name': 'Имя оператора',
@@ -208,7 +210,11 @@ class CallsCheckForm(ModelForm):
 
 
 class AddDataFromTextForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'id': 'text'}))
+    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'id': 'text',
+                                                        'placeholder': 'Сюда вставляем текст'}))
+    label = {
+        'text': 'Текст',
+    }
 
     def clean_text(self):
         text = self.cleaned_data['text']
@@ -219,17 +225,3 @@ class AddDataFromTextForm(forms.Form):
     def save(self):
         text = self.cleaned_data['text']
         return text
-
-
-class CallsMonthReportForm(forms.Form):
-    month = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'id': 'month'}))
-
-    def clean_month(self):
-        month = self.cleaned_data['month']
-        if not month:
-            raise forms.ValidationError('Вы не ввели месяц')
-        return month
-
-    def save(self):
-        month = self.cleaned_data['month']
-        return month

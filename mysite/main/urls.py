@@ -23,7 +23,9 @@ urlpatterns = [
     path('list_risks_rep_day/', views.ListRisksReportDay.as_view(), name='list_risks_rep_day'),
     path('update_risks_rep_day/<int:pk>', views.UpdateRisksReportDay.as_view(), name='update_risks_rep_day'),
 
-    path('calls_rep/', views.CallsReportView.as_view(), name='calls_rep'),
+    path('calls_rep/', views.CallsView.as_view(), name='calls_rep'),
     path('update_calls/<int:pk>', views.UpdateCallView.as_view(), name='update_calls'),
     path('add_data/', views.AddDataFromTextView.as_view(), name='add_data'),
+
+    path('cc_report/', views.CallsReportView.as_view(), name='cc_report'),
 ]

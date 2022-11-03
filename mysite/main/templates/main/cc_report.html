@@ -1,0 +1,60 @@
+{% extends 'main/header.html' %}
+
+
+  {% block content %}
+
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        width: 260px;
+        margin-top: 1%;
+    }
+
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:200px;margin-right:auto;}
+    .flex-wrap button {width:250px;margin-left:auto;}
+    .flex-wrap input {width:calc(100% - 250px);}
+    .flex-wrap select {width:calc(100% - 50px);}
+
+    form {display:flex;width:100%;}
+    select {margin-right:auto;width:30%;}
+    input {width:30%;}
+    th {vertical-align: middle !important;}
+    </style>
+
+  {% if user.is_authenticated %}
+
+    <div style="padding:20px;margin-top:30px;">
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col" width="200">ID клиента</th>
+                <th scope="col">Имя клиента</th>
+                <th scope="col" width="250">Номер телефона</th>
+                <th scope="col">Результат звонка</th>
+                <th scope="col">Дата верификации</th>
+                <th scope="col">Оператор</th>
+                <th scope="col"> </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for list in calls_report %}
+                <tr align="center">
+                    <th scope="col" width="200"><a href="https://backoffice.betconstruct.com/#/customers/detail/{{list.client_id}}" target="_blank">{{ list.client_id }}</th>
+                    <th scope="col">{{ list.client_name }}</th>
+                    <th scope="col" width="250">{{ list.client_phone }}</th>
+                    <th scope="col">{{ list.call_result }}</th>
+                    <th scope="col">{{ list.verified_date }}</th>
+                    <th scope="col">{{ list.user_name }}</th>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+  {% else %}
+    <div style="padding:20px;margin-top:30px;">
+        <h3>Для просмотра отчета необходимо авторизоваться</h3>
+    </div>
+  {% endif %}
+
+  {% endblock %}
