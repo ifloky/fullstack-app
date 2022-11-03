@@ -34,12 +34,13 @@ import datetime
 def homepage(request):
     site_adm_users = User.objects.filter(groups__name='site_adm')
     support_users = User.objects.filter(groups__name='support')
+    support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
     return render(request=request, template_name="main/home.html",
                   context={"support": support_users, "risks": risks_users, 'risk_heads': risk_heads_users,
-                           'site_adm': site_adm_users})
+                           'site_adm': site_adm_users, 'support_heads': support_heads_users})
 
 
 def reports(request):
@@ -47,10 +48,11 @@ def reports(request):
     support_users = User.objects.filter(groups__name='support')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
+    support_heads_users = User.objects.filter(groups__name='support_heads')
 
     return render(request=request, template_name="main/reports.html",
                   context={"support": support_users, "risks": risks_users, 'risk_heads': risk_heads_users,
-                           'site_adm': site_adm_users})
+                           'site_adm': site_adm_users, 'support_heads': support_heads_users})
 
 
 def message_count_from_s_and_r(start_date, end_date):
@@ -113,6 +115,7 @@ def message_count_from_ver(start_date, end_date):
 def rocket(request):
     site_adm_users = User.objects.filter(groups__name='site_adm')
     support_users = User.objects.filter(groups__name='support')
+    support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
@@ -149,12 +152,13 @@ def rocket(request):
                    'message_count_crm': message_count_crm, 'message_count_ver': message_count_ver,
                    'months': months, 'years': years, 'month_id': month_name, 'year_id': year_id,
                    'support': support_users, 'risks': risks_users, 'risk_heads': risk_heads_users,
-                   'site_adm': site_adm_users})
+                   'site_adm': site_adm_users, 'support_heads': support_heads_users})
 
 
 def payment(request):
     site_adm_users = User.objects.filter(groups__name='site_adm')
     support_users = User.objects.filter(groups__name='support')
+    support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
@@ -196,12 +200,14 @@ def payment(request):
                                                  'payment_url': payment_url, 'holder_name': holder_name,
                                                  'card_number': card_number, 'status': status,
                                                  'support': support_users, 'risks': risks_users,
-                                                 'risk_heads': risk_heads_users, 'site_adm': site_adm_users})
+                                                 'risk_heads': risk_heads_users, 'site_adm': site_adm_users,
+                                                 'support_heads': support_heads_users})
 
 
 def info_by_ip(request):
     site_adm_users = User.objects.filter(groups__name='site_adm')
     support_users = User.objects.filter(groups__name='support')
+    support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
@@ -252,7 +258,8 @@ def info_by_ip(request):
                                                  'Country': get_country, 'Region_Name': get_region_name,
                                                  'City': get_city, 'ZIP': get_zip_code, 'Lat': get_lat, 'Lon': get_lon,
                                                  'support': support_users, 'risks': risks_users,
-                                                 'risk_heads': risk_heads_users, 'site_adm': site_adm_users})
+                                                 'risk_heads': risk_heads_users, 'site_adm': site_adm_users,
+                                                 'support_heads': support_heads_users})
 
 
 def register_request(request):
@@ -678,6 +685,7 @@ class CallsReportView(ListView):
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['support'] = User.objects.filter(groups__name='support')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
         return context
 
     def get_queryset(self):
@@ -697,6 +705,7 @@ class UpdateCallView(UpdateView):
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['support'] = User.objects.filter(groups__name='support')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
         return context
 
 
@@ -709,12 +718,12 @@ class AddDataFromTextView(View):
 
     def get(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
-        support_users = User.objects.filter(groups__name='support')
+        support_heads_users = User.objects.filter(groups__name='support_heads')
         risks_users = User.objects.filter(groups__name='risks')
         risk_heads_users = User.objects.filter(groups__name='risk_heads')
         data = {
             'site_adm': site_adm_users,
-            'support': support_users,
+            'support_heads': support_heads_users,
             'risks': risks_users,
             'risk_heads': risk_heads_users,
             'superuser': User.objects.filter(is_superuser=True),
@@ -746,7 +755,6 @@ class AddDataFromTextView(View):
                 client_data = [i for i in client_data if i != ['']]  # remove empty list
                 client_id = client_data[0][0]  # get client id
                 client_phone = '+' + client_data[0][1]  # get client phone
-                print('Данные клиента:', client_id, client_phone)
                 """ sql query added client_id and client_phone to sql table main_callscheck """
                 try:
                     with connection.cursor() as cursor:
@@ -754,10 +762,8 @@ class AddDataFromTextView(View):
                                        "VALUES (%s, %s)", [client_id, client_phone])
                         connection.commit()
                 except Exception as e:
+                    print('Данные клиента:', client_id, client_phone)
                     print(e)
                     connection.rollback()
-
-            print('Добавлено', len(data), 'записей')
-
             return redirect('main:calls_rep')
         return render(request, self.template_name, {'form': form})
