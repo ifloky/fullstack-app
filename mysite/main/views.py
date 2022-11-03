@@ -689,7 +689,7 @@ class CallsReportView(ListView):
         return context
 
     def get_queryset(self):
-        queryset = CallsCheck.objects.all().order_by('id')
+        queryset = CallsCheck.objects.all().order_by('-id')
         return queryset
 
 
