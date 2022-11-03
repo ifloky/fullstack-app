@@ -77,7 +77,7 @@ class CallsCheck(models.Model):
     call_result = models.CharField(max_length=200, blank=True, null=True)
     verified_date = models.DateField(blank=True, null=True)
     user_name = models.CharField(max_length=200, blank=True, null=True)
-    # form_date_upload = models.DateTimeField(auto_now_add=True, null=True)
+    upload_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.client_id

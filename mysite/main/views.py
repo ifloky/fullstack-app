@@ -755,12 +755,14 @@ class AddDataFromTextView(View):
                 client_data = [i for i in client_data if i != ['']]  # remove empty list
                 client_id = client_data[0][0]  # get client id
                 client_phone = '+' + client_data[0][1]  # get client phone
+                upload_date = datetime.datetime.now()  # get upload date
                 """ sql query added client_id and client_phone to sql table main_callscheck """
                 try:
                     with connection.cursor() as cursor:
-                        cursor.execute("INSERT INTO main_callscheck (client_id, client_phone) "
-                                       "VALUES (%s, %s)", [client_id, client_phone])
+                        cursor.execute("INSERT INTO main_callscheck (client_id, client_phone, upload_date) "
+                                       "VALUES (%s, %s, %s)", [client_id, client_phone, upload_date])
                         connection.commit()
+                    # print('Данные клиента:', client_id, client_phone)
                 except Exception as e:
                     print('Данные клиента:', client_id, client_phone)
                     print(e)

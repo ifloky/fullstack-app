@@ -219,3 +219,17 @@ class AddDataFromTextForm(forms.Form):
     def save(self):
         text = self.cleaned_data['text']
         return text
+
+
+class CallsMonthReportForm(forms.Form):
+    month = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'id': 'month'}))
+
+    def clean_month(self):
+        month = self.cleaned_data['month']
+        if not month:
+            raise forms.ValidationError('Вы не ввели месяц')
+        return month
+
+    def save(self):
+        month = self.cleaned_data['month']
+        return month
