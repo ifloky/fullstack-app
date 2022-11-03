@@ -209,6 +209,7 @@ def payment(request):
 
 def info_by_ip(request):
     site_adm_users = User.objects.filter(groups__name='site_adm')
+    heads = User.objects.filter(groups__name='heads')
     support_users = User.objects.filter(groups__name='support')
     support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
@@ -262,7 +263,7 @@ def info_by_ip(request):
                                                  'City': get_city, 'ZIP': get_zip_code, 'Lat': get_lat, 'Lon': get_lon,
                                                  'support': support_users, 'risks': risks_users,
                                                  'risk_heads': risk_heads_users, 'site_adm': site_adm_users,
-                                                 'support_heads': support_heads_users})
+                                                 'support_heads': support_heads_users, 'heads': heads})
 
 
 def register_request(request):
