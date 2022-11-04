@@ -24,29 +24,29 @@
   {% if user.is_authenticated %}
 
     <div style="padding:20px;margin-top:30px;">
+        <form method="GET" action="/cc_report" >
+             {{ months }} {{ years }}
+        <input type="submit" value="Показать отчет">
+    </form>
+    </div>
+
+    <div style="padding:20px;margin-top:30px;">
         <table class="table table-striped">
           <thead>
             <tr align="center">
-                <th scope="col" width="200">ID клиента</th>
-                <th scope="col">Имя клиента</th>
-                <th scope="col" width="250">Номер телефона</th>
-                <th scope="col">Результат звонка</th>
-                <th scope="col">Дата верификации</th>
                 <th scope="col">Оператор</th>
-                <th scope="col"> </th>
+                <th scope="col">Отвеченые звонки</th>
+                <th scope="col">Неотвеченые звонки</th>
+                <th scope="col">Количество верификаций</th>
             </tr>
           </thead>
           <tbody>
-            {% for list in calls_report %}
-                <tr align="center">
-                    <th scope="col" width="200"><a href="https://backoffice.betconstruct.com/#/customers/detail/{{list.client_id}}" target="_blank">{{ list.client_id }}</th>
-                    <th scope="col">{{ list.client_name }}</th>
-                    <th scope="col" width="250">{{ list.client_phone }}</th>
-                    <th scope="col">{{ list.call_result }}</th>
-                    <th scope="col">{{ list.verified_date }}</th>
-                    <th scope="col">{{ list.user_name }}</th>
-                </tr>
-            {% endfor %}
+        {% for report in calls_report %}
+            <tr>
+                {% for x in report %} <td align="center">{{ x }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
           </tbody>
         </table>
     </div>

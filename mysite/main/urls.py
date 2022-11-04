@@ -27,5 +27,5 @@ urlpatterns = [
     path('update_calls/<int:pk>', views.UpdateCallView.as_view(), name='update_calls'),
     path('add_data/', views.AddDataFromTextView.as_view(), name='add_data'),
 
-    path('cc_report/', views.CallsReportView.as_view(), name='cc_report'),
+    path('cc_report/', views.cc_report, name='cc_report'),
 ]

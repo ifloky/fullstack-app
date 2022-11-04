@@ -777,21 +777,89 @@ class AddDataFromTextView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class CallsReportView(ListView):
-    """ This class view create month report """
-    model = CallsCheck
-    form_class = CallsCheckForm
-    template_name = 'main/cc_report.html'
-    context_object_name = 'calls_report'
+def get_personal_cc_report(start_date, end_date):
+    """ This function get data from risk_report db table and return it as list of dicts """
+    cursor, connection = None, None
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = self.form_class
-        context['heads'] = User.objects.filter(groups__name='heads')
-        context['site_adm'] = User.objects.filter(groups__name='site_adm')
-        context['support_heads'] = User.objects.filter(groups__name='support_heads')
-        return context
+    report_list = []
 
-    def get_queryset(self):
-        """ This function get data from callscheck db table and return it as list of dicts where last month calls """
+    sql_query = (f'''
+                SELECT user_name AS "user_name", 
+                    SUM(case when call_result != 'нет ответа' then 1 else 0 end)  AS "Количество звонков без ответа",
+                    SUM(case when call_result != 'нет ответа' then 0 else 1 end ) AS "Количество звонков с ответом",
+                    SUM(case when verified_date != null then 1 else 0 end ) AS "Количество верификаций"
+                FROM public.main_callscheck
+                WHERE upload_date >= '{start_date}' AND upload_date < '{end_date}' AND user_name != 'null' 
+                GROUP BY user_name
+                ORDER BY user_name ASC''')
 
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        report_list = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return report_list
+
+
+def cc_report(request):
+    """ This function return risks report page """
+    site_adm_users = User.objects.filter(groups__name='site_adm')
+    heads = User.objects.filter(groups__name='heads')
+    support_heads_users = User.objects.filter(groups__name='support_heads')
+
+    now_date = datetime.datetime.now()
+    last_month = now_date.month, now_date.year
+
+    month_id = request.GET.get('month', None)
+    if month_id is None:
+        month_id = f'0{last_month[0]}'
+
+    year_id = request.GET.get('year', None)
+    if year_id is None:
+        year_id = last_month[1]
+
+    if len(month_id) > 2:
+        month_id = month_id[1:]
+
+    start_date = f'01.{month_id}.{year_id}'
+    end_date = f'01.{month_id}.{year_id}'
+    end_date = datetime.datetime.strptime(end_date, '%d.%m.%Y') + relativedelta(months=1)
+    end_date = str(end_date.date()).replace('-', '.')
+
+    calls_report = get_personal_cc_report(start_date, end_date)
+
+    months = MonthsForm()
+    years = YearsForm()
+
+    m = int(month_id)
+    a = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь',
+         'Декабрь']
+    month_name = a[m - 1 % 12]
+
+    data = {
+        'site_adm': site_adm_users,
+        'heads': heads,
+        'support_heads': support_heads_users,
+        'calls_report': calls_report,
+        'months': months,
+        'years': years,
+        'month_id': month_name,
+        'year_id': year_id,
+    }
+    return render(request, "main/cc_report.html", data)
