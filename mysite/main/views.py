@@ -683,7 +683,7 @@ class CallsView(ListView):
     form_class = CallsCheckForm
     template_name = 'main/calls_rep.html'
     context_object_name = 'list_calls_reports'
-    paginate_by = 15
+    paginate_by = 30
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -778,7 +778,7 @@ class AddDataFromTextView(View):
 
 
 def get_personal_cc_report(start_date, end_date):
-    """ This function get data from risk_report db table and return it as list of dicts """
+    """ This function get data from callscheck db table and return it as list of dicts """
     cursor, connection = None, None
 
     report_list = []
@@ -818,7 +818,7 @@ def get_personal_cc_report(start_date, end_date):
 
 
 def cc_report(request):
-    """ This function return risks report page """
+    """ This function return сс report page """
     site_adm_users = User.objects.filter(groups__name='site_adm')
     heads = User.objects.filter(groups__name='heads')
     support_heads_users = User.objects.filter(groups__name='support_heads')
