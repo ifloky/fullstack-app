@@ -695,8 +695,7 @@ class CallsView(ListView):
         return context
 
     def get_queryset(self):
-        queryset = CallsCheck.objects.all().order_by('-id').\
-            filter(Q(user_name=self.request.user) | Q(user_name__isnull=True))
+        queryset = CallsCheck.objects.all().order_by('-id')
         return queryset
 
 
