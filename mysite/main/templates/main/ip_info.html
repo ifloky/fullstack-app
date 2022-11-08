@@ -16,15 +16,29 @@
 
     form {display:flex;width:100%;}
     select {margin-right:auto;width:30%;}
-    input {width:30%;}
+
+    input {
+        width:10%;
+        padding-right: 20px;
+        margin: 8px 0;
+    }
+
     th {vertical-align: middle !important;}
+
+    label {
+        padding-right: 20px;
+        margin: 8px 0;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+    }
     </style>
 
       {% if user.is_authenticated %}
 
     <div style="padding:20px;padding-left:10%;margin-top:30px;width:98%;">
     <form method="GET" action="/ip_info">
-        <label for="ip_address">Введите IP адрес или имя домена: </label>
+        <label for="ip_address">Введите IP адрес или имя домена:</label>
         <input id="ip_address" type="text" name="object" value=""> <!-- В "value=", можно внести значение по умолчанию -->
         <input type="submit" value="OK">
     </form>
