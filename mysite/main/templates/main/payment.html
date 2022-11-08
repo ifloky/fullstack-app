@@ -21,7 +21,7 @@
 
       {% if user.is_authenticated %}
 
-    <div style="padding:20px;margin-top:30px;">
+    <div style="padding:20px;padding-left:10%;margin-top:30px;width:98%;">
         <form method="GET" action="/payment" >
             <label for="tracking">Введите номер отслеживания bePaid:</label>
             <input id="tracking" type="text" name="tracking" value="">
@@ -33,13 +33,13 @@
     </div>
 
 {% elif status == 2 %}
-    <div style="padding:20px;margin-top:30px;">
+    <div style="padding-left:10%;margin-top:30px;width:98%;">
         <p>
         <h1 align="center">Транзакция не найдена, или не bePaid!</h1>
     </div>
 
 {% else %}
-    <div style="padding:20px;margin-top:30px;">
+    <div style="padding-left:10%;margin-top:30px;width:98%;">
         <table class="table table-striped">
           <thead>
             <tr align="center">
