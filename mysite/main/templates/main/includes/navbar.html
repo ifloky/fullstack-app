@@ -10,8 +10,23 @@ body {margin:0;}
     background-color: #333;
     position: fixed;
     top: 0;
+    width: 8%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.fixed_horizontal {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    top: 0;
     width: 100%;
 }
+
 
 .nav-item {
     float: left;
@@ -20,7 +35,7 @@ body {margin:0;}
 li a {
     display: block;
     color: white;
-    text-align: center;
+    text-align: left;
     padding: 14px 16px;
     text-decoration: none;
 }
@@ -38,9 +53,6 @@ li a:hover:not(.active) {
 
     <ul class="fixed">
         {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link" href="/reports">Главная</a>
-        </li>
 
             {% if user in site_adm %}
                 <li class="nav-item">
@@ -151,6 +163,16 @@ li a:hover:not(.active) {
             {% endif %}
         <li class="nav-item">
           <a class="nav-link" href="/ip_info">Проверка адреса</a>
+        </li>
+    {% endif %}
+
+    </ul>
+
+
+<ul class="fixed_horizontal">
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="/reports">Главная</a>
         </li>
 
         <li style="float:right" class="nav-item">

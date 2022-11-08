@@ -695,10 +695,14 @@ class CallsView(ListView):
         return context
 
     def get_queryset(self):
-        user_name = self.request.user.first_name + ' ' + self.request.user.last_name
         queryset = CallsCheck.objects.all().order_by('-id')
-        # queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=user_name)| Q(user_name__isnull=True))
         return queryset
+
+    def get_queryset_filter(self):
+        user_name = self.request.user.first_name + ' ' + self.request.user.last_name
+        queryset_by_filter = CallsCheck.objects.all().order_by('-id')\
+            .filter(Q(user_name=user_name) | Q(user_name__isnull=True))
+        return queryset_by_filter
 
 
 class UpdateCallView(UpdateView):

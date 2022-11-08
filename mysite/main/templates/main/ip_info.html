@@ -22,7 +22,7 @@
 
       {% if user.is_authenticated %}
 
-    <div style="padding:20px;margin-top:30px;">
+    <div style="padding:20px;padding-left:10%;margin-top:30px;width:98%;">
     <form method="GET" action="/ip_info">
         <label for="ip_address">Введите IP адрес или имя домена: </label>
         <input id="ip_address" type="text" name="object" value=""> <!-- В "value=", можно внести значение по умолчанию -->
@@ -33,7 +33,7 @@
     <div>
     </div>
 {% elif status == 1 %}
-    <div style="padding:20px;margin-top:30px;">
+    <div style="padding-left:10%;margin-top:30px;width:98%;">
         <table class="table table-striped">
             <thead>
                 <tr align="center">

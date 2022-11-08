@@ -5,25 +5,32 @@
 
   <style xmlns="http://www.w3.org/1999/html">
     form {
-        width: 260px;
-        margin-top: 2%;
+        width: 80%;
+        margin-top: 3%;
+        padding-left:10%;
+        width:98%;
     }
 
     .flex-wrap {display:flex;}
-    .flex-wrap label {width:200px;margin-right:auto;}
-    .flex-wrap button {width:250px;margin-left:auto;}
-    .flex-wrap input {width:calc(100% - 250px);}
-    .flex-wrap select {width:calc(100% - 50px);}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
 
-    form {display:flex;width:100%;}
-    select {margin-right:auto;width:30%;}
-    input {width:30%;}
     th {vertical-align: middle !important;}
     </style>
 
   {% if user.is_authenticated %}
     <br>
-    <div style="padding:20px;margin-top:30px;">
+
+
+<!--    <form action="" method="post">-->
+<!--        <label for="l_box1"><input type="radio" name="display_type" value="locationbox" id="l_box1">Display Location</label>-->
+<!--        <label for="d_box2"><input type="radio" name="display_type" value="displaybox" id="d_box2"> Display Direction</label>-->
+<!--        <button type="submit">Submit</button>-->
+<!--    </form>-->
+
+    <div style="padding-left:10%;margin-top:30px;width:98%;">
         <table class="table table-striped">
           <thead>
             <tr align="center">
