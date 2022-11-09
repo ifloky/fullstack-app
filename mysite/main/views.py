@@ -804,7 +804,7 @@ def get_personal_cc_report(start_date, end_date):
                 SELECT user_name AS "user_name", 
                     SUM(case when call_result != 'нет ответа' then 1 else 0 end)  AS "Количество звонков без ответа",
                     SUM(case when call_result != 'нет ответа' then 0 else 1 end ) AS "Количество звонков с ответом",
-                    SUM(case when verified_date != null then 1 else 0 end ) AS "Количество верификаций"
+                    SUM(case when verified_date is not Null then 1 else 0 end) AS "Количество верификаций"
                 FROM public.main_callscheck
                 WHERE upload_date >= '{start_date}' AND upload_date < '{end_date}' 
                                                     AND user_name != 'null' 
