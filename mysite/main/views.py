@@ -678,7 +678,7 @@ class UpdateRisksReportDay(UpdateView):
 
 
 class CallsView(ListView):
-    """ This class view show list of calls report for day """
+    """ This class view show list of not verified clients """
     model = CallsCheck
     form_class = CallsCheckForm
     template_name = 'main/calls_rep.html'
