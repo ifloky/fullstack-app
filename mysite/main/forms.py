@@ -164,7 +164,7 @@ class CallsCheckForm(ModelForm):
     class Meta:
         model = CallsCheck
 
-        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'verified_date', 'user_name']
+        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date', 'verified_date', 'user_name']
 
         widgets = {
             'client_id':
@@ -180,6 +180,10 @@ class CallsCheckForm(ModelForm):
             'call_result':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'call_result',
                                        'placeholder': 'Тут пишем результат звонка', 'label': 'Результат звонка'}),
+            'call_date':
+                forms.DateInput(attrs={'class': 'form-control', 'id': 'call_date',
+                                       'placeholder': '01.01.2021', 'label': 'Дата звонка', 'readonly': 'readonly'}),
+
             'verified_date':
                 forms.DateInput(attrs={'class': 'form-control', 'id': 'verified_date',
                                        'placeholder': '01.01.2022', 'label': 'Дата верификации',
@@ -194,12 +198,14 @@ class CallsCheckForm(ModelForm):
             'client_name': 'Имя клиента',
             'client_phone': 'Номер телефона клиента',
             'call_result': 'Результат звонка',
+            'call_date': 'Дата звонка',
             'verified_date': 'Дата верификации',
             'user_name': 'Имя оператора',
         }
 
         blank = {
             'client_name': True,
+            'call_date': True,
             'verified_date': True,
         }
 

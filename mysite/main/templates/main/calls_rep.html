@@ -60,6 +60,7 @@
                 <th scope="col">Имя клиента</th>
                 <th scope="col" width="250">Номер телефона</th>
                 <th scope="col">Результат звонка</th>
+                <th scope="col">Дата звонка</th>
                 <th scope="col">Дата верификации</th>
                 <th scope="col">Оператор</th>
                 <th scope="col"> </th>
@@ -72,6 +73,7 @@
                     <th scope="col">{{ list.client_name }}</th>
                     <th scope="col" width="250">{{ list.client_phone }}</th>
                     <th scope="col">{{ list.call_result }}</th>
+                    <th scope="col">{{ list.call_date }}</th>
                     <th scope="col">{{ list.verified_date }}</th>
                     <th scope="col">{{ list.user_name }}</th>
                     <th><a href="/update_calls/{{list.id}}">Редактировать</a></th>
