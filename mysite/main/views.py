@@ -696,12 +696,16 @@ class CallsView(ListView):
 
     def get_queryset(self):
         display_type = self.request.GET.get('display_type')
+        phone_number = self.request.GET.get('phone_number')
         if display_type == '1':
             user_name = self.request.user.first_name + ' ' + self.request.user.last_name
             queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=user_name))
             return queryset
         elif display_type == '2':
             queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=None))
+            return queryset
+        elif phone_number is not None:
+            queryset = CallsCheck.objects.all().order_by('-id').filter(Q(client_phone=phone_number))
             return queryset
         else:
             queryset = CallsCheck.objects.all().order_by('-id')

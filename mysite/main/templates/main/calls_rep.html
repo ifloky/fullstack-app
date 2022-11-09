@@ -5,10 +5,9 @@
 
   <style xmlns="http://www.w3.org/1999/html">
     form {
-        width: 80%;
         margin-top: 3%;
-        padding-left:10%;
-        width:98%;
+        display: flex;
+        align-items: center;
     }
 
     .flex-wrap {display:flex;}
@@ -19,7 +18,7 @@
 
     input {
         width: 100%;
-        padding: 12px 20px;
+        padding: 8px 20px;
         margin: 8px 0;
         box-sizing: border-box;
         border: 1px solid #ccc;
@@ -28,18 +27,29 @@
         outline: none;
     }
 
+    button {
+        width: 200px;
+        padding: 8px 20px;
+        margin: 8px 0;
+    }
+
     th {vertical-align: middle !important;}
     </style>
 
   {% if user.is_authenticated %}
     <br>
 
-
-    <form action="/calls_rep" method="get">
-        <label for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Мои запросы</label>
-        <label for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>
-        <button type="submit">Показать</button>
-    </form>
+    <div style="padding:20px;padding-left:10%;margin-top:30px;width:98%;display:flex">
+        <form action="/calls_rep" method="get">
+            <label for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Мои запросы</label>
+            <label for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>
+            <button type="submit">Показать</button>
+        </form>
+             <form method="GET" action="/calls_rep" style="margin-left:10%;width:60%">
+             <label for="search_box" style="display:block;width:220px">Поиск по номеру телефона:</label><input style="width:200px;margin-right:10px" type="search" name="phone_number" value="" id="search_box">
+             <button type="submit">Найти</button>
+        </form>
+    </div>
 
     <div style="padding-left:10%;margin-top:30px;width:98%;">
         <table class="table table-striped">
