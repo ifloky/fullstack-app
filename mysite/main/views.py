@@ -802,7 +802,10 @@ def get_personal_cc_report(start_date, end_date):
                     SUM(case when call_result != 'нет ответа' then 0 else 1 end ) AS "Количество звонков с ответом",
                     SUM(case when verified_date != null then 1 else 0 end ) AS "Количество верификаций"
                 FROM public.main_callscheck
-                WHERE upload_date >= '{start_date}' AND upload_date < '{end_date}' AND user_name != 'null' 
+                WHERE upload_date >= '{start_date}' AND upload_date < '{end_date}' 
+                                                    AND user_name != 'null' 
+                                                    AND call_result != 'есть фото'
+                                                    AND call_result != 'номер не РБ' 
                 GROUP BY user_name
                 ORDER BY user_name ASC''')
 
