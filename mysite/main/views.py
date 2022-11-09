@@ -695,24 +695,17 @@ class CallsView(ListView):
         return context
 
     def get_queryset(self):
-        queryset = CallsCheck.objects.all().order_by('-id')
-        return queryset
-    #
-    # def get_queryset_filter(self):
-    #     user_name = self.request.user.first_name + ' ' + self.request.user.last_name
-    #     queryset_by_filter = CallsCheck.objects.all().order_by('-id')\
-    #         .filter(Q(user_name__isnull=True))
-    #     return queryset_by_filter
-
-    # def post(self, request, *args, **kwargs):
-    #     if request.value == '1':
-    #         user_name = self.request.user.first_name + ' ' + self.request.user.last_name
-    #         queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=user_name))
-    #     elif request.value == '2':
-    #         queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name__isnull=True))
-    #     else:
-    #         queryset = CallsCheck.objects.all().order_by('-id')
-    #     return render(request, self.template_name, {'list_calls_reports': queryset})
+        display_type = self.request.GET.get('display_type')
+        if display_type == '1':
+            user_name = self.request.user.first_name + ' ' + self.request.user.last_name
+            queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=user_name))
+            return queryset
+        elif display_type == '2':
+            queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=None))
+            return queryset
+        else:
+            queryset = CallsCheck.objects.all().order_by('-id')
+            return queryset
 
 
 class UpdateCallView(UpdateView):

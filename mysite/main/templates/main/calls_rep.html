@@ -35,12 +35,11 @@
     <br>
 
 
-<!--    <form action="" method="post">-->
-<!--        {% csrf_token %}-->
-<!--        <label for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Свои запросы</label>-->
-<!--        <label for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>-->
-<!--        <button type="submit">Показать</button>-->
-<!--    </form>-->
+    <form action="/calls_rep" method="get">
+        <label for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Мои запросы</label>
+        <label for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>
+        <button type="submit">Показать</button>
+    </form>
 
     <div style="padding-left:10%;margin-top:30px;width:98%;">
         <table class="table table-striped">
