@@ -181,8 +181,9 @@ class CallsCheckForm(ModelForm):
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'call_result',
                                        'placeholder': 'Тут пишем результат звонка', 'label': 'Результат звонка'}),
             'call_date':
-                forms.DateInput(attrs={'class': 'form-control', 'id': 'call_date',
-                                       'placeholder': '01.01.2021', 'label': 'Дата звонка', 'readonly': 'readonly'}),
+                forms.DateTimeInput(attrs={'class': 'form-control', 'id': 'call_date',
+                                           'placeholder': '01.01.2021', 'label': 'Дата звонка',
+                                           'readonly': 'readonly'}),
 
             'verified_date':
                 forms.DateInput(attrs={'class': 'form-control', 'id': 'verified_date',
