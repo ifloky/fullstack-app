@@ -24,6 +24,7 @@
             if (var_page === undefined) {
                 $(this).attr('href', '?' + a_link)
             } else {
+<!--                $('input[value=var_page]').prop('checked', true);-->
                 $(this).attr('href', '?display_type=' + var_page + '&' + a_link);
             };
         });

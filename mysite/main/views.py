@@ -710,8 +710,14 @@ class CallsView(ListView):
                        & ~Q(call_result="номер не РБ") & ~Q(user_name=None))
             return queryset
         elif phone_number is not None:
-            queryset = CallsCheck.objects.all().order_by('-id').filter(Q(client_phone=phone_number))
-            return queryset
+            phone_number = phone_number.strip()
+            if len(phone_number) < 13:
+                phone_number = '+' + phone_number
+                queryset = CallsCheck.objects.all().order_by('-id').filter(Q(client_phone=phone_number))
+                return queryset
+            else:
+                queryset = CallsCheck.objects.all().order_by('-id').filter(Q(client_phone=phone_number))
+                return queryset
         else:
             queryset = CallsCheck.objects.all().order_by('-id')
             return queryset
