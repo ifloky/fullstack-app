@@ -720,7 +720,8 @@ class CallsView(ListView):
                 return queryset
         else:
             queryset = CallsCheck.objects.all().order_by('-id').filter(~Q(call_result="есть фото")
-                                                                       & ~Q(call_result="номер не РБ"))
+                                                                       & ~Q(call_result="номер не РБ")
+                                                                       & Q(verified_date=None))
             return queryset
 
 
