@@ -2,6 +2,34 @@
 
 
   {% block content %}
+    <script>
+    $(document).ready(function() {
+    var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+        var var_page = getUrlParameter('display_type');
+        $('.change_url').each(function(){
+            var a_link = $(this).attr('href');
+            if (var_page === undefined) {
+                $(this).attr('href', '?' + a_link)
+            } else {
+                $(this).attr('href', '?display_type=' + var_page + '&' + a_link);
+            };
+        });
+
+    });
+    </script>
 
   <style xmlns="http://www.w3.org/1999/html">
     form {
@@ -84,7 +112,11 @@
         </table>
     </div>
 
-  {% include 'main/includes/pagination.html' %}
+    {% if is_paginated %}
+
+        {% include 'main/includes/pagination.html' %}
+
+    {% endif %}
 
   {% else %}
     <div style="padding:20px;margin-top:30px;">

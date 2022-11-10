@@ -155,7 +155,7 @@ def main():
 
     print('\n')
     print('Загружено из базы АТС:', str(len(df)), 'записей')
-    print('Загружено из файла:', len(phone_numbers), 'записей')
+    print('Загружено из базы Отчетов:', len(phone_numbers), 'записей')
     print("Проверено и сохранено:", len(data), "номеров")
     print("Затрачено времени:", str(timedelta(seconds=working_time)))
     print(f'Время выполнения: {time.perf_counter() - start_job_time:0.4f} seconds')
