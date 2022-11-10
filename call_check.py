@@ -152,10 +152,10 @@ def main():
     for phone_number in phone_numbers:
         data.append(check_call(phone_number, df))
 
-    file = open('result.txt', 'w')
-    for item in data:
-        file.write("%s \n" % item)
-    file.close()
+    # file = open('result.txt', 'w')
+    # for item in data:
+    #     file.write("%s \n" % item)
+    # file.close()
 
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
