@@ -73,7 +73,8 @@ def load_phone_number_from_db():
 
         for phone in phone_list:
             if phone is not None:
-                phone = str(phone).replace(' ', '').replace('-', '').replace('(', '').replace(')', '').replace("'", "").split(',')[0]
+                phone = str(phone).replace(' ', '').replace('-', '').replace('(', '')
+                phone = phone.replace(')', '').replace("'", "").split(',')[0]
                 phones.append(phone)
             else:
                 continue
@@ -136,10 +137,16 @@ def update_call_date_in_db(phone_number, call_date_time):
             connection.close()
 
 
+def get_date_30_days_ago():
+    date_30_days_ago = datetime.now() - timedelta(days=30)
+    return date_30_days_ago.strftime('%Y-%m-%d')
+
+
 def main():
+    date_range = get_date_30_days_ago()
     start_job_time = time.perf_counter()
     data = []
-    df = create_df('2022-11-01')
+    df = create_df(date_range)
     phone_numbers = load_phone_number_from_db()
 
     for phone_number in phone_numbers:
