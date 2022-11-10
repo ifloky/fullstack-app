@@ -705,7 +705,7 @@ class CallsView(ListView):
             queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=None))
             return queryset
         elif display_type == '3':
-            queryset = CallsCheck.objects.all().order_by('-id').\
+            queryset = CallsCheck.objects.all().order_by('-id'). \
                 filter(Q(call_date=None) & ~Q(call_result="есть фото")
                        & ~Q(call_result="номер не РБ") & ~Q(user_name=None))
             return queryset
@@ -719,7 +719,8 @@ class CallsView(ListView):
                 queryset = CallsCheck.objects.all().order_by('-id').filter(Q(client_phone=phone_number))
                 return queryset
         else:
-            queryset = CallsCheck.objects.all().order_by('-id')
+            queryset = CallsCheck.objects.all().order_by('-id').filter(~Q(call_result="есть фото")
+                                                                       & ~Q(call_result="номер не РБ"))
             return queryset
 
 
