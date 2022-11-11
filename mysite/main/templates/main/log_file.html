@@ -21,7 +21,11 @@
   {% if user.is_authenticated %}
     <div style="padding-left:10%;margin-top:30px;width:98%;">
       <br>
-    {{ log_file }}
+      {% for line in log_file %}
+
+              {{ line }}<br>
+
+      {% endfor %}
     </div>
 
   {% else %}

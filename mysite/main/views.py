@@ -901,8 +901,7 @@ def view_log_file(request):
 
     try:
         with open('./call_check.log', 'r', encoding='UTF-8') as f:
-            file = f.read()
-            print(file)
+            file = f.read().split('\n')
     except Exception as e:
         print(e)
         file = 'Файл не найден'
