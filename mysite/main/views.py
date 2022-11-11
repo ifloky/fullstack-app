@@ -899,9 +899,13 @@ def view_log_file(request):
     """ This function read file and render source file to page """
     site_adm_users = User.objects.filter(groups__name='site_adm')
 
-    file = open('./call_check.log', 'r')
-    file = file.read()
-    print(file)
+    try:
+        with open('./call_check.log', 'r', encoding='UTF-8') as f:
+            file = f.read()
+            print(file)
+    except Exception as e:
+        print(e)
+        file = 'Файл не найден'
 
     data = {
         'site_adm': site_adm_users,
