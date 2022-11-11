@@ -50,6 +50,33 @@
         </table>
     </div>
 
+
+    <div style="padding-left:10%;margin-top:30px;width:98%;">
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col">Общее количество звонков</th>
+                <th scope="col">Количество звонков без ответа</th>
+                <th scope="col">Количество звонков с ответом</th>
+                <th scope="col">Подумает</th>
+                <th scope="col">Подумает</th>
+                <th scope="col">Не будет</th>
+                <th scope="col">Номер не РБ</th>
+                <th scope="col">Количество верификаций</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for report in calls_sum %}
+            <tr>
+                {% for x in report %} <td align="center">{{ x }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+
   {% else %}
     <div style="padding:20px;margin-top:30px;">
         <h3>Для просмотра отчета необходимо авторизоваться</h3>

@@ -847,6 +847,50 @@ def get_personal_cc_report(start_date, end_date):
     return report_list
 
 
+def get_cc_report(start_date, end_date):
+    """ This function get data from callscheck db table and return it as list of dicts """
+    cursor, connection = None, None
+
+    report_list = []
+
+    sql_query = (f'''
+                SELECT
+                    SUM(case when client_phone != '' then 1 else 0 end) AS "Общее количество звонков",
+                    SUM(case when call_result != 'нет ответа' then 1 else 0 end)  AS "Количество звонков без ответа",
+                    SUM(case when call_result != 'нет ответа' then 0 else 1 end ) AS "Количество звонков с ответом",
+                    SUM(case when call_result = 'подумает' then 1 else 0 end ) AS "Подумает",
+                    SUM(case when call_result = 'планирует' then 1 else 0 end ) AS "Паланирует",
+                    SUM(case when call_result = 'не будет' OR call_result = 'не будет, перезвонил сам' then 1 else 0 end) AS "Не будет",
+                    SUM(case when call_result = 'номер не РБ' then 1 else 0 end ) AS "Номер не РБ",
+                    SUM(case when verified_date is not Null then 1 else 0 end) AS "Количество верификаций"
+                FROM public.main_callscheck
+                WHERE upload_date >= '{start_date}' AND upload_date < '{end_date}' 
+                ''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        report_list = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return report_list
+
+
 def cc_report(request):
     """ This function return сс report page """
     site_adm_users = User.objects.filter(groups__name='site_adm')
@@ -873,6 +917,7 @@ def cc_report(request):
     end_date = str(end_date.date()).replace('-', '.')
 
     calls_report = get_personal_cc_report(start_date, end_date)
+    calls_sum = get_cc_report(start_date, end_date)
 
     months = MonthsForm()
     years = YearsForm()
@@ -887,6 +932,7 @@ def cc_report(request):
         'heads': heads,
         'support_heads': support_heads_users,
         'calls_report': calls_report,
+        'calls_sum': calls_sum,
         'months': months,
         'years': years,
         'month_id': month_name,
