@@ -800,6 +800,7 @@ class AddDataFromTextView(View):
                     print(e)
                     connection.rollback()
             return redirect('main:calls_rep')
+
         return render(request, self.template_name, {'form': form})
 
 
@@ -892,3 +893,18 @@ def cc_report(request):
         'year_id': year_id,
     }
     return render(request, "main/cc_report.html", data)
+
+
+def view_log_file(request):
+    """ This function read file and render source file to page """
+    site_adm_users = User.objects.filter(groups__name='site_adm')
+
+    file = open('./call_check.log', 'r')
+    file = file.read()
+    print(file)
+
+    data = {
+        'site_adm': site_adm_users,
+        'log_file': file,
+    }
+    return render(request, "main/log_file.html", data)
