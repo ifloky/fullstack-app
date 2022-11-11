@@ -160,7 +160,7 @@ def main():
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
 
-    print('\n')
+    print('Задание выполненно в:', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print('Загружено из базы АТС:', str(len(df)), 'записей')
     print('Загружено из базы Отчетов:', len(phone_numbers), 'записей')
     print("Проверено и сохранено:", len(data), "номеров")
