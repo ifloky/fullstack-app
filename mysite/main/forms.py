@@ -164,6 +164,13 @@ class CallsCheckForm(ModelForm):
     class Meta:
         model = CallsCheck
 
+        results_chooses = [('', ''), ('бросил трубку', 'бросил трубку'),
+                           ('верифицирован до звонка', 'верифицирован до звонка'),
+                           ('есть фото', 'есть фото'), ('играет не клиент', 'играет не клиент'),
+                           ('не будет', 'не будет'), ('нет 21 года', 'нет 21 года'),
+                           ('нет ответа', 'нет ответа'), ('номер не РБ', 'номер не РБ'), ('планирует', 'планирует'),
+                           ('подумает', 'подумает'), ('чужой номер', 'чужой номер'), ]
+
         fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date', 'verified_date', 'user_name']
 
         widgets = {
@@ -177,9 +184,10 @@ class CallsCheckForm(ModelForm):
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'client_phone', 'readonly': 'readonly',
                                        'placeholder': 'Тут пишем номер телефона клиента',
                                        'label': 'Номер телефона клиента'}),
-            'call_result':
-                forms.TextInput(attrs={'class': 'form-control', 'id': 'call_result',
-                                       'placeholder': 'Тут пишем результат звонка', 'label': 'Результат звонка'}),
+
+            'call_result': forms.widgets.Select(attrs={'class': 'form-control', 'id': 'call_result'},
+                                                choices=results_chooses),
+
             'call_date':
                 forms.DateTimeInput(attrs={'class': 'form-control', 'id': 'call_date',
                                            'placeholder': '01.01.2021', 'label': 'Дата звонка',

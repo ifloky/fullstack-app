@@ -71,6 +71,7 @@ class GetRiskReport(models.Model):
 
 
 class CallsCheck(models.Model):
+
     objects = None
     client_id = models.IntegerField(unique=True)
     client_name = models.CharField(max_length=200, blank=True, null=True)
