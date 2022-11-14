@@ -73,7 +73,14 @@
   {% if user.is_authenticated %}
     <br>
 
-    <div style="padding:20px;padding-left:10%;margin-top:30px;width:98%;display:flex">
+    <div style="padding-left:10%;margin-top:30px;width:98%;">
+        <form method="GET" action="/call_rep" >
+             {{ months }} {{ years }}
+<!--            <input type="submit" value="Показать отчет">-->
+        </form>
+    </div>
+
+    <div style="padding-left:10%;width:98%;display:flex">
         <form action="/calls_rep" method="get">
             <label for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Мои запросы</label>
             <label for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>
@@ -82,12 +89,12 @@
         </form>
              <form method="GET" action="/calls_rep" style="margin-left:10%;width:60%">
              <label for="search_box" style="display:block;width:220px">Поиск по номеру телефона:</label>
-                 <input style="width:200px;margin-right:10px" type="search" name="phone_number" value="" id="search_box" placeholder="+375XXXXXXXX">
+             <input style="width:200px;margin-right:10px" type="search" name="phone_number" value="" id="search_box" placeholder="+375XXXXXXXX">
              <button type="submit">Найти</button>
         </form>
     </div>
 
-    <div style="padding-left:10%;margin-top:30px;width:98%;">
+    <div style="padding-left:10%;width:98%;">
         <table class="table table-striped">
           <thead>
             <tr align="center">

@@ -692,6 +692,8 @@ class CallsView(ListView):
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['support'] = User.objects.filter(groups__name='support')
         context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        context['months'] = MonthsForm()
+        context['years'] = YearsForm()
         return context
 
     def get_queryset(self):
@@ -860,7 +862,8 @@ def get_cc_report(start_date, end_date):
                     SUM(case when call_result != 'нет ответа' then 0 else 1 end ) AS "Количество звонков с ответом",
                     SUM(case when call_result = 'подумает' then 1 else 0 end ) AS "Подумает",
                     SUM(case when call_result = 'планирует' then 1 else 0 end ) AS "Паланирует",
-                    SUM(case when call_result = 'не будет' OR call_result = 'не будет, перезвонил сам' then 1 else 0 end) AS "Не будет",
+                    SUM(case when call_result = 'не будет' OR call_result = 'не будет, перезвонил 
+                    сам' then 1 else 0 end) AS "Не будет",
                     SUM(case when call_result = 'номер не РБ' then 1 else 0 end ) AS "Номер не РБ",
                     SUM(case when verified_date is not Null then 1 else 0 end) AS "Количество верификаций"
                 FROM public.main_callscheck
