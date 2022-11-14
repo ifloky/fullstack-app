@@ -185,8 +185,8 @@ class CallsCheckForm(ModelForm):
                                        'placeholder': 'Тут пишем номер телефона клиента',
                                        'label': 'Номер телефона клиента'}),
 
-            'call_result': forms.widgets.Select(attrs={'class': 'form-control', 'id': 'call_result'},
-                                                choices=results_chooses),
+            'call_result':
+                forms.widgets.Select(attrs={'class': 'form-control', 'id': 'call_result'}, choices=results_chooses),
 
             'call_date':
                 forms.DateTimeInput(attrs={'class': 'form-control', 'id': 'call_date',
