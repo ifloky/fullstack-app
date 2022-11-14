@@ -177,9 +177,11 @@ class CallsCheckForm(ModelForm):
             'client_id':
                 forms.NumberInput(attrs={'class': 'form-control', 'id': 'client_id', 'readonly': 'readonly',
                                          'placeholder': 'Тут пишем ID клиента', 'label': 'ID клиента'}),
+
             'client_name':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'client_name',
                                        'placeholder': 'Тут пишем имя клиента', 'label': 'Имя клиента'}),
+
             'client_phone':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'client_phone', 'readonly': 'readonly',
                                        'placeholder': 'Тут пишем номер телефона клиента',
@@ -197,6 +199,7 @@ class CallsCheckForm(ModelForm):
                 forms.DateInput(attrs={'class': 'form-control', 'id': 'verified_date',
                                        'placeholder': '01.01.2022', 'label': 'Дата верификации',
                                        'blank': True, 'null': True, 'required': False}),
+
             'user_name':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly',
                                        'label': 'Имя оператора'}),
