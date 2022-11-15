@@ -55,6 +55,8 @@
         -webkit-transition: 0.5s;
         transition: 0.5s;
         outline: none;
+        height: 60px;
+        border-radius: 10px;
     }
 
     button {
@@ -70,8 +72,10 @@
     }
 
     label.filter {
-        margin: 0 10px;
+        margin-right: 10px;
         display:flex;
+        align-items: center;
+        height: 60px;
         border: 1px solid #ccc;
         border-radius: 10px;
         padding: 0 30px;
@@ -79,12 +83,35 @@
         text-align: center;
     }
 
+    label.filter:hover {
+        background: #d9d9d9;
+    }
+
+    select {
+        height: 60px;
+        border-radius: 10px !important;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    select:hover {
+        background: #d9d9d9;
+    }
+
+    button {
+        height: 60px;
+        border-radius: 10px !important;
+    }
+
+    button:hover {
+        background: #d9d9d9;
+    }
     </style>
 
   {% if user.is_authenticated %}
     <br>
 
-    <div style="padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
         <form method="GET" action="/calls_rep" style="width:60%">
             <label class="filter" for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Мои запросы</label>
             <label class="filter" for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>
