@@ -51,7 +51,7 @@
                 <span>Звонки входящие: {{ calls_in_count }}</span>
                 <span>Звонки исходящие: {{ calls_out_count }}</span>
                 <span>Почтовые обращения: {{ mail_count }}</span>
-                <span>Чаты: {{ chat_count }}</span>
+                <span>Чаты: {{ chats_count }}</span>
         <form action="" method="post">
             {% csrf_token %}<p class="flex-wrap">
             {{ form.as_p }}<p class="flex-wrap">

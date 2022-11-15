@@ -994,7 +994,8 @@ class AppealReportView(View):
         support_heads_users = User.objects.filter(groups__name='support_heads')
         support_users = User.objects.filter(groups__name='support')
 
-        user_name = self.request.user.first_name + ' ' + self.request.user.last_name
+        # user_name = self.request.user.first_name + ' ' + self.request.user.last_name
+        user_name = 'Мирончик Дмитрий'
 
         calls_in_count = AppealReport.objects.filter(appeal_type='Звонок входящий').\
             filter(Q(user_name=user_name)).count()
@@ -1005,8 +1006,11 @@ class AppealReportView(View):
         mail_count = AppealReport.objects.filter(appeal_type='Почта').\
             filter(Q(user_name=user_name)).count()
 
-        chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(appeal_type='Телеграмм')
-                                                 & Q(appeal_type='Ватсап') & Q(user_name=user_name)).count()
+        chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(user_name=user_name)).count()
+        telegram_count = AppealReport.objects.filter(Q(appeal_type='Телеграм') & Q(user_name=user_name)).count()
+        whatsapp_count = AppealReport.objects.filter(Q(appeal_type='Ватсап') & Q(user_name=user_name)).count()
+
+        chats_count = chat_count + telegram_count + whatsapp_count
 
         data = {
             'site_adm': site_adm_users,
@@ -1016,7 +1020,7 @@ class AppealReportView(View):
             'calls_in_count': calls_in_count,
             'calls_out_count': calls_out_count,
             'mail_count': mail_count,
-            'chat_count': chat_count,
+            'chats_count': chats_count,
             'form': self.form_class,
         }
         return render(request, self.template_name, data)
