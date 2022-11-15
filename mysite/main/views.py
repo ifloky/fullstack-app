@@ -1005,8 +1005,8 @@ class AppealReportView(View):
         mail_count = AppealReport.objects.filter(appeal_type='Почта').\
             filter(Q(user_name=user_name)).count()
 
-        chat_count = AppealReport.objects.filter(appeal_type='Чат').\
-            filter(Q(user_name=user_name)).count()
+        chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(appeal_type='Телеграмм')
+                                                 & Q(appeal_type='Ватсап') & Q(user_name=user_name)).count()
 
         data = {
             'site_adm': site_adm_users,
