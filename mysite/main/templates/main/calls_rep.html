@@ -60,7 +60,7 @@
     }
 
     button {
-        width: 200px;
+        width: 120px;
         padding: 6px 30px;
         margin: 8px 0;
     }
@@ -164,9 +164,9 @@
     {% endif %}
 
   {% else %}
-    <div style="padding:20px;margin-top:30px;">
-        <h3>Для просмотра отчета необходимо авторизоваться</h3>
-    </div>
+
+        {% include 'main/includes/non_authorised.html' %}
+
   {% endif %}
 
   {% endblock %}

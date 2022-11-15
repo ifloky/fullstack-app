@@ -93,10 +93,10 @@
 
 {% endif %}
 
-      {% else %}
-        <div style="padding:20px;margin-top:30px;">
-            <h3>Для просмотра отчета необходимо авторизоваться</h3>
-        </div>
-      {% endif %}
+  {% else %}
+
+        {% include 'main/includes/non_authorised.html' %}
+
+  {% endif %}
 
 {% endblock %}
