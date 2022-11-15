@@ -4,7 +4,6 @@
 
   <style xmlns="http://www.w3.org/1999/html">
     form {
-        margin-left: 12%;
         width: 80%;
         margin-top: 2%;
     }
@@ -13,6 +12,21 @@
     .flex-wrap button {width:450px;margin-right:auto;}
     .flex-wrap input {width:calc(100% - 50px);}
     .flex-wrap select {width:calc(100% - 250px);}
+
+    span {
+        width: 20px;
+        padding: 8px 20px;
+        margin: 8px 0;
+        margin-right: 20px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+        height: 60px;
+        border-radius: 10px;
+    }
+
   </style>
 
   {% if user.is_authenticated %}
@@ -33,8 +47,11 @@
     });
   </script>
 
-    <div style="padding:5px;margin-top:30px;">
-
+    <div style="padding:5px;margin-top:5%;margin-left:10%">
+                <span>Звонки входящие: {{ calls_in_count }}</span>
+                <span>Звонки исходящие: {{ calls_out_count }}</span>
+                <span>Почтовые обращения: {{ mail_count }}</span>
+                <span>Чаты: {{ chat_count }}</span>
         <form action="" method="post">
             {% csrf_token %}<p class="flex-wrap">
             {{ form.as_p }}<p class="flex-wrap">
