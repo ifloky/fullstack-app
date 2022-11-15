@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+import datetime
 
 
 class RiskReport(models.Model):
@@ -81,6 +82,7 @@ class CallsCheck(models.Model):
     verified_date = models.DateField(blank=True, null=True)
     user_name = models.CharField(max_length=200, blank=True, null=True)
     upload_date = models.DateTimeField(auto_now_add=True)
+    upload_date_short = models.CharField(max_length=7, default=datetime.date.today().strftime("%m-%Y"))
 
     def __str__(self):
         return self.client_id

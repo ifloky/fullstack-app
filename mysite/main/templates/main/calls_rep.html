@@ -49,6 +49,7 @@
         width: 100%;
         padding: 8px 20px;
         margin: 8px 0;
+        margin-right: 20px;
         box-sizing: border-box;
         border: 1px solid #ccc;
         -webkit-transition: 0.5s;
@@ -58,7 +59,7 @@
 
     button {
         width: 200px;
-        padding: 8px 20px;
+        padding: 6px 30px;
         margin: 8px 0;
     }
 
@@ -68,26 +69,37 @@
         text-align: center;
     }
 
+    label.filter {
+        margin: 0 10px;
+        display:flex;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 0 30px;
+        cursor: pointer;
+        text-align: center;
+    }
+
     </style>
 
   {% if user.is_authenticated %}
     <br>
 
-    <div style="padding-left:10%;margin-top:30px;width:98%;">
-        <form method="GET" action="/call_rep" >
+    <div style="padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+        <form method="GET" action="/calls_rep" style="width:60%">
+            <label class="filter" for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Мои запросы</label>
+            <label class="filter" for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>
+            <label class="filter" for="d_box3"><input type="radio" name="display_type" value="3" id="d_box3">  Нет звонка</label>
              {{ months }} {{ years }}
 <!--            <input type="submit" value="Показать отчет">-->
-        </form>
-    </div>
+<!--        </form>-->
+<!--    </div>-->
 
-    <div style="padding-left:10%;width:98%;display:flex">
-        <form action="/calls_rep" method="get">
-            <label for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Мои запросы</label>
-            <label for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>
-            <label for="d_box3"><input type="radio" name="display_type" value="3" id="d_box3">  Нет звонка</label>
+<!--    <div style="padding-left:10%;width:98%;display:flex">-->
+<!--        <form action="/calls_rep" method="get">-->
+
             <button type="submit">Показать</button>
         </form>
-             <form method="GET" action="/calls_rep" style="margin-left:10%;width:60%">
+             <form method="GET" action="/calls_rep" style="margin-left:3%;width:40%">
              <label for="search_box" style="display:block;width:220px">Поиск по номеру телефона:</label>
              <input style="width:200px;margin-right:10px" type="search" name="phone_number" value="" id="search_box" placeholder="+375XXXXXXXX">
              <button type="submit">Найти</button>

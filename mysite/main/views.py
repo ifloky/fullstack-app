@@ -697,19 +697,29 @@ class CallsView(ListView):
         return context
 
     def get_queryset(self):
+        month_id = self.request.GET.get('month')
+        year_id = self.request.GET.get('year')
+        if month_id is None and year_id is None:
+            filter_date = None
+        else:
+            filter_date = month_id + '-' + year_id
+        # print(filter_date)
         display_type = self.request.GET.get('display_type')
         phone_number = self.request.GET.get('phone_number')
         if display_type == '1':
             user_name = self.request.user.first_name + ' ' + self.request.user.last_name
-            queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=user_name))
+            queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=user_name)
+                                                                       & Q(upload_date_short=filter_date))
             return queryset
         elif display_type == '2':
-            queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=None))
+            queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=None)
+                                                                       & Q(upload_date_short=filter_date))
             return queryset
         elif display_type == '3':
             queryset = CallsCheck.objects.all().order_by('-id'). \
                 filter(Q(call_date=None) & ~Q(call_result="есть фото")
-                       & ~Q(call_result="номер не РБ") & ~Q(user_name=None))
+                       & ~Q(call_result="номер не РБ") & ~Q(user_name=None)
+                       & Q(upload_date_short=filter_date))
             return queryset
         elif phone_number is not None:
             phone_number = phone_number.strip()
@@ -720,6 +730,12 @@ class CallsView(ListView):
             else:
                 queryset = CallsCheck.objects.all().order_by('-id').filter(Q(client_phone=phone_number))
                 return queryset
+        elif filter_date is not None:
+            queryset = CallsCheck.objects.all().order_by('-id').filter(~Q(call_result="есть фото")
+                                                                       & ~Q(call_result="номер не РБ")
+                                                                       & Q(verified_date=None)
+                                                                       & Q(upload_date_short=filter_date))
+            return queryset
         else:
             queryset = CallsCheck.objects.all().order_by('-id').filter(~Q(call_result="есть фото")
                                                                        & ~Q(call_result="номер не РБ")
