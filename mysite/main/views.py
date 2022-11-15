@@ -803,11 +803,14 @@ class AddDataFromTextView(View):
                 client_id = client_data[0][0]  # get client id
                 client_phone = '+' + client_data[0][1]  # get client phone
                 upload_date = datetime.datetime.now()  # get upload date
+                upload_date_short = upload_date.strftime('%m-%Y')  # get upload date short
                 """ sql query added client_id and client_phone to sql table main_callscheck """
                 try:
                     with connection.cursor() as cursor:
-                        cursor.execute("INSERT INTO main_callscheck (client_id, client_phone, upload_date) "
-                                       "VALUES (%s, %s, %s)", [client_id, client_phone, upload_date])
+                        cursor.execute("INSERT INTO main_callscheck "
+                                       "(client_id, client_phone, upload_date, upload_date_short) "
+                                       "VALUES (%s, %s, %s, %s)",
+                                       [client_id, client_phone, upload_date, upload_date_short])
                         connection.commit()
                     print('Данные клиента:', client_id, client_phone)
                 except Exception as e:
@@ -990,16 +993,26 @@ class AppealReportView(View):
         site_adm_users = User.objects.filter(groups__name='site_adm')
         support_heads_users = User.objects.filter(groups__name='support_heads')
         support_users = User.objects.filter(groups__name='support')
+
+        calls_in_count = AppealReport.objects.filter(appeal_type='Звонок входящий').count()
+        calls_out_count = AppealReport.objects.filter(appeal_type='Звонок исходящий').count()
+        mail_count = AppealReport.objects.filter(appeal_type='Почта').count()
+        chat_count = AppealReport.objects.filter(appeal_type='Чат').count()
+
         data = {
             'site_adm': site_adm_users,
             'support_heads': support_heads_users,
             'support': support_users,
             'superuser': User.objects.filter(is_superuser=True),
+            'calls_in_count': calls_in_count,
+            'calls_out_count': calls_out_count,
+            'mail_count': mail_count,
+            'chat_count': chat_count,
             'form': self.form_class,
         }
         return render(request, self.template_name, data)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
@@ -1014,18 +1027,9 @@ class AppealReportListView(ListView):
     model = AppealReport
     template_name = 'main/appeal_rep.html'
     context_object_name = 'appeal_rep'
-    paginate_by = 10
+    # paginate_by = 30
 
     def get_queryset(self):
-        site_adm_users = User.objects.filter(groups__name='site_adm')
-        support_heads_users = User.objects.filter(groups__name='support_heads')
-        support_users = User.objects.filter(groups__name='support')
-        data = {
-            'site_adm': site_adm_users,
-            'support_heads': support_heads_users,
-            'support': support_users,
-            'superuser': User.objects.filter(is_superuser=True),
-        }
         return AppealReport.objects.all()
 
     def get_context_data(self, *, object_list=None, **kwargs):
