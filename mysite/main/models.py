@@ -102,3 +102,18 @@ class AddDataFromText(models.Model):
     class Meta:
         verbose_name = 'Добавление данных из текста'
         verbose_name_plural = 'Добавление данных из текста'
+
+
+class AppealReport(models.Model):
+    objects = None
+    appeal_type = models.CharField(max_length=200)
+    appeal_result = models.CharField(max_length=200)
+    appeal_date = models.DateTimeField(default=timezone.localtime)
+    user_name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.appeal_date
+
+    class Meta:
+        verbose_name = 'Отчет по звонкам'
+        verbose_name_plural = 'Отчет по звонкам'

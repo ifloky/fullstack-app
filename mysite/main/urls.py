@@ -28,6 +28,8 @@ urlpatterns = [
     path('add_data/', views.AddDataFromTextView.as_view(), name='add_data'),
 
     path('cc_report/', views.cc_report, name='cc_report'),
+    path('appeal/', views.AppealReportView.as_view(), name='appeal'),
+    path('appeal_rep/', views.AppealReportListView.as_view(), name='appeal_rep'),
 
     path('log_file/', views.view_log_file, name='log_file'),
 ]

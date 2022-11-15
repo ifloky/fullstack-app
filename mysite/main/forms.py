@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck
+from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport
 
 import datetime
 
@@ -243,3 +243,55 @@ class AddDataFromTextForm(forms.Form):
     def save(self):
         text = self.cleaned_data['text']
         return text
+
+
+class AppealReportForm(ModelForm):
+
+    class Meta:
+        model = AppealReport
+
+        fields = ['appeal_type', 'appeal_result', 'user_name']
+
+        type_chooses = [('', ''),
+                        ('Чат', 'Чат'),
+                        ('Почта', 'Почта'),
+                        ('Телеграмм', 'Телеграмм'),
+                        ('Ватсап', 'Ватсап'),
+                        ('Звонок входящий', 'Звонок входящий'),
+                        ('Звонок исходящий', 'Звонок исходящий')]
+
+        result_chooses = [('', ''),
+                          ('Пояснение ввода логина', 'Пояснение ввода логина'),
+                          ('Активировать бонус', 'Активировать бонус'),
+                          ('Провести клиента по сайту, где, что найти', 'Провести клиента по сайту, где, что найти'),
+                          ('Общая информация', 'Общая информация'),
+                          ('Орг.вопросы (ком.предл, претензии, лицензии и т.д',
+                          'Орг.вопросы (ком.предл, претензии, лицензии и т.д')]
+
+        widgets = {
+            'appeal_type':
+                forms.widgets.Select(attrs={'class': 'form-control', 'id': 'appeal_type'}, choices=type_chooses),
+
+            'appeal_result':
+                forms.widgets.Select(attrs={'class': 'form-control', 'id': 'appeal_result'}, choices=result_chooses),
+
+            'user_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly',
+                                       'label': 'Имя оператора'}),
+        }
+
+        labels = {
+            'appeal_type': 'Тип обращения',
+            'appeal_result': 'Результат обращения',
+            'user_name': 'Имя оператора',
+        }
+
+        # blank = {
+        #     'appeal_type': False,
+        #     'appeal_result': False,
+        # }
+        #
+        # required = {
+        #     'appeal_type': True,
+        #     'appeal_result': True,
+        # }

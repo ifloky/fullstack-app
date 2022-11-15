@@ -1,0 +1,51 @@
+ {% extends 'main/header.html' %}
+
+  {% block content %}
+
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        margin-left: 12%;
+        width: 80%;
+        margin-top: 2%;
+    }
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
+  </style>
+
+  {% if user.is_authenticated %}
+
+  <script>
+    $(document).ready(function() {
+            $(document).keypress(function(event) {
+                if(event.keyCode==13){
+                    $(event.target).parent().next().find('input').focus();
+                    event.preventDefault();
+                }
+            });
+        });
+  </script>
+  <script>
+    $(document).ready(function(){
+      $("#user_name").attr("value", '{{user.first_name}} {{user.last_name}}');
+    });
+  </script>
+
+    <div style="padding:5px;margin-top:30px;">
+
+        <form action="" method="post">
+            {% csrf_token %}<p class="flex-wrap">
+            {{ form.as_p }}<p class="flex-wrap">
+            <button class="btn btn-success" type="submit">Сохранить</button>
+        </form>
+    </div>
+
+  {% else %}
+
+        {% include 'main/includes/non_authorised.html' %}
+
+  {% endif %}
+
+  {% endblock %}

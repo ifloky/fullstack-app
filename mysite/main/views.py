@@ -22,9 +22,9 @@ from django.views.generic.list import ListView
 from django.urls.base import reverse_lazy
 
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm
-from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm
+from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck, AddDataFromText
+from .models import RiskReport, RiskReportDay, CallsCheck, AddDataFromText, AppealReport
 
 import credentials
 import requests
@@ -769,13 +769,10 @@ class AddDataFromTextView(View):
     def get(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
         support_heads_users = User.objects.filter(groups__name='support_heads')
-        risks_users = User.objects.filter(groups__name='risks')
-        risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
         data = {
             'site_adm': site_adm_users,
             'support_heads': support_heads_users,
-            'risks': risks_users,
-            'risk_heads': risk_heads_users,
             'superuser': User.objects.filter(is_superuser=True),
             'form': self.form_class,
         }
@@ -979,3 +976,62 @@ def view_log_file(request):
         'log_file': file,
     }
     return render(request, "main/log_file.html", data)
+
+
+class AppealReportView(View):
+    """ This class return appeal report page """
+
+    model = AppealReport
+    form_class = AppealReportForm
+    template_name = 'main/appeal.html'
+    success_url = reverse_lazy('main:appeal')
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        support_heads_users = User.objects.filter(groups__name='support_heads')
+        support_users = User.objects.filter(groups__name='support')
+        data = {
+            'site_adm': site_adm_users,
+            'support_heads': support_heads_users,
+            'support': support_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+        }
+        return render(request, self.template_name, data)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('main:appeal')
+
+        return render(request, self.template_name, {'form': form})
+
+
+class AppealReportListView(ListView):
+    """ This class return appeal report list page """
+
+    model = AppealReport
+    template_name = 'main/appeal_rep.html'
+    context_object_name = 'appeal_rep'
+    paginate_by = 10
+
+    def get_queryset(self):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        support_heads_users = User.objects.filter(groups__name='support_heads')
+        support_users = User.objects.filter(groups__name='support')
+        data = {
+            'site_adm': site_adm_users,
+            'support_heads': support_heads_users,
+            'support': support_users,
+            'superuser': User.objects.filter(is_superuser=True),
+        }
+        return AppealReport.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AppealReportListView, self).get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        context['support'] = User.objects.filter(groups__name='support')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        return context
