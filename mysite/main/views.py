@@ -1041,18 +1041,25 @@ class AppealReportView(View):
         support_heads_users = User.objects.filter(groups__name='support_heads')
         support_users = User.objects.filter(groups__name='support')
 
-        user_name = self.request.user.first_name + ' ' + self.request.user.last_name
-        # user_name = 'Елена Федькова'
+        # user_name = self.request.user.first_name + ' ' + self.request.user.last_name
+        user_name = 'Елена Федькова'
 
         shift_start = None
         shift_end = None
 
-        if datetime.datetime.now().hour < 20:
+        if 8 <= datetime.datetime.now().hour < 20:
             shift_start = datetime.datetime.now().strftime('%Y-%m-%d 08:00:00+03')
             shift_end = datetime.datetime.now().strftime('%Y-%m-%d 20:00:00+03')
-        elif datetime.datetime.now().hour >= 20:
+            print(shift_start, shift_end)
+        elif 20 <= datetime.datetime.now().hour < 0:
             shift_start = datetime.datetime.now().strftime('%Y-%m-%d 20:00:00+03')
             shift_end = datetime.datetime.now().strftime('%Y-%m-%d 08:00:00+03')
+            print(shift_start, shift_end)
+        elif 0 <= datetime.datetime.now().hour < 8:
+            shift_start = datetime.datetime.now() - datetime.timedelta(days=1)
+            shift_start = shift_start.strftime('%Y-%m-%d 20:00:00+03')
+            shift_end = datetime.datetime.now().strftime('%Y-%m-%d 08:00:00+03')
+            print(shift_start, shift_end)
 
         calls_in_count = AppealReport.objects.filter(appeal_type='Звонок входящий').\
             filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
