@@ -795,28 +795,32 @@ class AddDataFromTextView(View):
             data = data.split('\n')  # split data by tabulation
             data = [i.split(',') for i in data]  # split data by new line
             data = [i for i in data if i != ['']]  # remove empty list
+            data = list(filter(None, data))  # remove empty spaces
 
             for i in data:
-                client_data = i  # get client data
-                client_data = [i.split('\t') for i in client_data]  # split client data by tabulation
-                client_data = [i for i in client_data if i != ['']]  # remove empty list
-                client_id = client_data[0][0]  # get client id
-                client_phone = '+' + client_data[0][1]  # get client phone
-                upload_date = datetime.datetime.now()  # get upload date
-                upload_date_short = upload_date.strftime('%m-%Y')  # get upload date short
-                """ sql query added client_id and client_phone to sql table main_callscheck """
-                try:
-                    with connection.cursor() as cursor:
-                        cursor.execute("INSERT INTO main_callscheck "
-                                       "(client_id, client_phone, upload_date, upload_date_short) "
-                                       "VALUES (%s, %s, %s, %s)",
-                                       [client_id, client_phone, upload_date, upload_date_short])
-                        connection.commit()
-                    print('Данные клиента:', client_id, client_phone)
-                except Exception as e:
-                    print('Данные клиента:', client_id, client_phone)
-                    print(e)
-                    connection.rollback()
+                if i != ['\t\r']:
+                    client_data = i  # get client data
+                    client_data = [i.split('\t') for i in client_data]  # split client data by tabulation
+                    client_data = [i for i in client_data if i != ['']]  # remove empty list
+                    client_id = client_data[0][0]  # get client id
+                    client_phone = '+' + client_data[0][1]  # get client phone
+                    upload_date = datetime.datetime.now()  # get upload date
+                    upload_date_short = upload_date.strftime('%m-%Y')  # get upload date short
+                    """ sql query added client_id and client_phone to sql table main_callscheck """
+                    try:
+                        with connection.cursor() as cursor:
+                            cursor.execute("INSERT INTO main_callscheck "
+                                           "(client_id, client_phone, upload_date, upload_date_short) "
+                                           "VALUES (%s, %s, %s, %s)",
+                                           [client_id, client_phone, upload_date, upload_date_short])
+                            connection.commit()
+                        print('Данные клиента:', client_id, client_phone)
+                    except Exception as e:
+                        print('Данные клиента:', client_id, client_phone)
+                        print(e)
+                        connection.rollback()
+                else:
+                    continue
             return redirect('main:calls_rep')
 
         return render(request, self.template_name, {'form': form})
