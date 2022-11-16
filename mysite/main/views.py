@@ -1083,17 +1083,21 @@ class AppealReportListView(ListView):
     """ This class return appeal report list page """
 
     model = AppealReport
+    form_class = AppealReportForm
     template_name = 'main/appeal_rep.html'
     context_object_name = 'appeal_rep'
-    # paginate_by = 30
+    paginate_by = 30
 
     def get_queryset(self):
-        return AppealReport.objects.all()
+        return AppealReport.objects.all().order_by('-id')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AppealReportListView, self).get_context_data(**kwargs)
+        context['form'] = self.form_class
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['support_heads'] = User.objects.filter(groups__name='support_heads')
         context['support'] = User.objects.filter(groups__name='support')
         context['superuser'] = User.objects.filter(is_superuser=True)
+        context['months'] = MonthsForm()
+        context['years'] = YearsForm()
         return context

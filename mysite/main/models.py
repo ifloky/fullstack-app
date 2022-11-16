@@ -105,6 +105,7 @@ class AddDataFromText(models.Model):
 
 
 class AppealReport(models.Model):
+
     objects = None
     appeal_type = models.CharField(max_length=200)
     appeal_result = models.CharField(max_length=200)
@@ -113,7 +114,7 @@ class AppealReport(models.Model):
     appeal_date_short = models.CharField(max_length=7, default=datetime.date.today().strftime("%m-%Y"))
 
     def __str__(self):
-        return self.appeal_date
+        return self.appeal_type
 
     class Meta:
         verbose_name = 'Отчет по звонкам'
