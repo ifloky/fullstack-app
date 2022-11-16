@@ -1072,8 +1072,10 @@ class AppealReportView(View):
 
         chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(user_name=user_name)).\
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
+
         telegram_count = AppealReport.objects.filter(Q(appeal_type='Телеграм') & Q(user_name=user_name)).\
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
+
         whatsapp_count = AppealReport.objects.filter(Q(appeal_type='Ватсап') & Q(user_name=user_name)).\
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
