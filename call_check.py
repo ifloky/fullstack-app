@@ -95,6 +95,8 @@ def check_call(phone_number, df):
     for index, row in df.iterrows():
         if row['client'] == phone_number:
             check = row['client'], row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
+            # call_date_time = row['CallDateTime'] + timedelta(hours=3)
+            # call_date_time = call_date_time.strftime("%Y-%m-%d %H:%M:%S")
             call_date_time = row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
             client_number = row['client']
             check = str(check).replace('(', '').replace(')', '').replace("'", '')
@@ -137,13 +139,13 @@ def update_call_date_in_db(phone_number, call_date_time):
             connection.close()
 
 
-def get_date_30_days_ago():
-    date_30_days_ago = datetime.now() - timedelta(days=30)
+def get_date_15_days_ago():
+    date_30_days_ago = datetime.now() - timedelta(days=15)
     return date_30_days_ago.strftime('%Y-%m-%d')
 
 
 def main():
-    date_range = get_date_30_days_ago()
+    date_range = get_date_15_days_ago()
     start_job_time = time.perf_counter()
     data = []
     df = create_df(date_range)
