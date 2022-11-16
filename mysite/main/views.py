@@ -911,7 +911,7 @@ def get_cc_report(start_date, end_date):
 
 
 def get_appeal_report(date_short):
-    """ This function get data from callscheck db table and return it as list of dicts """
+    """ This function get data from appealreport db table and return it as list of dicts """
     cursor, connection = None, None
 
     report_list = []
@@ -1036,24 +1036,39 @@ class AppealReportView(View):
     success_url = reverse_lazy('main:appeal')
 
     def get(self, request):
+
         site_adm_users = User.objects.filter(groups__name='site_adm')
         support_heads_users = User.objects.filter(groups__name='support_heads')
         support_users = User.objects.filter(groups__name='support')
 
         user_name = self.request.user.first_name + ' ' + self.request.user.last_name
+        # user_name = 'Елена Федькова'
+
+        shift_start = None
+        shift_end = None
+
+        if datetime.datetime.now().hour < 20:
+            shift_start = datetime.datetime.now().strftime('%Y-%m-%d 08:00:00+03')
+            shift_end = datetime.datetime.now().strftime('%Y-%m-%d 20:00:00+03')
+        elif datetime.datetime.now().hour >= 20:
+            shift_start = datetime.datetime.now().strftime('%Y-%m-%d 20:00:00+03')
+            shift_end = datetime.datetime.now().strftime('%Y-%m-%d 08:00:00+03')
 
         calls_in_count = AppealReport.objects.filter(appeal_type='Звонок входящий').\
-            filter(Q(user_name=user_name)).count()
+            filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
         calls_out_count = AppealReport.objects.filter(appeal_type='Звонок исходящий').\
-            filter(Q(user_name=user_name)).count()
+            filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
         mail_count = AppealReport.objects.filter(appeal_type='Почта').\
-            filter(Q(user_name=user_name)).count()
+            filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(user_name=user_name)).count()
-        telegram_count = AppealReport.objects.filter(Q(appeal_type='Телеграм') & Q(user_name=user_name)).count()
-        whatsapp_count = AppealReport.objects.filter(Q(appeal_type='Ватсап') & Q(user_name=user_name)).count()
+        chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(user_name=user_name)).\
+            filter(Q(appeal_date__range=(shift_start, shift_end))).count()
+        telegram_count = AppealReport.objects.filter(Q(appeal_type='Телеграм') & Q(user_name=user_name)).\
+            filter(Q(appeal_date__range=(shift_start, shift_end))).count()
+        whatsapp_count = AppealReport.objects.filter(Q(appeal_type='Ватсап') & Q(user_name=user_name)).\
+            filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
         chats_count = chat_count + telegram_count + whatsapp_count
 
@@ -1089,6 +1104,7 @@ class AppealReportListView(ListView):
     paginate_by = 30
 
     def get_queryset(self):
+
         return AppealReport.objects.all().order_by('-id')
 
     def get_context_data(self, *, object_list=None, **kwargs):
