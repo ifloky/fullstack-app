@@ -910,7 +910,7 @@ def get_cc_report(start_date, end_date):
     return report_list
 
 
-def get_appeal_report(start_date, end_date):
+def get_appeal_report(date_short):
     """ This function get data from callscheck db table and return it as list of dicts """
     cursor, connection = None, None
 
@@ -925,7 +925,7 @@ def get_appeal_report(start_date, end_date):
                     SUM(case when appeal_type = 'Телеграмм' then 1 else 0 end) + 
                     SUM(case when appeal_type = 'Ватсап' then 1 else 0 end) AS "Чаты"
                 FROM public.main_appealreport
-                WHERE upload_date >= '{start_date}' AND upload_date < '{end_date}' 
+                WHERE appeal_date_short = '{date_short}' 
                 ''')
 
     try:
@@ -972,6 +972,8 @@ def cc_report(request):
     if len(month_id) > 2:
         month_id = month_id[1:]
 
+    date_short = str(month_id) + '-' + str(year_id)
+
     start_date = f'01.{month_id}.{year_id}'
     end_date = f'01.{month_id}.{year_id}'
     end_date = datetime.datetime.strptime(end_date, '%d.%m.%Y') + relativedelta(months=1)
@@ -979,6 +981,7 @@ def cc_report(request):
 
     calls_report = get_personal_cc_report(start_date, end_date)
     calls_sum = get_cc_report(start_date, end_date)
+    appeal_sum = get_appeal_report(date_short)
 
     months = MonthsForm()
     years = YearsForm()
@@ -994,6 +997,7 @@ def cc_report(request):
         'support_heads': support_heads_users,
         'calls_report': calls_report,
         'calls_sum': calls_sum,
+        'appeal_sum': appeal_sum,
         'months': months,
         'years': years,
         'month_id': month_name,

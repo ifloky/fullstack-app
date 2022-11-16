@@ -98,6 +98,28 @@
     </div>
 
 
+    <div style="padding-left:10%;margin-top:30px;width:98%;">
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col">Входящие вызовы</th>
+                <th scope="col">Исходящие вызовы</th>
+                <th scope="col">Почтовые обращаения</th>
+                <th scope="col">Чаты</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for report in appeal_sum %}
+            <tr>
+                {% for x in report %} <td align="center">{{ x }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+
   {% else %}
 
         {% include 'main/includes/non_authorised.html' %}
