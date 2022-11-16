@@ -910,6 +910,48 @@ def get_cc_report(start_date, end_date):
     return report_list
 
 
+def get_appeal_report(start_date, end_date):
+    """ This function get data from callscheck db table and return it as list of dicts """
+    cursor, connection = None, None
+
+    report_list = []
+
+    sql_query = (f'''
+                SELECT
+                    SUM(case when appeal_type = 'Звонок входящий' then 1 else 0 end) AS "Входящие вызовы",
+                    SUM(case when appeal_type = 'Звонок исходящий' then 1 else 0 end) AS "Исходящие вызовы",
+                    SUM(case when appeal_type = 'Почта' then 1 else 0 end) AS "Почтовые обращаения",
+                    SUM(case when appeal_type = 'Чат' then 1 else 0 end) + 
+                    SUM(case when appeal_type = 'Телеграмм' then 1 else 0 end) + 
+                    SUM(case when appeal_type = 'Ватсап' then 1 else 0 end) AS "Чаты"
+                FROM public.main_appealreport
+                WHERE upload_date >= '{start_date}' AND upload_date < '{end_date}' 
+                ''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        report_list = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return report_list
+
+
 def cc_report(request):
     """ This function return сс report page """
     site_adm_users = User.objects.filter(groups__name='site_adm')

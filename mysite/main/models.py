@@ -110,6 +110,7 @@ class AppealReport(models.Model):
     appeal_result = models.CharField(max_length=200)
     appeal_date = models.DateTimeField(default=timezone.localtime)
     user_name = models.CharField(max_length=200)
+    appeal_date_short = models.CharField(max_length=7, default=datetime.date.today().strftime("%m-%Y"))
 
     def __str__(self):
         return self.appeal_date
