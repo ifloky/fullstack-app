@@ -1054,17 +1054,21 @@ class AppealReportView(View):
         if 8 <= datetime.datetime.now().hour < 20:
             shift_start = datetime.datetime.now().strftime('%Y-%m-%d 08:00:00+03')
             shift_end = datetime.datetime.now().strftime('%Y-%m-%d 20:00:00+03')
+            print('\n')
             print(datetime.datetime.now())
-            print(shift_start, shift_end, user_name)
-        elif 20 <= datetime.datetime.now().hour < 0:
+            print(shift_start, shift_end, user_name, '\n')
+        elif 20 <= datetime.datetime.now().hour < 24:
             shift_start = datetime.datetime.now().strftime('%Y-%m-%d 20:00:00+03')
             shift_end = datetime.datetime.now().strftime('%Y-%m-%d 08:00:00+03')
-            print(shift_start, shift_end, user_name)
+            print('\n')
+            print(datetime.datetime.now())
+            print(shift_start, shift_end, user_name, '\n')
         elif 0 <= datetime.datetime.now().hour < 8:
-            shift_start = datetime.datetime.now() - datetime.timedelta(days=1)
-            shift_start = shift_start.strftime('%Y-%m-%d 20:00:00+03')
+            shift_start = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d 20:00:00+03')
             shift_end = datetime.datetime.now().strftime('%Y-%m-%d 08:00:00+03')
-            print(shift_start, shift_end, user_name)
+            print('\n')
+            print(datetime.datetime.now())
+            print(shift_start, shift_end, user_name, '\n')
 
         calls_in_count = AppealReport.objects.filter(appeal_type='Звонок входящий').\
             filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
