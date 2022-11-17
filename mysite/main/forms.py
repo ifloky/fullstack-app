@@ -285,13 +285,3 @@ class AppealReportForm(ModelForm):
             'appeal_result': 'Результат обращения',
             'user_name': 'Имя оператора',
         }
-
-        # blank = {
-        #     'appeal_type': False,
-        #     'appeal_result': False,
-        # }
-        #
-        # required = {
-        #     'appeal_type': True,
-        #     'appeal_result': True,
-        # }
