@@ -1046,7 +1046,7 @@ class AppealReportView(View):
         support_users = User.objects.filter(groups__name='support')
 
         user_name = self.request.user.first_name + ' ' + self.request.user.last_name
-        # user_name = 'Мирончик Дмитрий'
+        # user_name = 'Инна Кузовкова'
 
         shift_start = None
         shift_end = None
@@ -1059,7 +1059,7 @@ class AppealReportView(View):
             print(shift_start, shift_end, user_name, '\n')
         elif 20 <= datetime.datetime.now().hour < 24:
             shift_start = datetime.datetime.now().strftime('%Y-%m-%d 20:00:00+03')
-            shift_end = datetime.datetime.now().strftime('%Y-%m-%d 08:00:00+03')
+            shift_end = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d 08:00:00+03')
             print('\n')
             print(datetime.datetime.now())
             print(shift_start, shift_end, user_name, '\n')
