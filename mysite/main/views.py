@@ -1045,8 +1045,8 @@ class AppealReportView(View):
         support_heads_users = User.objects.filter(groups__name='support_heads')
         support_users = User.objects.filter(groups__name='support')
 
-        # user_name = self.request.user.first_name + ' ' + self.request.user.last_name
-        user_name = 'Мирончик Дмитрий'
+        user_name = self.request.user.first_name + ' ' + self.request.user.last_name
+        # user_name = 'Мирончик Дмитрий'
 
         shift_start = None
         shift_end = None
