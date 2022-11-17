@@ -92,18 +92,6 @@ class CallsCheck(models.Model):
         verbose_name_plural = 'Проверка звонков'
 
 
-class AddDataFromText(models.Model):
-    objects = None
-    text = models.TextField()
-
-    def __str__(self):
-        return self.text
-
-    class Meta:
-        verbose_name = 'Добавление данных из текста'
-        verbose_name_plural = 'Добавление данных из текста'
-
-
 class AppealReport(models.Model):
 
     objects = None

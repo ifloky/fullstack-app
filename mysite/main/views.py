@@ -24,7 +24,7 @@ from django.urls.base import reverse_lazy
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck, AddDataFromText, AppealReport
+from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport
 
 import credentials
 import requests
@@ -761,7 +761,7 @@ class UpdateCallView(UpdateView):
 
 class AddDataFromTextView(View):
     """ This class view add new data from text area """
-    model = AddDataFromText
+    # model = AddDataFromText
     form_class = AddDataFromTextForm
     template_name = 'main/add_data.html'
     success_url = reverse_lazy('main:calls_rep')
