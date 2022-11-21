@@ -1181,3 +1181,19 @@ class AppealReportListView(ListView):
         context['months'] = MonthsForm()
         context['years'] = YearsForm()
         return context
+
+
+class UpdateAppealView(UpdateView):
+    """ This class view add new call report """
+    model = AppealReport
+    form_class = AppealReportForm
+    template_name = 'main/update_appeal.html'
+    success_url = reverse_lazy('main:update_appeal')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['support'] = User.objects.filter(groups__name='support')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        return context

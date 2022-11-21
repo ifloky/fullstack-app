@@ -129,6 +129,7 @@
                 <th scope="col">Тип обращения</th>
                 <th scope="col">Проблема</th>
                 <th scope="col">Время обращения</th>
+                <th scope="col">Редактировать</th>
             </tr>
           </thead>
           <tbody>
@@ -138,6 +139,7 @@
                     <th scope="col">{{ list.appeal_type }}</th>
                     <th scope="col">{{ list.appeal_result }}</th>
                     <th scope="col">{{ list.appeal_date }}</th>
+                    <th><a href="/update_appeal/{{list.id}}">Редактировать</a></th>
                 </tr>
             {% endfor %}
           </tbody>
