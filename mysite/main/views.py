@@ -706,6 +706,7 @@ class CallsView(ListView):
         # print(filter_date)
         display_type = self.request.GET.get('display_type')
         phone_number = self.request.GET.get('phone_number')
+
         if display_type == '1':
             user_name = self.request.user.first_name + ' ' + self.request.user.last_name
             queryset = CallsCheck.objects.all().order_by('-id').filter(Q(user_name=user_name)
@@ -834,14 +835,57 @@ def get_personal_cc_report(start_date, end_date):
 
     sql_query = (f'''
                 SELECT user_name AS "user_name", 
-                    SUM(case when call_result != 'нет ответа' then 1 else 0 end)  AS "Количество звонков без ответа",
-                    SUM(case when call_result != 'нет ответа' then 0 else 1 end ) AS "Количество звонков с ответом",
+                    SUM(case when call_result != 'нет ответа' then 1 else 0 end)  AS "Неотвеченые звонки",
+                    SUM(case when call_result != 'нет ответа' then 0 else 1 end ) AS "Отвеченые звонки",
                     SUM(case when verified_date is not Null then 1 else 0 end) AS "Количество верификаций"
                 FROM public.main_callscheck
                 WHERE upload_date >= '{start_date}' AND upload_date < '{end_date}' 
                                                     AND user_name != 'null' 
                                                     AND call_result != 'есть фото'
                                                     AND call_result != 'номер не РБ' 
+                GROUP BY user_name
+                ORDER BY user_name ASC''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        report_list = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return report_list
+
+
+def get_personal_appeal_report(date_short):
+    """ This function get data from callscheck db table and return it as list of dicts """
+    cursor, connection = None, None
+
+    report_list = []
+
+    sql_query = (f'''
+                SELECT user_name AS "user_name", 
+                    SUM(case when appeal_type = 'Звонок входящий' then 1 else 0 end)  AS "Входящие вызовы",
+                    SUM(case when appeal_type = 'Звонок исходящий' then 1 else 0 end ) AS "Исходящие вызовы",
+                    SUM(case when appeal_type = 'Почта' then 1 else 0 end ) AS "Почтовые обращаения",
+                    SUM(case when appeal_type = 'Чат' then 1 else 0 end + 
+                    case when appeal_type = 'Телеграмм' then 1 else 0 end + 
+                    case when appeal_type = 'Ватсап' then 1 else 0 end) AS "Чаты"
+                FROM public.main_appealreport
+                WHERE appeal_date_short = '{date_short}' 
                 GROUP BY user_name
                 ORDER BY user_name ASC''')
 
@@ -984,6 +1028,7 @@ def cc_report(request):
     end_date = str(end_date.date()).replace('-', '.')
 
     calls_report = get_personal_cc_report(start_date, end_date)
+    appeal_report = get_personal_appeal_report(date_short)
     calls_sum = get_cc_report(start_date, end_date)
     appeal_sum = get_appeal_report(date_short)
 
@@ -1000,6 +1045,7 @@ def cc_report(request):
         'heads': heads,
         'support_heads': support_heads_users,
         'calls_report': calls_report,
+        'appeal_report': appeal_report,
         'calls_sum': calls_sum,
         'appeal_sum': appeal_sum,
         'months': months,

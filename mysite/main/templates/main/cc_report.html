@@ -58,7 +58,7 @@
                 <th scope="col">Отвеченые звонки</th>
                 <th scope="col">Неотвеченые звонки</th>
                 <th scope="col">Количество верификаций</th>
-            </tr>
+             </tr>
           </thead>
           <tbody>
         {% for report in calls_report %}
@@ -71,6 +71,27 @@
         </table>
     </div>
 
+    <div style="padding-left:10%;width:98%;">
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col">Оператор</th>
+                <th scope="col">Входящие вызовы</th>
+                <th scope="col">Исходящие вызовы</th>
+                <th scope="col">Почтовые обращаения</th>
+                <th scope="col">Чаты</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for report in appeal_report %}
+            <tr>
+                {% for x in report %} <td align="center">{{ x }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+          </tbody>
+        </table>
+    </div>
 
     <div style="padding-left:10%;margin-top:30px;width:98%;">
         <table class="table table-striped">
