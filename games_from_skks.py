@@ -1,5 +1,3 @@
-from datetime import time
-
 import psycopg2
 import requests
 import credentials
