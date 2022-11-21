@@ -108,6 +108,20 @@
     button:hover {
         background: #d9d9d9;
     }
+
+    table {
+    counter-reset: rowNumber;
+    }
+
+    table .table_date {
+        counter-increment: rowNumber;
+    }
+
+    table .table_date th:first-child::before {
+        content: counter(rowNumber);
+        min-width: 1em;
+        margin-right: 1.5em;
+    }
     </style>
 
   {% if user.is_authenticated %}
@@ -144,7 +158,7 @@
           </thead>
           <tbody>
             {% for list in list_calls_reports %}
-                <tr align="center">
+                <tr class="table_date" align="center">
                     <th scope="col" width="200"><a href="https://backoffice.betconstruct.com/#/customers/detail/{{list.client_id}}" target="_blank">{{ list.client_id }}</a></th>
                     <th scope="col">{{ list.client_name }}</th>
                     <th scope="col" width="250">{{ list.client_phone }}</th>
