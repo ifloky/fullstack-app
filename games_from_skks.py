@@ -1,3 +1,5 @@
+from datetime import time
+
 import psycopg2
 import requests
 import credentials
@@ -64,11 +66,11 @@ def save_game_list_to_db(game_list):
         cursor = connection.cursor()
         cursor.execute(
             f"INSERT INTO main_gamelistfromskks (game_id, game_type, game_name, game_permitted_date, game_provider) "
-            f"VALUES ({game_id}, '{game_type}', \'{game_name}\', '{permitted_date}', '{vendor}')")
+            f"VALUES ({game_id}, '{game_type}', '{game_name}', '{permitted_date}', '{vendor}')")
         counter += 1
-        print(f'Game {counter} saved to db.')
         connection.commit()
         connection.close()
+    print(f"Save total games: {counter}")
 
 
 def main():
