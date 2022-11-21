@@ -1045,8 +1045,8 @@ class AppealReportView(View):
         support_heads_users = User.objects.filter(groups__name='support_heads')
         support_users = User.objects.filter(groups__name='support')
 
-        user_name = self.request.user.first_name + ' ' + self.request.user.last_name
-        # user_name = 'Инна Кузовкова'
+        # user_name = self.request.user.first_name + ' ' + self.request.user.last_name
+        user_name = 'Екатерина Данилюк'
 
         shift_start = None
         shift_end = None
@@ -1082,7 +1082,7 @@ class AppealReportView(View):
         chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(user_name=user_name)).\
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        telegram_count = AppealReport.objects.filter(Q(appeal_type='Телеграм') & Q(user_name=user_name)).\
+        telegram_count = AppealReport.objects.filter(Q(appeal_type='Телеграмм') & Q(user_name=user_name)).\
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
         whatsapp_count = AppealReport.objects.filter(Q(appeal_type='Ватсап') & Q(user_name=user_name)).\
