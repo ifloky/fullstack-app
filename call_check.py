@@ -95,8 +95,6 @@ def check_call(phone_number, df):
     for index, row in df.iterrows():
         if row['client'] == phone_number:
             check = row['client'], row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
-            # call_date_time = row['CallDateTime'] + timedelta(hours=3)
-            # call_date_time = call_date_time.strftime("%Y-%m-%d %H:%M:%S")
             call_date_time = row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
             client_number = row['client']
             check = str(check).replace('(', '').replace(')', '').replace("'", '')
@@ -153,11 +151,6 @@ def main():
 
     for phone_number in phone_numbers:
         data.append(check_call(phone_number, df))
-
-    # file = open('result.txt', 'w')
-    # for item in data:
-    #     file.write("%s \n" % item)
-    # file.close()
 
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time

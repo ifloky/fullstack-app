@@ -107,3 +107,20 @@ class AppealReport(models.Model):
     class Meta:
         verbose_name = 'Отчет по звонкам'
         verbose_name_plural = 'Отчет по звонкам'
+
+
+class GameListFromSkks(models.Model):
+
+    objects = None
+    game_id = models.IntegerField()
+    game_name = models.CharField(max_length=200)
+    game_type = models.CharField(max_length=200)
+    game_provider = models.CharField(max_length=200)
+    game_permitted_date = models.DateTimeField(default=timezone.localtime)
+
+    def __str__(self):
+        return self.game_name
+
+    class Meta:
+        verbose_name = 'Список игр из СККС'
+        verbose_name_plural = 'Список игр из СККС'
