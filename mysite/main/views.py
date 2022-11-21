@@ -1188,7 +1188,7 @@ class UpdateAppealView(UpdateView):
     model = AppealReport
     form_class = AppealReportForm
     template_name = 'main/update_appeal.html'
-    success_url = reverse_lazy('main:update_appeal')
+    success_url = reverse_lazy('main:appeal_rep')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
