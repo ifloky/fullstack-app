@@ -2,8 +2,8 @@
 /mysite/credentials.py
 mysite/credentials.py
 credentials.py
-test_*.py
-/test_*.py
+test_*.*
+/test_*.*
 /mysite/main/migrations/*.py
 *.xlsx
 *.txt
