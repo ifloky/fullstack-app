@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport
+from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks
 
 import datetime
 
@@ -115,13 +115,13 @@ class RiskReportForm(ModelForm):
         labels = {
             'shift_date': 'Дата смены',
             'shift_type': 'Смена',
-            'verified_clients': 'Верефицировано клиентов',
-            're_verified_clients': 'Повторно верефицировано клиентов',
+            'verified_clients': 'Верифицировано клиентов',
+            're_verified_clients': 'Повторно верифицировано клиентов',
             'processed_conclusions': 'Обработанных заключений',
             'processed_support_requests': 'Обработанных запросов поддержки',
             'tacks_help_desk': 'Заявок в Help Desk',
             'oapi_requests': 'Заявок в ОАПИ',
-            'schemes_revealed': 'Выявленно схем',
+            'schemes_revealed': 'Выявлено схем',
             'user_name': 'Оператор'
         }
 
@@ -285,3 +285,8 @@ class AppealReportForm(ModelForm):
             'appeal_result': 'Результат обращения',
             'user_name': 'Имя оператора',
         }
+
+
+class GameListFromSkksForm(ModelForm):
+    class Meta:
+        model = GameListFromSkks
