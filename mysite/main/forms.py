@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks
+from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport
 
 import datetime
 
@@ -285,8 +285,3 @@ class AppealReportForm(ModelForm):
             'appeal_result': 'Результат обращения',
             'user_name': 'Имя оператора',
         }
-
-
-class GameListFromSkksForm(ModelForm):
-    class Meta:
-        model = GameListFromSkks

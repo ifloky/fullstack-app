@@ -4,7 +4,6 @@ import datetime
 
 
 class RiskReport(models.Model):
-
     objects = None
     shift_date = models.DateField()
     shift_type = models.CharField(max_length=10)
@@ -72,7 +71,6 @@ class GetRiskReport(models.Model):
 
 
 class CallsCheck(models.Model):
-
     objects = None
     client_id = models.IntegerField(unique=True)
     client_name = models.CharField(max_length=200, blank=True, null=True)
@@ -93,7 +91,6 @@ class CallsCheck(models.Model):
 
 
 class AppealReport(models.Model):
-
     objects = None
     appeal_type = models.CharField(max_length=200)
     appeal_result = models.CharField(max_length=200)
@@ -110,7 +107,6 @@ class AppealReport(models.Model):
 
 
 class GameListFromSkks(models.Model):
-
     objects = None
     game_id = models.IntegerField()
     game_name = models.CharField(max_length=200)
