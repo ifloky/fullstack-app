@@ -1206,7 +1206,7 @@ class GameListFromSkksView(ListView):
     form_class = GameListFromSkksForm
     template_name = 'main/skks_games.html'
     context_object_name = 'game_list'
-    paginate_by = 23
+    paginate_by = 15
 
     games_count = GameListFromSkks.objects.all().count()
 
