@@ -1211,16 +1211,31 @@ class GameListFromSkksView(ListView):
     def get_queryset(self):
         game_id = self.request.GET.get('game_id')
         game_name = self.request.GET.get('game_name')
+        game_provider = self.request.GET.get('game_provider')
         queryset = GameListFromSkks.objects.all().order_by('game_id')
 
-        if game_id is not None:
-            game_id = game_id.strip()
-            queryset = GameListFromSkks.objects.filter(Q(game_id=game_id)).order_by('game_id')
+        try:
+            if game_id is not None:
+                game_id = game_id.strip()
+                queryset = GameListFromSkks.objects.filter(Q(game_id=game_id)).order_by('game_id')
+                return queryset
+        except ValueError:
             return queryset
 
-        if game_name is not None:
-            game_name = game_name.strip()
-            queryset = GameListFromSkks.objects.filter(Q(game_name=game_name)).order_by('game_id')
+        try:
+            if game_name is not None:
+                game_name = game_name.strip()
+                queryset = GameListFromSkks.objects.filter(Q(game_name__icontains=game_name)).order_by('game_id')
+                return queryset
+        except ValueError:
+            return queryset
+
+        try:
+            if game_provider is not None:
+                game_provider = game_provider.strip()
+                queryset = GameListFromSkks.objects.filter(Q(game_provider__icontains=game_provider)).order_by('game_id')
+                return queryset
+        except ValueError:
             return queryset
 
         return queryset
