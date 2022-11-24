@@ -1,6 +1,5 @@
 {% extends 'main/header.html' %}
 
-
   {% block content %}
 
     <script>
@@ -113,8 +112,10 @@
 
   {% if user.is_authenticated %}
     <br>
-
-    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%">
+        Всего загружено из СККС: {{ games_count }} игр.
+    </div>
+    <div style="padding-left:9.5%;width:98%;display:flex">
         <form method="GET" action="/skks_games" style="margin-left:3%;width:30%">
              <label for="search_game_id" style="display:block;width:220px">Найти игру по ID:</label>
              <input style="width:200px;margin-right:10px" type="search" name="game_id" value="" id="search_game_id">
@@ -167,5 +168,6 @@
         {% include 'main/includes/non_authorised.html' %}
 
   {% endif %}
+
 
   {% endblock %}

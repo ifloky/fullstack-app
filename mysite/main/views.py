@@ -1206,7 +1206,9 @@ class GameListFromSkksView(ListView):
     form_class = GameListFromSkksForm
     template_name = 'main/skks_games.html'
     context_object_name = 'game_list'
-    paginate_by = 30
+    paginate_by = 23
+
+    games_count = GameListFromSkks.objects.all().count()
 
     def get_queryset(self):
         game_id = self.request.GET.get('game_id')
@@ -1246,4 +1248,5 @@ class GameListFromSkksView(ListView):
         context['support_heads'] = User.objects.filter(groups__name='support_heads')
         context['support'] = User.objects.filter(groups__name='support')
         context['superuser'] = User.objects.filter(is_superuser=True)
+        context['games_count'] = self.games_count
         return context
