@@ -33,4 +33,6 @@ urlpatterns = [
     path('update_appeal/<int:pk>', views.UpdateAppealView.as_view(), name='update_appeal'),
 
     path('log_file/', views.view_log_file, name='log_file'),
+
+    path('skks_games/', views.GameListFromSkksView.as_view(), name='skks_games'),
 ]

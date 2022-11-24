@@ -2,6 +2,7 @@
 
 
   {% block content %}
+
     <script>
     $(document).ready(function() {
     var getUrlParameter = function getUrlParameter(sParam) {
@@ -108,65 +109,42 @@
     button:hover {
         background: #d9d9d9;
     }
-
-    table {
-    counter-reset: rowNumber;
-    }
-
-    table .table_date {
-        counter-increment: rowNumber;
-    }
-
-    table .table_date th:first-child::before {
-        content: counter(rowNumber);
-        min-width: 1em;
-        margin-right: 1.5em;
-    }
     </style>
 
   {% if user.is_authenticated %}
     <br>
 
     <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
-        <form method="GET" action="/calls_rep" style="width:60%">
-            <label class="filter" for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Мои запросы</label>
-            <label class="filter" for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>
-            <label class="filter" for="d_box3"><input type="radio" name="display_type" value="3" id="d_box3">  Нет звонка</label>
-             {{ months }} {{ years }}
-            <button type="submit">Показать</button>
+        <form method="GET" action="/skks_games" style="margin-left:3%;width:40%">
+             <label for="search_game_id" style="display:block;width:220px">Найти игру по ID:</label>
+             <input style="width:200px;margin-right:10px" type="search" name="game_id" value="" id="search_game_id">
+             <button type="submit">Найти</button>
         </form>
-        <form method="GET" action="/calls_rep" style="margin-left:3%;width:40%">
-             <label for="search_box" style="display:block;width:220px">Поиск по номеру телефона:</label>
-             <input style="width:200px;margin-right:10px" type="search" name="phone_number" value="" id="search_box" placeholder="+375XXXXXXXX">
+        <form method="GET" action="/skks_games" style="margin-left:3%;width:40%">
+             <label for="search_game_name" style="display:block;width:220px">Найти игру по названию:</label>
+             <input style="width:200px;margin-right:10px" type="search" name="game_name" value="" id="search_game_name">
              <button type="submit">Найти</button>
         </form>
     </div>
-
-    <div style="padding-left:10%;width:98%;">
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
         <table class="table table-striped">
           <thead>
             <tr align="center">
-                <th scope="col" width="200">ID клиента</th>
-                <th scope="col">Имя клиента</th>
-                <th scope="col" width="250">Номер телефона</th>
-                <th scope="col">Результат звонка</th>
-                <th scope="col">Дата звонка</th>
-                <th scope="col">Дата верификации</th>
-                <th scope="col">Оператор</th>
-                <th scope="col"> </th>
+                <th scope="col" width="200">СККС ID</th>
+                <th scope="col">Название игры</th>
+                <th scope="col">Тип игры</th>
+                <th scope="col">Провайдер</th>
+                <th scope="col">Дата добавления в СККС</th>
             </tr>
           </thead>
           <tbody>
-            {% for list in list_calls_reports %}
-                <tr class="table_date" align="center">
-                    <th scope="col" width="200"><a href="https://backoffice.betconstruct.com/#/customers/detail/{{list.client_id}}" target="_blank">{{ list.client_id }}</a></th>
-                    <th scope="col">{{ list.client_name }}</th>
-                    <th scope="col" width="250">{{ list.client_phone }}</th>
-                    <th scope="col">{{ list.call_result }}</th>
-                    <th scope="col">{{ list.call_date }}</th>
-                    <th scope="col">{{ list.verified_date }}</th>
-                    <th scope="col">{{ list.user_name }}</th>
-                    <th><a href="/update_calls/{{list.id}}">Редактировать</a></th>
+            {% for list in game_list %}
+                <tr align="center">
+                    <th scope="col">{{ list.game_id }}</th>
+                    <th scope="col">{{ list.game_name }}</th>
+                    <th scope="col">{{ list.game_type }}</th>
+                    <th scope="col">{{ list.game_provider }}</th>
+                    <th scope="col">{{ list.game_permitted_date }}</th>
                 </tr>
             {% endfor %}
           </tbody>

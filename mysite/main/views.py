@@ -21,10 +21,10 @@ from django.views.generic.list import ListView
 
 from django.urls.base import reverse_lazy
 
-from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm
+from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport
+from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks
 
 import credentials
 import requests
@@ -1196,4 +1196,39 @@ class UpdateAppealView(UpdateView):
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['support'] = User.objects.filter(groups__name='support')
         context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        return context
+
+
+class GameListFromSkksView(ListView):
+    """ This class return game list page """
+
+    model = GameListFromSkks
+    form_class = GameListFromSkksForm
+    template_name = 'main/skks_games.html'
+    context_object_name = 'game_list'
+    paginate_by = 30
+
+    def get_queryset(self):
+        game_id = self.request.GET.get('game_id')
+        game_name = self.request.GET.get('game_name')
+        queryset = GameListFromSkks.objects.all().order_by('game_id')
+
+        if game_id is not None:
+            game_id = game_id.strip()
+            queryset = GameListFromSkks.objects.filter(Q(game_id=game_id)).order_by('game_id')
+            return queryset
+
+        if game_name is not None:
+            game_name = game_name.strip()
+            queryset = GameListFromSkks.objects.filter(Q(game_name=game_name)).order_by('game_id')
+            return queryset
+
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(GameListFromSkksView, self).get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        context['support'] = User.objects.filter(groups__name='support')
+        context['superuser'] = User.objects.filter(is_superuser=True)
         return context

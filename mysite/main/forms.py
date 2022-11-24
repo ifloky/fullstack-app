@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport
+from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks
 
 import datetime
 
@@ -284,4 +284,42 @@ class AppealReportForm(ModelForm):
             'appeal_type': 'Тип обращения',
             'appeal_result': 'Результат обращения',
             'user_name': 'Имя оператора',
+        }
+
+
+class GameListFromSkksForm(ModelForm):
+
+    class Meta:
+        model = GameListFromSkks
+
+        fields = ['game_id', 'game_name', 'game_type', 'game_provider', 'game_permitted_date']
+
+        widgets = {
+            'game_id':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_id', 'readonly': 'readonly',
+                                       'label': 'ID игры'}),
+
+            'game_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_name', 'readonly': 'readonly',
+                                       'label': 'Название игры'}),
+
+            'game_type':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_type', 'readonly': 'readonly',
+                                       'label': 'Тип игры'}),
+
+            'game_provider':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_provider', 'readonly': 'readonly',
+                                       'label': 'Провайдер игры'}),
+
+            'game_permitted_date':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_permitted_date', 'readonly': 'readonly',
+                                        'label': 'Дата разрешения'}),
+        }
+
+        labels = {
+            'game_id': 'ID игры',
+            'game_name': 'Название игры',
+            'game_type': 'Тип игры',
+            'game_provider': 'Провайдер игры',
+            'game_permitted_date': 'Дата разрешения',
         }
