@@ -1076,9 +1076,20 @@ def view_log_file(request):
         print(e)
         file = 'Файл не найден'
 
+    try:
+        with open('./skks_check.log', 'r', encoding='UTF-8') as f:
+            skks_file = f.read().split('\n')
+    except FileNotFoundError:
+        with open('/home/pgadmin/reports_site/skks_check.log', 'r', encoding='UTF-8') as f:
+            skks_file = f.read().split('\n')
+    except Exception as e:
+        print(e)
+        skks_file = 'Файл не найден'
+
     data = {
         'site_adm': site_adm_users,
         'log_file': file,
+        'skks_file': skks_file,
     }
     return render(request, "main/log_file.html", data)
 
@@ -1122,22 +1133,22 @@ class AppealReportView(View):
             print(datetime.datetime.now())
             print(shift_start, shift_end, user_name, '\n')
 
-        calls_in_count = AppealReport.objects.filter(appeal_type='Звонок входящий').\
+        calls_in_count = AppealReport.objects.filter(appeal_type='Звонок входящий'). \
             filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        calls_out_count = AppealReport.objects.filter(appeal_type='Звонок исходящий').\
+        calls_out_count = AppealReport.objects.filter(appeal_type='Звонок исходящий'). \
             filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        mail_count = AppealReport.objects.filter(appeal_type='Почта').\
+        mail_count = AppealReport.objects.filter(appeal_type='Почта'). \
             filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(user_name=user_name)).\
+        chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(user_name=user_name)). \
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        telegram_count = AppealReport.objects.filter(Q(appeal_type='Телеграмм') & Q(user_name=user_name)).\
+        telegram_count = AppealReport.objects.filter(Q(appeal_type='Телеграмм') & Q(user_name=user_name)). \
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        whatsapp_count = AppealReport.objects.filter(Q(appeal_type='Ватсап') & Q(user_name=user_name)).\
+        whatsapp_count = AppealReport.objects.filter(Q(appeal_type='Ватсап') & Q(user_name=user_name)). \
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
         chats_count = chat_count + telegram_count + whatsapp_count
@@ -1174,7 +1185,6 @@ class AppealReportListView(ListView):
     paginate_by = 30
 
     def get_queryset(self):
-
         return AppealReport.objects.all().order_by('-id')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -1241,8 +1251,8 @@ class GameListFromSkksView(ListView):
         try:
             if game_provider is not None:
                 game_provider = game_provider.strip()
-                queryset = GameListFromSkks.objects.filter(Q(game_provider__icontains=game_provider))\
-                                                   .order_by('game_id')
+                queryset = GameListFromSkks.objects.filter(Q(game_provider__icontains=game_provider)) \
+                    .order_by('game_id')
                 return queryset
         except ValueError:
             return queryset
@@ -1296,8 +1306,8 @@ class GameListFromSkksTestView(ListView):
         try:
             if game_provider is not None:
                 game_provider = game_provider.strip()
-                queryset = GameListFromSkksTest.objects.filter(Q(game_provider__icontains=game_provider))\
-                                                       .order_by('game_id')
+                queryset = GameListFromSkksTest.objects.filter(Q(game_provider__icontains=game_provider)) \
+                    .order_by('game_id')
                 return queryset
         except ValueError:
             return queryset
