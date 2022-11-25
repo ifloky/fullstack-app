@@ -116,7 +116,7 @@
   {% if user.is_authenticated %}
     <br>
     <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%">
-        Всего загружено из СККС: {{ games_count }} игр.
+        <span style="font-size: 32px">Всего загружено из СККС: <b>{{ games_count }}</b> игр.</span>
     </div>
     <div style="padding-left:9.5%;width:98%;display:flex">
         <form method="GET" action="/skks_games" style="margin-left:3%;width:30%">
