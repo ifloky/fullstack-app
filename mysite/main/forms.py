@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
+from .models import GameListFromSite
 
 import datetime
 
@@ -357,4 +358,31 @@ class GameListFromSkksTestForm(ModelForm):
             'game_type': 'Тип игры',
             'game_provider': 'Провайдер игры',
             'game_permitted_date': 'Дата разрешения',
+        }
+
+
+class GameListFromSiteForm(ModelForm):
+    class Meta:
+        model = GameListFromSite
+
+        fields = ['game_name', 'game_provider', 'game_status']
+
+        widgets = {
+            'game_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_id', 'readonly': 'readonly',
+                                       'label': 'Название игры'}),
+
+            'game_provider':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_name', 'readonly': 'readonly',
+                                       'label': 'Провайдер игры'}),
+
+            'game_status':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_type', 'readonly': 'readonly',
+                                       'label': 'Статус игры'}),
+        }
+
+        labels = {
+            'game_name': 'Название игры',
+            'game_provider': 'Провайдер игры',
+            'game_status': 'Статус игры',
         }
