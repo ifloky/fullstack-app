@@ -35,4 +35,5 @@ urlpatterns = [
     path('log_file/', views.view_log_file, name='log_file'),
 
     path('skks_games/', views.GameListFromSkksView.as_view(), name='skks_games'),
+    path('skks_games_test/', views.GameListFromSkksTestView.as_view(), name='skks_games_test'),
 ]

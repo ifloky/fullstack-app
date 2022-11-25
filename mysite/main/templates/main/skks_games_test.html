@@ -1,0 +1,176 @@
+{% extends 'main/header.html' %}
+
+  {% block content %}
+
+    <script>
+    $(document).ready(function() {
+    var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+      
+        var var_page = getUrlParameter('display_type');
+        var game_provider = getUrlParameter('game_provider')
+        var game_name = getUrlParameter('game_name')
+        var game_id = getUrlParameter('game_id')
+
+        $('.change_url').each(function(){
+            var a_link = $(this).attr('href');
+            if (var_page === undefined) {
+                $(this).attr('href', '?' + a_link)
+            } else {
+<!--                $('input[value=var_page]').prop('checked', true);-->
+                $(this).attr('href', '?game_provider=' + game_provider + '&game_name=' + game_name + '&game_id=' + game_id + '&' + a_link);
+            };
+        });
+
+    });
+    </script>
+
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        display: flex;
+        align-items: center;
+        justify-content: right;
+    }
+
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
+
+    input {
+        width: 20px;
+        padding: 8px 20px;
+        margin: 8px 0;
+        margin-right: 20px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+        height: 60px;
+        border-radius: 10px;
+    }
+
+    button {
+        width: 120px;
+        padding: 6px 30px;
+        margin: 8px 0;
+    }
+
+    th {
+        vertical-align:
+        middle !important;
+        text-align: center;
+    }
+
+    label.filter {
+        margin-right: 10px;
+        display:flex;
+        align-items: center;
+        height: 60px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 0 30px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    label.filter:hover {
+        background: #d9d9d9;
+    }
+
+    select {
+        height: 60px;
+        border-radius: 10px !important;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    select:hover {
+        background: #d9d9d9;
+    }
+
+    button {
+        height: 60px;
+        border-radius: 10px !important;
+    }
+
+    button:hover {
+        background: #d9d9d9;
+    }
+    </style>
+
+  {% if user.is_authenticated %}
+    <br>
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%">
+        <span style="font-size: 32px">Всего загружено из СККС: <b>{{ games_count }}</b> игр.</span>
+    </div>
+    <div style="padding-left:9.5%;width:98%;display:flex">
+        <form method="GET" action="/skks_games" style="margin-left:3%;width:30%">
+             <label for="search_game_id" style="display:block;width:220px">Найти игру по ID:</label>
+             <input style="width:200px;margin-right:10px" type="search" name="game_id" value="" id="search_game_id">
+             <button type="submit">Найти</button>
+        </form>
+        <form method="GET" action="/skks_games" style="margin-left:3%;width:30%">
+             <label for="search_game_name" style="display:block;width:220px">Найти игру по названию:</label>
+             <input style="width:200px;margin-right:10px" type="search" name="game_name" value="" id="search_game_name">
+             <button type="submit">Найти</button>
+        </form>
+        <form method="GET" action="/skks_games" style="margin-left:3%;width:30%">
+             <label for="search_game_provider" style="display:block;width:220px">Найти игру по провайдеру:</label>
+             <input style="width:200px;margin-right:10px" type="search" name="game_provider" value="" id="search_game_provider">
+             <button type="submit">Найти</button>
+        </form>
+    </div>
+    <div style="padding-left:9.5%;width:98%;display:flex">
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col" width="200">СККС ID</th>
+                <th scope="col">Название игры</th>
+                <th scope="col">Тип игры</th>
+                <th scope="col">Провайдер</th>
+                <th scope="col">Дата добавления в СККС</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for list in game_list_test %}
+                <tr align="center">
+                    <th scope="col">{{ list.game_id }}</th>
+                    <th scope="col">{{ list.game_name }}</th>
+                    <th scope="col">{{ list.game_type }}</th>
+                    <th scope="col">{{ list.game_provider }}</th>
+                    <th scope="col">{{ list.game_permitted_date }}</th>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+
+        {% include 'main/includes/pagination.html' %}
+
+    {% endif %}
+
+  {% else %}
+
+        {% include 'main/includes/non_authorised.html' %}
+
+  {% endif %}
+
+
+  {% endblock %}

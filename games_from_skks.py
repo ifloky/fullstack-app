@@ -3,7 +3,7 @@ import requests
 import credentials
 
 
-def load_game_list_from_skks():
+def load_game_list_from_skks(host_name):
     """
     Get game lest from skks system.
     """
@@ -20,14 +20,14 @@ def load_game_list_from_skks():
     }
 
     response = requests.post(
-        f'{credentials.skks_host}/Game/ListPermitted',
+        f'{host_name}/Game/ListPermitted',
         headers=headers,
         json=body,
     )
     return response.json()
 
 
-def clear_data():
+def clear_data(db_name):
     connection = psycopg2.connect(database=credentials.db_name,
                                   user=credentials.db_username,
                                   password=credentials.db_password,
@@ -36,13 +36,13 @@ def clear_data():
                                   )
     cursor = connection.cursor()
     cursor.execute(
-        f"TRUNCATE TABLE main_gamelistfromskks RESTART IDENTITY CASCADE;")
+        f"TRUNCATE TABLE {db_name} RESTART IDENTITY CASCADE;")
     print(cursor.statusmessage)
     connection.commit()
     connection.close()
 
 
-def save_game_list_to_db(game_list):
+def save_game_list_to_db(game_list, db_name):
     """ Save game list to db. """
     counter = 0
     for x in game_list['games']:
@@ -63,7 +63,7 @@ def save_game_list_to_db(game_list):
                                       )
         cursor = connection.cursor()
         cursor.execute(
-            f"INSERT INTO main_gamelistfromskks (game_id, game_type, game_name, game_permitted_date, game_provider) "
+            f"INSERT INTO {db_name} (game_id, game_type, game_name, game_permitted_date, game_provider) "
             f"VALUES ({game_id}, '{game_type}', '{game_name}', '{permitted_date}', '{vendor}')")
         counter += 1
         connection.commit()
@@ -72,10 +72,18 @@ def save_game_list_to_db(game_list):
 
 
 def main():
-    game_list = load_game_list_from_skks()
+    prod_host = credentials.skks_host
+    test_host = credentials.skks_test_host
+    game_prod_list = load_game_list_from_skks(prod_host)
+    db_prod_name = 'main_gamelistfromskks'
+    game_test_list = load_game_list_from_skks(test_host)
+    db_test_name = 'main_gamelistfromskkstest'
     # pprint(game_list)
-    clear_data()
-    save_game_list_to_db(game_list)
+    clear_data(db_prod_name)
+    save_game_list_to_db(game_prod_list, db_prod_name)
+
+    clear_data(db_test_name)
+    save_game_list_to_db(game_test_list, db_test_name)
 
 
 if __name__ == '__main__':

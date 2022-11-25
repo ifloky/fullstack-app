@@ -21,10 +21,10 @@ from django.views.generic.list import ListView
 
 from django.urls.base import reverse_lazy
 
-from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm
+from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks
+from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
 
 import credentials
 import requests
@@ -1251,6 +1251,61 @@ class GameListFromSkksView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(GameListFromSkksView, self).get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        context['support'] = User.objects.filter(groups__name='support')
+        context['game_control'] = User.objects.filter(groups__name='game_control')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['games_count'] = self.games_count
+        return context
+
+
+class GameListFromSkksTestView(ListView):
+    """ This class return game list page """
+
+    model = GameListFromSkksTest
+    form_class = GameListFromSkksTestForm
+    template_name = 'main/skks_games_test.html'
+    context_object_name = 'game_list_test'
+    paginate_by = 15
+
+    games_count = GameListFromSkksTest.objects.all().count()
+
+    def get_queryset(self):
+        game_id = self.request.GET.get('game_id')
+        game_name = self.request.GET.get('game_name')
+        game_provider = self.request.GET.get('game_provider')
+        queryset = GameListFromSkksTest.objects.all().order_by('game_id')
+
+        try:
+            if game_id is not None:
+                game_id = game_id.strip()
+                queryset = GameListFromSkksTest.objects.filter(Q(game_id=game_id)).order_by('game_id')
+                return queryset
+        except ValueError:
+            return queryset
+
+        try:
+            if game_name is not None:
+                game_name = game_name.strip()
+                queryset = GameListFromSkksTest.objects.filter(Q(game_name__icontains=game_name)).order_by('game_id')
+                return queryset
+        except ValueError:
+            return queryset
+
+        try:
+            if game_provider is not None:
+                game_provider = game_provider.strip()
+                queryset = GameListFromSkksTest.objects.filter(Q(game_provider__icontains=game_provider))\
+                                                       .order_by('game_id')
+                return queryset
+        except ValueError:
+            return queryset
+
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(GameListFromSkksTestView, self).get_context_data(**kwargs)
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['support_heads'] = User.objects.filter(groups__name='support_heads')
         context['support'] = User.objects.filter(groups__name='support')

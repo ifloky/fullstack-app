@@ -118,5 +118,21 @@ class GameListFromSkks(models.Model):
         return self.game_name
 
     class Meta:
-        verbose_name = 'Список игр из СККС'
-        verbose_name_plural = 'Список игр из СККС'
+        verbose_name = 'Список игр из СККС (Production)'
+        verbose_name_plural = 'Список игр из СККС (Production)'
+
+
+class GameListFromSkksTest(models.Model):
+    objects = None
+    game_id = models.IntegerField()
+    game_name = models.CharField(max_length=200)
+    game_type = models.CharField(max_length=200)
+    game_provider = models.CharField(max_length=200)
+    game_permitted_date = models.DateTimeField(default=timezone.localtime)
+
+    def __str__(self):
+        return self.game_name
+
+    class Meta:
+        verbose_name = 'Список игр из СККС (Test)'
+        verbose_name_plural = 'Список игр из СККС (Test)'
