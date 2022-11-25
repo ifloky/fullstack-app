@@ -38,10 +38,12 @@ def homepage(request):
     support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
+    game_control_users = User.objects.filter(groups__name='game_control')
 
     return render(request=request, template_name="main/home.html",
                   context={"support": support_users, "risks": risks_users, 'risk_heads': risk_heads_users,
-                           'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads})
+                           'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads,
+                           'game_control': game_control_users})
 
 
 def reports(request):
@@ -51,10 +53,12 @@ def reports(request):
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
     support_heads_users = User.objects.filter(groups__name='support_heads')
+    game_control_users = User.objects.filter(groups__name='game_control')
 
     return render(request=request, template_name="main/reports.html",
                   context={"support": support_users, "risks": risks_users, 'risk_heads': risk_heads_users,
-                           'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads})
+                           'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads,
+                           'game_control': game_control_users})
 
 
 def message_count_from_s_and_r(start_date, end_date):
@@ -214,6 +218,7 @@ def info_by_ip(request):
     support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
+    game_control_users = User.objects.filter(groups__name='game_control')
 
     ip_address = request.GET.get('object')
 
@@ -263,7 +268,8 @@ def info_by_ip(request):
                                                  'City': get_city, 'ZIP': get_zip_code, 'Lat': get_lat, 'Lon': get_lon,
                                                  'support': support_users, 'risks': risks_users,
                                                  'risk_heads': risk_heads_users, 'site_adm': site_adm_users,
-                                                 'support_heads': support_heads_users, 'heads': heads})
+                                                 'support_heads': support_heads_users, 'heads': heads,
+                                                 'game_control': game_control_users})
 
 
 def register_request(request):
@@ -1235,7 +1241,8 @@ class GameListFromSkksView(ListView):
         try:
             if game_provider is not None:
                 game_provider = game_provider.strip()
-                queryset = GameListFromSkks.objects.filter(Q(game_provider__icontains=game_provider)).order_by('game_id')
+                queryset = GameListFromSkks.objects.filter(Q(game_provider__icontains=game_provider))\
+                                                   .order_by('game_id')
                 return queryset
         except ValueError:
             return queryset
@@ -1247,6 +1254,7 @@ class GameListFromSkksView(ListView):
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['support_heads'] = User.objects.filter(groups__name='support_heads')
         context['support'] = User.objects.filter(groups__name='support')
+        context['game_control'] = User.objects.filter(groups__name='game_control')
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['games_count'] = self.games_count
         return context

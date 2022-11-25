@@ -214,6 +214,14 @@ li a:hover:not(.active) {
 
             {% endif %}
 
+            {% if user in game_control %}
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/skks_games">Список игр в СККС</a>
+                </li>
+
+            {% endif %}
+
         <li style="float:right" class="nav-item">
           <a class="nav-link" href="/logout">Выйти</a>
         </li>
