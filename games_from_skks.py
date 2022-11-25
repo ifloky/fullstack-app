@@ -1,6 +1,7 @@
 import psycopg2
 import requests
 import credentials
+import datetime
 
 
 def load_game_list_from_skks(host_name):
@@ -72,13 +73,15 @@ def save_game_list_to_db(game_list, db_name):
 
 
 def main():
+    """ Main function. """
+    current_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"Start script at {current_date}")
     prod_host = credentials.skks_host
     test_host = credentials.skks_test_host
     game_prod_list = load_game_list_from_skks(prod_host)
     db_prod_name = 'main_gamelistfromskks'
     game_test_list = load_game_list_from_skks(test_host)
     db_test_name = 'main_gamelistfromskkstest'
-    # pprint(game_list)
     clear_data(db_prod_name)
     save_game_list_to_db(game_prod_list, db_prod_name)
 
