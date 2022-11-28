@@ -43,7 +43,7 @@ def clear_data(db_name):
     connection.close()
 
 
-def save_game_list_to_db(game_list, db_name):
+def save_game_list_to_db(game_list, db_name, env):
     """ Save game list to db. """
     counter = 0
     for x in game_list['games']:
@@ -69,7 +69,7 @@ def save_game_list_to_db(game_list, db_name):
         counter += 1
         connection.commit()
         connection.close()
-    print(f"Save total games: {counter}")
+    print(f"Save total games {env} SKKS: {counter}")
 
 
 def main():
@@ -83,10 +83,10 @@ def main():
     game_test_list = load_game_list_from_skks(test_host)
     db_test_name = 'main_gamelistfromskkstest'
     clear_data(db_prod_name)
-    save_game_list_to_db(game_prod_list, db_prod_name)
+    save_game_list_to_db(game_prod_list, db_prod_name, 'Prod')
 
     clear_data(db_test_name)
-    save_game_list_to_db(game_test_list, db_test_name)
+    save_game_list_to_db(game_test_list, db_test_name, 'Test')
 
 
 if __name__ == '__main__':

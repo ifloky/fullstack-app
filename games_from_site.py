@@ -115,7 +115,7 @@ def main():
 
     games_count = get_games_count(url, params)
     games_count = games_count
-    print('Всего игр:', games_count)
+    print('Всего игр на сайте:', games_count)
     params['limit'] = games_count
     game_data = get_data(url, params)
 
