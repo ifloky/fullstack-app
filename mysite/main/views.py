@@ -1386,3 +1386,27 @@ class GameListFromSiteView(ListView):
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['games_count'] = self.games_count
         return context
+
+
+class CompareGamesListView(ListView):
+    """ This class compare tables with games """
+
+    template_name = 'main/missing_games.html'
+    context_object_name = 'missing_games'
+    paginate_by = 15
+
+    def get_queryset(self):
+        queryset = GameListFromSite.objects.filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name')))\
+            .order_by('game_name')
+        return queryset
+
+    games_count = GameListFromSite.objects.filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name')))\
+        .count()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CompareGamesListView, self).get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['game_control'] = User.objects.filter(groups__name='game_control')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['games_count'] = self.games_count
+        return context

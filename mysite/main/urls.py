@@ -37,4 +37,5 @@ urlpatterns = [
     path('skks_games/', views.GameListFromSkksView.as_view(), name='skks_games'),
     path('skks_games_test/', views.GameListFromSkksTestView.as_view(), name='skks_games_test'),
     path('site_games/', views.GameListFromSiteView.as_view(), name='site_games'),
+    path('missing_games/', views.CompareGamesListView.as_view(), name='missing_games'),
 ]
