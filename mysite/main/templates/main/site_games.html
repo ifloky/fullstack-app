@@ -139,16 +139,16 @@
         <table class="table table-striped">
           <thead>
             <tr align="center">
-                <th scope="col">Название игры</th>
-                <th scope="col">Провайдер</th>
+                <th scope="col" width="600">Название игры</th>
+                <th scope="col" width="600">Провайдер</th>
                 <th scope="col">Статус игры</th>
             </tr>
           </thead>
           <tbody>
             {% for list in game_list_site %}
                 <tr align="center">
-                    <th scope="col">{{ list.game_name }}</th>
-                    <th scope="col">{{ list.game_provider }}</th>
+                    <th scope="col" width="600">{{ list.game_name }}</th>
+                    <th scope="col" width="600">{{ list.game_provider }}</th>
                     <th scope="col">{{ list.game_status }}</th>
                 </tr>
             {% endfor %}
