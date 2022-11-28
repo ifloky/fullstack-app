@@ -1397,7 +1397,7 @@ class CompareGamesListView(ListView):
 
     def get_queryset(self):
         queryset = GameListFromSite.objects.filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name')))\
-            .order_by('game_name')
+            .order_by('game_provider')
         return queryset
 
     games_count = GameListFromSite.objects.filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name')))\
