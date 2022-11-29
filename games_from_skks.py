@@ -49,12 +49,34 @@ def save_game_list_to_db(game_list, db_name, env):
     for x in game_list['games']:
         game_id: str = x['game_id']
         game_type: str = x['game_type']
+        if game_type == 1:
+            game_type = 'Букмекерская игра'
+        elif game_type == 2:
+            game_type = 'Букмекерская онлайн игра'
+        elif game_type == 3:
+            game_type = 'Игра тотализатора'
+        elif game_type == 4:
+            game_type = 'Онлайн-игра тотализатора'
+        elif game_type == 6:
+            game_type = 'Слот-игра'
+        elif game_type == 7:
+            game_type = 'Онлайн игра в карты'
+        elif game_type == 8:
+            game_type = 'Игра в карты в лайв режиме'
+        elif game_type == 9:
+            game_type = 'Игра в кости в лайв режиме'
+        elif game_type == 11:
+            game_type = 'Цилиндрическая игра (рулетка) в лайв режиме'
+        elif game_type == 12:
+            game_type = 'Букмекерская онлайн-TV игра'
         game_name: str = x['name'].replace("'", "''")
         try:
             vendor: str = x['vendor_name']
         except KeyError:
             vendor = str('BetConstruct')
         permitted_date: str = x['permitted_at']
+
+        print(f'{game_id}, {game_type}, {game_name}, {permitted_date}, {vendor}')
 
         connection = psycopg2.connect(database=credentials.db_name,
                                       user=credentials.db_username,
@@ -78,10 +100,13 @@ def main():
     print(f"Start script at {current_date}")
     prod_host = credentials.skks_host
     test_host = credentials.skks_test_host
+
     game_prod_list = load_game_list_from_skks(prod_host)
     db_prod_name = 'main_gamelistfromskks'
+
     game_test_list = load_game_list_from_skks(test_host)
     db_test_name = 'main_gamelistfromskkstest'
+
     clear_data(db_prod_name)
     save_game_list_to_db(game_prod_list, db_prod_name, 'Prod')
 
