@@ -76,7 +76,7 @@ def save_game_list_to_db(game_list, db_name, env):
             vendor = str('BetConstruct')
         permitted_date: str = x['permitted_at']
 
-        print(f'{game_id}, {game_type}, {game_name}, {permitted_date}, {vendor}')
+        # print(f'{game_id}, {game_type}, {game_name}, {permitted_date}, {vendor}')
 
         connection = psycopg2.connect(database=credentials.db_name,
                                       user=credentials.db_username,
