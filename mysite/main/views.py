@@ -21,10 +21,13 @@ from django.views.generic.list import ListView
 
 from django.urls.base import reverse_lazy
 
-from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm
-from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm
+from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
+from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm, GameListFromSiteForm
+from .forms import CRMCheckForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks
+from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
+from .models import GameListFromSite
+from .models import CRMCheck
 
 import credentials
 import requests
@@ -38,10 +41,13 @@ def homepage(request):
     support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
+    game_control_users = User.objects.filter(groups__name='game_control')
+    crm_users = User.objects.filter(groups__name='crm')
 
     return render(request=request, template_name="main/home.html",
                   context={"support": support_users, "risks": risks_users, 'risk_heads': risk_heads_users,
-                           'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads})
+                           'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads,
+                           'game_control': game_control_users, 'crm': crm_users})
 
 
 def reports(request):
@@ -51,10 +57,13 @@ def reports(request):
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
     support_heads_users = User.objects.filter(groups__name='support_heads')
+    game_control_users = User.objects.filter(groups__name='game_control')
+    crm_users = User.objects.filter(groups__name='crm')
 
     return render(request=request, template_name="main/reports.html",
                   context={"support": support_users, "risks": risks_users, 'risk_heads': risk_heads_users,
-                           'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads})
+                           'site_adm': site_adm_users, 'support_heads': support_heads_users, 'heads': heads,
+                           'game_control': game_control_users, 'crm': crm_users})
 
 
 def message_count_from_s_and_r(start_date, end_date):
@@ -214,6 +223,8 @@ def info_by_ip(request):
     support_heads_users = User.objects.filter(groups__name='support_heads')
     risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
+    game_control_users = User.objects.filter(groups__name='game_control')
+    crm_users = User.objects.filter(groups__name='crm')
 
     ip_address = request.GET.get('object')
 
@@ -263,7 +274,8 @@ def info_by_ip(request):
                                                  'City': get_city, 'ZIP': get_zip_code, 'Lat': get_lat, 'Lon': get_lon,
                                                  'support': support_users, 'risks': risks_users,
                                                  'risk_heads': risk_heads_users, 'site_adm': site_adm_users,
-                                                 'support_heads': support_heads_users, 'heads': heads})
+                                                 'support_heads': support_heads_users, 'heads': heads,
+                                                 'game_control': game_control_users, 'crm': crm_users})
 
 
 def register_request(request):
@@ -744,12 +756,95 @@ class CallsView(ListView):
             return queryset
 
 
+class CRMView(ListView):
+    """ This class view show list of not verified clients """
+    model = CRMCheck
+    form_class = CRMCheckForm
+    template_name = 'main/crm_rep.html'
+    context_object_name = 'list_calls_reports'
+    paginate_by = 30
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['support'] = User.objects.filter(groups__name='support')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        context['months'] = MonthsForm()
+        context['years'] = YearsForm()
+        return context
+
+    def get_queryset(self):
+        month_id = self.request.GET.get('month')
+        year_id = self.request.GET.get('year')
+        if month_id is None and year_id is None:
+            filter_date = None
+        else:
+            filter_date = month_id + '-' + year_id
+        # print(filter_date)
+        display_type = self.request.GET.get('display_type')
+        phone_number = self.request.GET.get('phone_number')
+
+        if display_type == '1':
+            user_name = self.request.user.first_name + ' ' + self.request.user.last_name
+            queryset = CRMCheck.objects.all().order_by('-id').filter(Q(user_name=user_name)
+                                                                     & Q(upload_date_short=filter_date))
+            return queryset
+        elif display_type == '2':
+            queryset = CRMCheck.objects.all().order_by('-id').filter(Q(user_name=None)
+                                                                     & Q(upload_date_short=filter_date))
+            return queryset
+        elif display_type == '3':
+            queryset = CRMCheck.objects.all().order_by('-id'). \
+                filter(Q(call_date=None) & ~Q(call_result="есть фото")
+                       & ~Q(call_result="номер не РБ") & ~Q(user_name=None)
+                       & Q(upload_date_short=filter_date))
+            return queryset
+        elif phone_number is not None:
+            phone_number = phone_number.strip()
+            if len(phone_number) < 13:
+                phone_number = '+' + phone_number
+                queryset = CRMCheck.objects.all().order_by('-id').filter(Q(client_phone=phone_number))
+                return queryset
+            else:
+                queryset = CRMCheck.objects.all().order_by('-id').filter(Q(client_phone=phone_number))
+                return queryset
+        elif filter_date is not None:
+            queryset = CRMCheck.objects.all().order_by('-id').filter(~Q(call_result="есть фото")
+                                                                     & ~Q(call_result="номер не РБ")
+                                                                     & Q(first_deposit_date=None)
+                                                                     & Q(upload_date_short=filter_date))
+            return queryset
+        else:
+            queryset = CRMCheck.objects.all().order_by('-id').filter(~Q(call_result="есть фото")
+                                                                     & ~Q(call_result="номер не РБ")
+                                                                     & Q(first_deposit_date=None))
+            return queryset
+
+
 class UpdateCallView(UpdateView):
     """ This class view add new call report """
     model = CallsCheck
     form_class = CallsCheckForm
     template_name = 'main/update_calls.html'
     success_url = reverse_lazy('main:calls_rep')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['support'] = User.objects.filter(groups__name='support')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        return context
+
+
+class UpdateCRMView(UpdateView):
+    """ This class view add new call report """
+    model = CRMCheck
+    form_class = CRMCheckForm
+    template_name = 'main/update_crm.html'
+    success_url = reverse_lazy('main:crm_rep')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -823,6 +918,74 @@ class AddDataFromTextView(View):
                 else:
                     continue
             return redirect('main:calls_rep')
+
+        return render(request, self.template_name, {'form': form})
+
+
+class AddDataFromCRMView(View):
+    """ This class view add new data from text area """
+    # model = AddDataFromText
+    form_class = AddDataFromTextForm
+    template_name = 'main/add_crm_data.html'
+    success_url = reverse_lazy('main:crm_rep')
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        crm_users = User.objects.filter(groups__name='crm')
+
+        data = {
+            'site_adm': site_adm_users,
+            'crm': crm_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+        }
+        return render(request, self.template_name, data)
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            connection = psycopg2.connect(database=credentials.db_name,
+                                          user=credentials.db_username,
+                                          password=credentials.db_password,
+                                          host=credentials.db_host,
+                                          port=credentials.db_port,
+                                          )
+
+            data = form.cleaned_data.pop('text')
+            data = data.split('\n')  # split data by tabulation
+            data = [i.split(',') for i in data]  # split data by new line
+            data = [i for i in data if i != ['']]  # remove empty list
+            data = list(filter(None, data))  # remove empty spaces
+
+            for i in data:
+                if i != ['\t\r']:
+                    client_data = i  # get client data
+                    client_data = [i.split('\t') for i in client_data]  # split client data by tabulation
+                    client_data = [i for i in client_data if i != ['']]  # remove empty list
+                    client_id = client_data[0][0]  # get client id
+                    client_name = client_data[0][1]  # get client name
+                    client_phone = '+' + client_data[0][2]  # get client phone
+                    upload_date = datetime.datetime.now()  # get upload date
+                    upload_date_short = upload_date.strftime('%m-%Y')  # get upload date short
+                    """ sql query added client_id and client_phone to sql table main_callscheck """
+                    try:
+                        with connection.cursor() as cursor:
+                            cursor.execute("INSERT INTO main_crmcheck "
+                                           "(client_id, client_name, client_phone, upload_date, upload_date_short) "
+                                           "VALUES (%s, %s, %s, %s, %s)",
+                                           [client_id, client_name, client_phone, upload_date, upload_date_short])
+                            connection.commit()
+                        print('Данные клиента:', client_id, client_name, client_phone)
+                    except Exception as e:
+                        print('Данные клиента:', client_id, client_name, client_phone)
+                        print(e)
+                        connection.rollback()
+                else:
+                    continue
+            return redirect('main:crm_rep')
 
         return render(request, self.template_name, {'form': form})
 
@@ -1070,9 +1233,31 @@ def view_log_file(request):
         print(e)
         file = 'Файл не найден'
 
+    try:
+        with open('./skks_check.log', 'r', encoding='UTF-8') as f:
+            skks_file = f.read().split('\n')
+    except FileNotFoundError:
+        with open('/home/pgadmin/reports_site/skks_check.log', 'r', encoding='UTF-8') as f:
+            skks_file = f.read().split('\n')
+    except Exception as e:
+        print(e)
+        skks_file = 'Файл не найден'
+
+    try:
+        with open('./site_check.log', 'r', encoding='UTF-8') as f:
+            site_file = f.read().split('\n')
+    except FileNotFoundError:
+        with open('/home/pgadmin/reports_site/site_check.log', 'r', encoding='UTF-8') as f:
+            site_file = f.read().split('\n')
+    except Exception as e:
+        print(e)
+        site_file = 'Файл не найден'
+
     data = {
         'site_adm': site_adm_users,
         'log_file': file,
+        'skks_file': skks_file,
+        'site_file': site_file,
     }
     return render(request, "main/log_file.html", data)
 
@@ -1116,22 +1301,22 @@ class AppealReportView(View):
             print(datetime.datetime.now())
             print(shift_start, shift_end, user_name, '\n')
 
-        calls_in_count = AppealReport.objects.filter(appeal_type='Звонок входящий').\
+        calls_in_count = AppealReport.objects.filter(appeal_type='Звонок входящий'). \
             filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        calls_out_count = AppealReport.objects.filter(appeal_type='Звонок исходящий').\
+        calls_out_count = AppealReport.objects.filter(appeal_type='Звонок исходящий'). \
             filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        mail_count = AppealReport.objects.filter(appeal_type='Почта').\
+        mail_count = AppealReport.objects.filter(appeal_type='Почта'). \
             filter(Q(user_name=user_name)).filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(user_name=user_name)).\
+        chat_count = AppealReport.objects.filter(Q(appeal_type='Чат') & Q(user_name=user_name)). \
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        telegram_count = AppealReport.objects.filter(Q(appeal_type='Телеграмм') & Q(user_name=user_name)).\
+        telegram_count = AppealReport.objects.filter(Q(appeal_type='Телеграмм') & Q(user_name=user_name)). \
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
-        whatsapp_count = AppealReport.objects.filter(Q(appeal_type='Ватсап') & Q(user_name=user_name)).\
+        whatsapp_count = AppealReport.objects.filter(Q(appeal_type='Ватсап') & Q(user_name=user_name)). \
             filter(Q(appeal_date__range=(shift_start, shift_end))).count()
 
         chats_count = chat_count + telegram_count + whatsapp_count
@@ -1168,7 +1353,6 @@ class AppealReportListView(ListView):
     paginate_by = 30
 
     def get_queryset(self):
-
         return AppealReport.objects.all().order_by('-id')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -1206,7 +1390,9 @@ class GameListFromSkksView(ListView):
     form_class = GameListFromSkksForm
     template_name = 'main/skks_games.html'
     context_object_name = 'game_list'
-    paginate_by = 30
+    paginate_by = 15
+
+    games_count = GameListFromSkks.objects.all().count()
 
     def get_queryset(self):
         game_id = self.request.GET.get('game_id')
@@ -1233,7 +1419,8 @@ class GameListFromSkksView(ListView):
         try:
             if game_provider is not None:
                 game_provider = game_provider.strip()
-                queryset = GameListFromSkks.objects.filter(Q(game_provider__icontains=game_provider)).order_by('game_id')
+                queryset = GameListFromSkks.objects.filter(Q(game_provider__icontains=game_provider)) \
+                    .order_by('game_id')
                 return queryset
         except ValueError:
             return queryset
@@ -1243,7 +1430,139 @@ class GameListFromSkksView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(GameListFromSkksView, self).get_context_data(**kwargs)
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
-        context['support_heads'] = User.objects.filter(groups__name='support_heads')
-        context['support'] = User.objects.filter(groups__name='support')
+        context['game_control'] = User.objects.filter(groups__name='game_control')
         context['superuser'] = User.objects.filter(is_superuser=True)
+        context['games_count'] = self.games_count
+        return context
+
+
+class GameListFromSkksTestView(ListView):
+    """ This class return game list page """
+
+    model = GameListFromSkksTest
+    form_class = GameListFromSkksTestForm
+    template_name = 'main/skks_games_test.html'
+    context_object_name = 'game_list_test'
+    paginate_by = 15
+
+    games_count = GameListFromSkksTest.objects.all().count()
+
+    def get_queryset(self):
+        game_id = self.request.GET.get('game_id')
+        game_name = self.request.GET.get('game_name')
+        game_provider = self.request.GET.get('game_provider')
+        queryset = GameListFromSkksTest.objects.all().order_by('game_id')
+
+        try:
+            if game_id is not None:
+                game_id = game_id.strip()
+                queryset = GameListFromSkksTest.objects.filter(Q(game_id=game_id)).order_by('game_id')
+                return queryset
+        except ValueError:
+            return queryset
+
+        try:
+            if game_name is not None:
+                game_name = game_name.strip()
+                queryset = GameListFromSkksTest.objects.filter(Q(game_name__icontains=game_name)).order_by('game_id')
+                return queryset
+        except ValueError:
+            return queryset
+
+        try:
+            if game_provider is not None:
+                game_provider = game_provider.strip()
+                queryset = GameListFromSkksTest.objects.filter(Q(game_provider__icontains=game_provider)) \
+                    .order_by('game_id')
+                return queryset
+        except ValueError:
+            return queryset
+
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(GameListFromSkksTestView, self).get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['game_control'] = User.objects.filter(groups__name='game_control')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['games_count'] = self.games_count
+        return context
+
+
+class GameListFromSiteView(ListView):
+    """ This class return game list page """
+
+    model = GameListFromSite
+    form_class = GameListFromSiteForm
+    template_name = 'main/site_games.html'
+    context_object_name = 'game_list_site'
+    paginate_by = 15
+
+    games_count = GameListFromSite.objects.all().count()
+
+    def get_queryset(self):
+        game_name = self.request.GET.get('game_name')
+        game_provider = self.request.GET.get('game_provider')
+        game_status = self.request.GET.get('game_status')
+        queryset = GameListFromSite.objects.all().order_by('game_name')
+
+        try:
+            if game_name is not None:
+                game_name = game_name.strip()
+                queryset = GameListFromSite.objects.filter(Q(game_name__icontains=game_name)) \
+                    .order_by('game_name')
+                return queryset
+        except ValueError:
+            return queryset
+
+        try:
+            if game_provider is not None:
+                game_provider = game_provider.strip()
+                queryset = GameListFromSite.objects.filter(Q(game_provider__icontains=game_provider)) \
+                    .order_by('game_name')
+                return queryset
+        except ValueError:
+            return queryset
+
+        try:
+            if game_status is not None:
+                game_status = game_status.strip()
+                queryset = GameListFromSite.objects.filter(Q(game_status__icontains=game_status)) \
+                    .order_by('game_name')
+                return queryset
+        except ValueError:
+            return queryset
+
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(GameListFromSiteView, self).get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['game_control'] = User.objects.filter(groups__name='game_control')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['games_count'] = self.games_count
+        return context
+
+
+class CompareGamesListView(ListView):
+    """ This class compare tables with games """
+
+    template_name = 'main/missing_games.html'
+    context_object_name = 'missing_games'
+    paginate_by = 15
+
+    def get_queryset(self):
+        queryset = GameListFromSite.objects.filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name'))) \
+            .order_by('game_provider')
+        return queryset
+
+    games_count = GameListFromSite.objects.filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name'))) \
+        .count()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CompareGamesListView, self).get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['game_control'] = User.objects.filter(groups__name='game_control')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['games_count'] = self.games_count
         return context

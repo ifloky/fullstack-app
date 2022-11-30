@@ -3,7 +3,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks
+from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
+from .models import GameListFromSite
+from .models import CRMCheck
 
 import datetime
 
@@ -227,6 +229,74 @@ class CallsCheckForm(ModelForm):
         }
 
 
+class CRMCheckForm(ModelForm):
+    class Meta:
+        model = CRMCheck
+
+        results_chooses = [('', ''), ('бросил трубку', 'бросил трубку'),
+                           ('верифицирован до звонка', 'верифицирован до звонка'),
+                           ('есть фото', 'есть фото'), ('играет не клиент', 'играет не клиент'),
+                           ('не будет', 'не будет'), ('нет 21 года', 'нет 21 года'),
+                           ('нет ответа', 'нет ответа'), ('номер не РБ', 'номер не РБ'), ('планирует', 'планирует'),
+                           ('подумает', 'подумает'), ('чужой номер', 'чужой номер'), ]
+
+        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date',
+                  'first_deposit_date', 'user_name']
+
+        widgets = {
+            'client_id':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'client_id', 'readonly': 'readonly',
+                                         'placeholder': 'Тут пишем ID клиента', 'label': 'ID клиента'}),
+
+            'client_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'client_name',
+                                       'placeholder': 'Тут пишем имя клиента', 'label': 'Имя клиента'}),
+
+            'client_phone':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'client_phone', 'readonly': 'readonly',
+                                       'placeholder': 'Тут пишем номер телефона клиента',
+                                       'label': 'Номер телефона клиента'}),
+
+            'call_result':
+                forms.widgets.Select(attrs={'class': 'form-control', 'id': 'call_result'}, choices=results_chooses),
+
+            'call_date':
+                forms.DateTimeInput(attrs={'class': 'form-control', 'id': 'call_date',
+                                           'placeholder': '01.01.2021', 'label': 'Дата звонка',
+                                           'readonly': 'readonly'}),
+
+            'first_deposit_date':
+                forms.DateInput(attrs={'class': 'form-control', 'id': 'first_deposit_date',
+                                       'placeholder': '01.01.2022', 'label': 'Дата первого депозита',
+                                       'blank': True, 'null': True, 'required': False}),
+
+            'user_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly',
+                                       'label': 'Имя оператора'}),
+        }
+
+        labels = {
+            'client_id': 'ID клиента',
+            'client_name': 'Имя клиента',
+            'client_phone': 'Номер телефона клиента',
+            'call_result': 'Результат звонка',
+            'call_date': 'Дата звонка',
+            'first_deposit_date': 'Дата верификации',
+            'user_name': 'Имя оператора',
+        }
+
+        blank = {
+            'client_name': True,
+            'call_date': True,
+            'first_deposit_date': True,
+        }
+
+        required = {
+            'client_name': False,
+            'first_deposit_date': False,
+        }
+
+
 class AddDataFromTextForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'id': 'text',
                                                         'placeholder': 'Сюда вставляем текст'}))
@@ -245,8 +315,25 @@ class AddDataFromTextForm(forms.Form):
         return text
 
 
-class AppealReportForm(ModelForm):
+class AddDataFromCRMForm(forms.Form):
+    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'id': 'text',
+                                                        'placeholder': 'Сюда вставляем текст'}))
+    label = {
+        'text': 'Текст',
+    }
 
+    def clean_text(self):
+        text = self.cleaned_data['text']
+        if not text:
+            raise forms.ValidationError('Вы не ввели текст')
+        return text
+
+    def save(self):
+        text = self.cleaned_data['text']
+        return text
+
+
+class AppealReportForm(ModelForm):
     class Meta:
         model = AppealReport
 
@@ -266,7 +353,7 @@ class AppealReportForm(ModelForm):
                           ('Провести клиента по сайту, где, что найти', 'Провести клиента по сайту, где, что найти'),
                           ('Общая информация', 'Общая информация'),
                           ('Орг.вопросы (ком.предл, претензии, лицензии и т.д',
-                          'Орг.вопросы (ком.предл, претензии, лицензии и т.д')]
+                           'Орг.вопросы (ком.предл, претензии, лицензии и т.д')]
 
         widgets = {
             'appeal_type':
@@ -288,7 +375,6 @@ class AppealReportForm(ModelForm):
 
 
 class GameListFromSkksForm(ModelForm):
-
     class Meta:
         model = GameListFromSkks
 
@@ -313,7 +399,7 @@ class GameListFromSkksForm(ModelForm):
 
             'game_permitted_date':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'game_permitted_date', 'readonly': 'readonly',
-                                        'label': 'Дата разрешения'}),
+                                       'label': 'Дата разрешения'}),
         }
 
         labels = {
@@ -322,4 +408,68 @@ class GameListFromSkksForm(ModelForm):
             'game_type': 'Тип игры',
             'game_provider': 'Провайдер игры',
             'game_permitted_date': 'Дата разрешения',
+        }
+
+
+class GameListFromSkksTestForm(ModelForm):
+    class Meta:
+        model = GameListFromSkksTest
+
+        fields = ['game_id', 'game_name', 'game_type', 'game_provider', 'game_permitted_date']
+
+        widgets = {
+            'game_id':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_id', 'readonly': 'readonly',
+                                       'label': 'ID игры'}),
+
+            'game_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_name', 'readonly': 'readonly',
+                                       'label': 'Название игры'}),
+
+            'game_type':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_type', 'readonly': 'readonly',
+                                       'label': 'Тип игры'}),
+
+            'game_provider':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_provider', 'readonly': 'readonly',
+                                       'label': 'Провайдер игры'}),
+
+            'game_permitted_date':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_permitted_date', 'readonly': 'readonly',
+                                       'label': 'Дата разрешения'}),
+        }
+
+        labels = {
+            'game_id': 'ID игры',
+            'game_name': 'Название игры',
+            'game_type': 'Тип игры',
+            'game_provider': 'Провайдер игры',
+            'game_permitted_date': 'Дата разрешения',
+        }
+
+
+class GameListFromSiteForm(ModelForm):
+    class Meta:
+        model = GameListFromSite
+
+        fields = ['game_name', 'game_provider', 'game_status']
+
+        widgets = {
+            'game_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_id', 'readonly': 'readonly',
+                                       'label': 'Название игры'}),
+
+            'game_provider':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_name', 'readonly': 'readonly',
+                                       'label': 'Провайдер игры'}),
+
+            'game_status':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_type', 'readonly': 'readonly',
+                                       'label': 'Статус игры'}),
+        }
+
+        labels = {
+            'game_name': 'Название игры',
+            'game_provider': 'Провайдер игры',
+            'game_status': 'Статус игры',
         }

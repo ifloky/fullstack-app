@@ -1,55 +1,53 @@
 <!--Navbar-->
 <style>
-body {margin:0;}
+    body {
+        margin:0;
+    }
 
-.fixed {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-    position: fixed;
-    top: 40px;
-    width: 8%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
+    .fixed {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+        position: fixed;
+        top: 40px;
+        width: 8%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
 
-.fixed_horizontal {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-    position: fixed;
-    top: 0%;
-    height: 40px;
-    width: 100%;
-}
+    .fixed_horizontal {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+        position: fixed;
+        top: 0%;
+        height: 40px;
+        width: 100%;
+    }
 
 
-.nav-item {
-    float: left;
-}
+    .nav-item {
+        float: left;
+    }
 
-li a {
-    display: block;
-    color: white;
-    text-align: left;
-    padding: 14px 16px;
-    text-decoration: none;
-}
+    li a {
+        display: block;
+        color: white;
+        text-align: left;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
 
-li a:hover:not(.active) {
-    color: white;
-    background-color: #111;
-}
+    li a:hover:not(.active) {
+        color: white;
+        background-color: #4CAF50;
+    }
 
-.active {
-    color: white;
-    background-color: #4CAF50;
-}
 </style>
 
 
@@ -92,6 +90,10 @@ li a:hover:not(.active) {
                 </li>
 
                 <li class="nav-item">
+                  <a class="nav-link" href="/crm_rep">Бездепозитники</a>
+                </li>
+
+                <li class="nav-item">
                   <a class="nav-link" href="/appeal">Добавить обращение</a>
                 </li>
 
@@ -101,6 +103,10 @@ li a:hover:not(.active) {
 
                 <li class="nav-item">
                   <a class="nav-link" href="/add_data">Внести данные</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/add_crm_data">Внести данные из CRM</a>
                 </li>
 
                 <li class="nav-item">
@@ -141,6 +147,10 @@ li a:hover:not(.active) {
               <a class="nav-link" href="/calls_rep">Поддержка</a>
             </li>
 
+     |      <li class="nav-item">
+              <a class="nav-link" href="/crm_rep">Бездепозитники</a>
+            </li>
+
             <li class="nav-item">
               <a class="nav-link" href="/appeal">Добавить обращение</a>
             </li>
@@ -157,6 +167,10 @@ li a:hover:not(.active) {
 
             <li class="nav-item">
               <a class="nav-link" href="/calls_rep">Поддержка</a>
+            </li>
+
+         |  <li class="nav-item">
+              <a class="nav-link" href="/crm_rep">Бездепозитники</a>
             </li>
 
             <li class="nav-item">
@@ -189,6 +203,13 @@ li a:hover:not(.active) {
               <a class="nav-link" href="/cc_report">Отдел поддержки</a>
             </li>
             {% endif %}
+
+            {% if user in crm %}
+            <li class="nav-item">
+              <a class="nav-link" href="/add_crm_data">Внести данные из CRM</a>
+            </li>
+            {% endif %}
+
         <li class="nav-item">
           <a class="nav-link" href="/ip_info">Проверка адреса</a>
         </li>
@@ -209,7 +230,40 @@ li a:hover:not(.active) {
                 </li>
 
                 <li class="nav-item">
-                  <a class="nav-link" href="/skks_games">Список игр в СККС</a>
+                  <a class="nav-link" href="/skks_games">Список игр в СККС (Prod)</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/skks_games_test">Список игр в СККС (Test)</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/site_games">Список игр на сайте</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/missing_games">Потеряшки</a>
+                </li>
+
+
+            {% endif %}
+
+            {% if user in game_control %}
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/skks_games">Список игр в СККС (Prod)</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/skks_games_test">Список игр в СККС (Test)</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/site_games">Список игр на сайте</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/missing_games">Потеряшки</a>
                 </li>
 
             {% endif %}

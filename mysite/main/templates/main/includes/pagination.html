@@ -1,6 +1,39 @@
 <!--Pagination box-->
 
-<div class="pagination" style="padding:20px;display:flex;justify-content:center">
+<style>
+    a[href^="?#"] {
+        background: #4CAF50;
+        color: white !important;
+    }
+
+    .pagination {
+        display: inline-block;
+    }
+
+    .pagination a {
+        color: black;
+        float: left;
+        text-decoration: none;
+        transition: background-color .3s;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin: 4px 4px;
+        padding: 4px 6px;
+    }
+
+    .pagination a.active {
+        background-color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .pagination a:hover:not(.active) {
+        background-color: #ddd;
+    }
+
+</style>
+
+<div class="pagination" style="padding: 20px 0px;padding-left:9.5%;width:98%;display:flex;justify-content:center">
     <span class="step-links" style="display:block">
         {% if page_obj.has_previous %}
          <a class="change_url" href="page={{ page_obj.previous_page_number }}">Previous</a>

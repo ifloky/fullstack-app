@@ -90,6 +90,26 @@ class CallsCheck(models.Model):
         verbose_name_plural = 'Проверка звонков'
 
 
+class CRMCheck(models.Model):
+    objects = None
+    client_id = models.IntegerField(unique=True)
+    client_name = models.CharField(max_length=200, blank=True, null=True)
+    client_phone = models.CharField(max_length=200)
+    call_result = models.CharField(max_length=200, blank=True, null=True)
+    call_date = models.DateTimeField(blank=True, null=True, default=timezone.localtime)
+    first_deposit_date = models.DateField(blank=True, null=True)
+    user_name = models.CharField(max_length=200, blank=True, null=True)
+    upload_date = models.DateTimeField(auto_now_add=True)
+    upload_date_short = models.CharField(max_length=7, default=datetime.date.today().strftime("%m-%Y"))
+
+    def __str__(self):
+        return self.client_id
+
+    class Meta:
+        verbose_name = 'Проверка бездепозитников'
+        verbose_name_plural = 'Проверка бездепозитников'
+
+
 class AppealReport(models.Model):
     objects = None
     appeal_type = models.CharField(max_length=200)
@@ -118,5 +138,36 @@ class GameListFromSkks(models.Model):
         return self.game_name
 
     class Meta:
-        verbose_name = 'Список игр из СККС'
-        verbose_name_plural = 'Список игр из СККС'
+        verbose_name = 'Список игр из СККС (Production)'
+        verbose_name_plural = 'Список игр из СККС (Production)'
+
+
+class GameListFromSkksTest(models.Model):
+    objects = None
+    game_id = models.IntegerField()
+    game_name = models.CharField(max_length=200)
+    game_type = models.CharField(max_length=200)
+    game_provider = models.CharField(max_length=200)
+    game_permitted_date = models.DateTimeField(default=timezone.localtime)
+
+    def __str__(self):
+        return self.game_name
+
+    class Meta:
+        verbose_name = 'Список игр из СККС (Test)'
+        verbose_name_plural = 'Список игр из СККС (Test)'
+
+
+class GameListFromSite(models.Model):
+    objects = None
+
+    game_name = models.CharField(max_length=200)
+    game_provider = models.CharField(max_length=200)
+    game_status = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.game_name
+
+    class Meta:
+        verbose_name = 'Список игр из сайта (Production)'
+        verbose_name_plural = 'Список игр из сайта (Production)'

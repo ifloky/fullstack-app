@@ -2,7 +2,6 @@
 
 
   {% block content %}
-
     <script>
     $(document).ready(function() {
     var getUrlParameter = function getUrlParameter(sParam) {
@@ -109,30 +108,65 @@
     button:hover {
         background: #d9d9d9;
     }
+
+    table {
+    counter-reset: rowNumber;
+    }
+
+    table .table_date {
+        counter-increment: rowNumber;
+    }
+
+    table .table_date th:first-child::before {
+        content: counter(rowNumber);
+        min-width: 1em;
+        margin-right: 1.5em;
+    }
     </style>
 
   {% if user.is_authenticated %}
     <br>
 
     <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+        <form method="GET" action="/crm_rep" style="width:60%">
+            <label class="filter" for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Мои запросы</label>
+            <label class="filter" for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>
+            <label class="filter" for="d_box3"><input type="radio" name="display_type" value="3" id="d_box3">  Нет звонка</label>
+             {{ months }} {{ years }}
+            <button type="submit">Показать</button>
+        </form>
+        <form method="GET" action="/crm_rep" style="margin-left:3%;width:40%">
+             <label for="search_box" style="display:block;width:220px">Поиск по номеру телефона:</label>
+             <input style="width:200px;margin-right:10px" type="search" name="phone_number" value="" id="search_box" placeholder="+375XXXXXXXX">
+             <button type="submit">Найти</button>
+        </form>
+    </div>
+
+    <div style="padding-left:10%;width:98%;">
         <table class="table table-striped">
           <thead>
             <tr align="center">
-                <th scope="col" width="200">Оператор</th>
-                <th scope="col">Тип обращения</th>
-                <th scope="col">Проблема</th>
-                <th scope="col">Время обращения</th>
-                <th scope="col">Редактировать</th>
+                <th scope="col" width="200">ID клиента</th>
+                <th scope="col">Имя клиента</th>
+                <th scope="col" width="250">Номер телефона</th>
+                <th scope="col">Результат звонка</th>
+                <th scope="col">Дата звонка</th>
+                <th scope="col">Дата первого депозита</th>
+                <th scope="col">Оператор</th>
+                <th scope="col"> </th>
             </tr>
           </thead>
           <tbody>
-            {% for list in appeal_rep %}
-                <tr align="center">
+            {% for list in list_calls_reports %}
+                <tr class="table_date" align="center">
+                    <th scope="col" width="200"><a href="https://backoffice.betconstruct.com/#/customers/detail/{{list.client_id}}" target="_blank">{{ list.client_id }}</a></th>
+                    <th scope="col">{{ list.client_name }}</th>
+                    <th scope="col" width="250">{{ list.client_phone }}</th>
+                    <th scope="col">{{ list.call_result }}</th>
+                    <th scope="col">{{ list.call_date }}</th>
+                    <th scope="col">{{ list.first_deposit_date }}</th>
                     <th scope="col">{{ list.user_name }}</th>
-                    <th scope="col">{{ list.appeal_type }}</th>
-                    <th scope="col">{{ list.appeal_result }}</th>
-                    <th scope="col">{{ list.appeal_date }}</th>
-                    <th><a href="/update_appeal/{{list.id}}">Редактировать</a></th>
+                    <th><a href="/update_crm/{{list.id}}">Редактировать</a></th>
                 </tr>
             {% endfor %}
           </tbody>

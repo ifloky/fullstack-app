@@ -1,6 +1,5 @@
 {% extends 'main/header.html' %}
 
-
   {% block content %}
 
     <script>
@@ -19,16 +18,19 @@
             }
         }
     };
+      
         var var_page = getUrlParameter('display_type');
-        var var_month = getUrlParameter('month');
-        var var_year = getUrlParameter('year');
+        var game_provider = getUrlParameter('game_provider')
+        var game_name = getUrlParameter('game_name')
+        var game_id = getUrlParameter('game_id')
+
         $('.change_url').each(function(){
             var a_link = $(this).attr('href');
             if (var_page === undefined) {
                 $(this).attr('href', '?' + a_link)
             } else {
 <!--                $('input[value=var_page]').prop('checked', true);-->
-                $(this).attr('href', '?display_type=' + var_page + '&month=' + var_month + '&year=' + var_year + '&' + a_link);
+                $(this).attr('href', '?game_provider=' + game_provider + '&game_name=' + game_name + '&game_id=' + game_id + '&' + a_link);
             };
         });
 
@@ -113,26 +115,24 @@
 
   {% if user.is_authenticated %}
     <br>
-
-    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%">
+        <span style="font-size: 32px">Отсутствует на сайте, либо имя не соответствует имени в СККС: <b>{{ games_count }}</b> игр.</span>
+    </div>
+    <div style="padding-left:9.5%;width:98%;display:flex">
         <table class="table table-striped">
           <thead>
             <tr align="center">
-                <th scope="col" width="200">Оператор</th>
-                <th scope="col">Тип обращения</th>
-                <th scope="col">Проблема</th>
-                <th scope="col">Время обращения</th>
-                <th scope="col">Редактировать</th>
+                <th scope="col" width="600">Название игры</th>
+                <th scope="col" width="600">Провайдер</th>
+                <th scope="col">Статус игры</th>
             </tr>
           </thead>
           <tbody>
-            {% for list in appeal_rep %}
+            {% for list in missing_games %}
                 <tr align="center">
-                    <th scope="col">{{ list.user_name }}</th>
-                    <th scope="col">{{ list.appeal_type }}</th>
-                    <th scope="col">{{ list.appeal_result }}</th>
-                    <th scope="col">{{ list.appeal_date }}</th>
-                    <th><a href="/update_appeal/{{list.id}}">Редактировать</a></th>
+                    <th scope="col" width="600">{{ list.game_name }}</th>
+                    <th scope="col" width="600">{{ list.game_provider }}</th>
+                    <th scope="col">{{ list.game_status }}</th>
                 </tr>
             {% endfor %}
           </tbody>
@@ -150,5 +150,6 @@
         {% include 'main/includes/non_authorised.html' %}
 
   {% endif %}
+
 
   {% endblock %}

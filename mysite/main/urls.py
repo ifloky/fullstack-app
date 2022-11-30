@@ -23,9 +23,13 @@ urlpatterns = [
     path('list_risks_rep_day/', views.ListRisksReportDay.as_view(), name='list_risks_rep_day'),
     path('update_risks_rep_day/<int:pk>', views.UpdateRisksReportDay.as_view(), name='update_risks_rep_day'),
 
+    path('add_data/', views.AddDataFromTextView.as_view(), name='add_data'),
     path('calls_rep/', views.CallsView.as_view(), name='calls_rep'),
     path('update_calls/<int:pk>', views.UpdateCallView.as_view(), name='update_calls'),
-    path('add_data/', views.AddDataFromTextView.as_view(), name='add_data'),
+
+    path('add_crm_data/', views.AddDataFromCRMView.as_view(), name='add_crm_data'),
+    path('crm_rep/', views.CRMView.as_view(), name='crm_rep'),
+    path('update_crm/<int:pk>', views.UpdateCRMView.as_view(), name='update_crm'),
 
     path('cc_report/', views.cc_report, name='cc_report'),
     path('appeal/', views.AppealReportView.as_view(), name='appeal'),
@@ -35,4 +39,7 @@ urlpatterns = [
     path('log_file/', views.view_log_file, name='log_file'),
 
     path('skks_games/', views.GameListFromSkksView.as_view(), name='skks_games'),
+    path('skks_games_test/', views.GameListFromSkksTestView.as_view(), name='skks_games_test'),
+    path('site_games/', views.GameListFromSiteView.as_view(), name='site_games'),
+    path('missing_games/', views.CompareGamesListView.as_view(), name='missing_games'),
 ]
