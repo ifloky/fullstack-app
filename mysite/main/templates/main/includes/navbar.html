@@ -90,6 +90,10 @@
                 </li>
 
                 <li class="nav-item">
+                  <a class="nav-link" href="/crm_rep">Бездепозитники</a>
+                </li>
+
+                <li class="nav-item">
                   <a class="nav-link" href="/appeal">Добавить обращение</a>
                 </li>
 
@@ -99,6 +103,10 @@
 
                 <li class="nav-item">
                   <a class="nav-link" href="/add_data">Внести данные</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/add_crm_data">Внести данные из CRM</a>
                 </li>
 
                 <li class="nav-item">
@@ -139,6 +147,10 @@
               <a class="nav-link" href="/calls_rep">Поддержка</a>
             </li>
 
+     |      <li class="nav-item">
+              <a class="nav-link" href="/crm_rep">Бездепозитники</a>
+            </li>
+
             <li class="nav-item">
               <a class="nav-link" href="/appeal">Добавить обращение</a>
             </li>
@@ -155,6 +167,10 @@
 
             <li class="nav-item">
               <a class="nav-link" href="/calls_rep">Поддержка</a>
+            </li>
+
+         |  <li class="nav-item">
+              <a class="nav-link" href="/crm_rep">Бездепозитники</a>
             </li>
 
             <li class="nav-item">
@@ -187,6 +203,13 @@
               <a class="nav-link" href="/cc_report">Отдел поддержки</a>
             </li>
             {% endif %}
+
+            {% if user in crm %}
+            <li class="nav-item">
+              <a class="nav-link" href="/add_crm_data">Внести данные из CRM</a>
+            </li>
+            {% endif %}
+
         <li class="nav-item">
           <a class="nav-link" href="/ip_info">Проверка адреса</a>
         </li>

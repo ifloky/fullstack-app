@@ -1,0 +1,36 @@
+ {% extends 'main/header.html' %}
+
+  {% block content %}
+
+   <style xmlns="http://www.w3.org/1999/html">
+    form {
+        margin-left: 12%;
+        width: 80%;
+        margin-top: 2%;
+    }
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
+  </style>
+
+  {% if user.is_authenticated %}
+
+    <div style="padding:5px;margin-top:30px;">
+
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-success" type="submit">Сохранить</button>
+        </form>
+
+    </div>
+
+  {% else %}
+
+        {% include 'main/includes/non_authorised.html' %}
+
+  {% endif %}
+
+  {% endblock %}

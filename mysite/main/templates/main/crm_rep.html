@@ -1,0 +1,188 @@
+{% extends 'main/header.html' %}
+
+
+  {% block content %}
+    <script>
+    $(document).ready(function() {
+    var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+        var var_page = getUrlParameter('display_type');
+        var var_month = getUrlParameter('month');
+        var var_year = getUrlParameter('year');
+        $('.change_url').each(function(){
+            var a_link = $(this).attr('href');
+            if (var_page === undefined) {
+                $(this).attr('href', '?' + a_link)
+            } else {
+<!--                $('input[value=var_page]').prop('checked', true);-->
+                $(this).attr('href', '?display_type=' + var_page + '&month=' + var_month + '&year=' + var_year + '&' + a_link);
+            };
+        });
+
+    });
+    </script>
+
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        display: flex;
+        align-items: center;
+        justify-content: right;
+    }
+
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
+
+    input {
+        width: 20px;
+        padding: 8px 20px;
+        margin: 8px 0;
+        margin-right: 20px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+        height: 60px;
+        border-radius: 10px;
+    }
+
+    button {
+        width: 120px;
+        padding: 6px 30px;
+        margin: 8px 0;
+    }
+
+    th {
+        vertical-align:
+        middle !important;
+        text-align: center;
+    }
+
+    label.filter {
+        margin-right: 10px;
+        display:flex;
+        align-items: center;
+        height: 60px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 0 30px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    label.filter:hover {
+        background: #d9d9d9;
+    }
+
+    select {
+        height: 60px;
+        border-radius: 10px !important;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    select:hover {
+        background: #d9d9d9;
+    }
+
+    button {
+        height: 60px;
+        border-radius: 10px !important;
+    }
+
+    button:hover {
+        background: #d9d9d9;
+    }
+
+    table {
+    counter-reset: rowNumber;
+    }
+
+    table .table_date {
+        counter-increment: rowNumber;
+    }
+
+    table .table_date th:first-child::before {
+        content: counter(rowNumber);
+        min-width: 1em;
+        margin-right: 1.5em;
+    }
+    </style>
+
+  {% if user.is_authenticated %}
+    <br>
+
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+        <form method="GET" action="/crm_rep" style="width:60%">
+            <label class="filter" for="l_box1"><input type="radio" name="display_type" value="1" id="l_box1">  Мои запросы</label>
+            <label class="filter" for="d_box2"><input type="radio" name="display_type" value="2" id="d_box2">  Свободные запросы</label>
+            <label class="filter" for="d_box3"><input type="radio" name="display_type" value="3" id="d_box3">  Нет звонка</label>
+             {{ months }} {{ years }}
+            <button type="submit">Показать</button>
+        </form>
+        <form method="GET" action="/crm_rep" style="margin-left:3%;width:40%">
+             <label for="search_box" style="display:block;width:220px">Поиск по номеру телефона:</label>
+             <input style="width:200px;margin-right:10px" type="search" name="phone_number" value="" id="search_box" placeholder="+375XXXXXXXX">
+             <button type="submit">Найти</button>
+        </form>
+    </div>
+
+    <div style="padding-left:10%;width:98%;">
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col" width="200">ID клиента</th>
+                <th scope="col">Имя клиента</th>
+                <th scope="col" width="250">Номер телефона</th>
+                <th scope="col">Результат звонка</th>
+                <th scope="col">Дата звонка</th>
+                <th scope="col">Дата верификации</th>
+                <th scope="col">Оператор</th>
+                <th scope="col"> </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for list in list_calls_reports %}
+                <tr class="table_date" align="center">
+                    <th scope="col" width="200"><a href="https://backoffice.betconstruct.com/#/customers/detail/{{list.client_id}}" target="_blank">{{ list.client_id }}</a></th>
+                    <th scope="col">{{ list.client_name }}</th>
+                    <th scope="col" width="250">{{ list.client_phone }}</th>
+                    <th scope="col">{{ list.call_result }}</th>
+                    <th scope="col">{{ list.call_date }}</th>
+                    <th scope="col">{{ list.verified_date }}</th>
+                    <th scope="col">{{ list.user_name }}</th>
+                    <th><a href="/update_crm/{{list.id}}">Редактировать</a></th>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+
+        {% include 'main/includes/pagination.html' %}
+
+    {% endif %}
+
+  {% else %}
+
+        {% include 'main/includes/non_authorised.html' %}
+
+  {% endif %}
+
+  {% endblock %}

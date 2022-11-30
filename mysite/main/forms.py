@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
-from .models import GameListFromSite
+from .models import GameListFromSite, CRMCheck
 
 import datetime
 
@@ -228,7 +228,92 @@ class CallsCheckForm(ModelForm):
         }
 
 
+class CRMCheckForm(ModelForm):
+    class Meta:
+        model = CRMCheck
+
+        results_chooses = [('', ''), ('бросил трубку', 'бросил трубку'),
+                           ('верифицирован до звонка', 'верифицирован до звонка'),
+                           ('есть фото', 'есть фото'), ('играет не клиент', 'играет не клиент'),
+                           ('не будет', 'не будет'), ('нет 21 года', 'нет 21 года'),
+                           ('нет ответа', 'нет ответа'), ('номер не РБ', 'номер не РБ'), ('планирует', 'планирует'),
+                           ('подумает', 'подумает'), ('чужой номер', 'чужой номер'), ]
+
+        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date', 'verified_date', 'user_name']
+
+        widgets = {
+            'client_id':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'client_id', 'readonly': 'readonly',
+                                         'placeholder': 'Тут пишем ID клиента', 'label': 'ID клиента'}),
+
+            'client_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'client_name',
+                                       'placeholder': 'Тут пишем имя клиента', 'label': 'Имя клиента'}),
+
+            'client_phone':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'client_phone', 'readonly': 'readonly',
+                                       'placeholder': 'Тут пишем номер телефона клиента',
+                                       'label': 'Номер телефона клиента'}),
+
+            'call_result':
+                forms.widgets.Select(attrs={'class': 'form-control', 'id': 'call_result'}, choices=results_chooses),
+
+            'call_date':
+                forms.DateTimeInput(attrs={'class': 'form-control', 'id': 'call_date',
+                                           'placeholder': '01.01.2021', 'label': 'Дата звонка',
+                                           'readonly': 'readonly'}),
+
+            'verified_date':
+                forms.DateInput(attrs={'class': 'form-control', 'id': 'verified_date',
+                                       'placeholder': '01.01.2022', 'label': 'Дата верификации',
+                                       'blank': True, 'null': True, 'required': False}),
+
+            'user_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly',
+                                       'label': 'Имя оператора'}),
+        }
+
+        labels = {
+            'client_id': 'ID клиента',
+            'client_name': 'Имя клиента',
+            'client_phone': 'Номер телефона клиента',
+            'call_result': 'Результат звонка',
+            'call_date': 'Дата звонка',
+            'verified_date': 'Дата верификации',
+            'user_name': 'Имя оператора',
+        }
+
+        blank = {
+            'client_name': True,
+            'call_date': True,
+            'verified_date': True,
+        }
+
+        required = {
+            'client_name': False,
+            'verified_date': False,
+        }
+
+
 class AddDataFromTextForm(forms.Form):
+    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'id': 'text',
+                                                        'placeholder': 'Сюда вставляем текст'}))
+    label = {
+        'text': 'Текст',
+    }
+
+    def clean_text(self):
+        text = self.cleaned_data['text']
+        if not text:
+            raise forms.ValidationError('Вы не ввели текст')
+        return text
+
+    def save(self):
+        text = self.cleaned_data['text']
+        return text
+
+
+class AddDataFromCRMForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'id': 'text',
                                                         'placeholder': 'Сюда вставляем текст'}))
     label = {
