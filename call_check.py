@@ -45,8 +45,7 @@ def create_df(call_date='2022-11-01'):
     return df
 
 
-def load_phone_number_from_db():
-    print('Loading phone numbers from db ...')
+def load_phone_number_from_db(db_name):
     """ This function get data from callscheck db table and return it as list of dicts """
     cursor, connection = None, None
 
@@ -54,7 +53,7 @@ def load_phone_number_from_db():
 
     sql_query = (f'''
                 SELECT client_phone
-                FROM public.main_callscheck
+                FROM {db_name}
                 WHERE call_date is null AND call_result != 'есть фото' AND call_result != 'номер не РБ' 
                 ''')
 
@@ -78,7 +77,11 @@ def load_phone_number_from_db():
                 phones.append(phone)
             else:
                 continue
-        # print('Phone Numbers Loaded', len(phones))
+        if db_name == 'public.main_callscheck':
+            database_name = 'Call Centre'
+        else:
+            database_name = 'CRM'
+        print(f'Loading phone numbers from db {database_name}:', len(phones), 'records.')
 
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgresSQL", error)
@@ -143,11 +146,16 @@ def get_date_15_days_ago():
 
 
 def main():
+    cc_db = 'public.main_callscheck'
+    crm_db = 'public.main_crmcheck'
     date_range = get_date_15_days_ago()
     start_job_time = time.perf_counter()
     data = []
     df = create_df(date_range)
-    phone_numbers = load_phone_number_from_db()
+    cc_phones = load_phone_number_from_db(cc_db)
+    crm_phones = load_phone_number_from_db(crm_db)
+
+    phone_numbers = cc_phones + crm_phones
 
     for phone_number in phone_numbers:
         data.append(check_call(phone_number, df))
