@@ -281,7 +281,7 @@ class CRMCheckForm(ModelForm):
             'client_phone': 'Номер телефона клиента',
             'call_result': 'Результат звонка',
             'call_date': 'Дата звонка',
-            'first_deposit_date': 'Дата верификации',
+            'first_deposit_date': 'Дата первого депозита',
             'user_name': 'Имя оператора',
         }
 
