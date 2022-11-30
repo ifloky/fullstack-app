@@ -94,14 +94,14 @@ def load_phone_number_from_db(db_name):
     return phones
 
 
-def check_call(phone_number, df):
+def check_call(phone_number, df, db_name):
     for index, row in df.iterrows():
         if row['client'] == phone_number:
             check = row['client'], row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
             call_date_time = row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
             client_number = row['client']
             check = str(check).replace('(', '').replace(')', '').replace("'", '')
-            update_call_date_in_db(client_number, call_date_time)
+            update_call_date_in_db(client_number, call_date_time, db_name)
             # print(check)
             print(client_number, call_date_time)
             return check
@@ -109,11 +109,11 @@ def check_call(phone_number, df):
     return str(phone_number)+', ' + 'No Calls'
 
 
-def update_call_date_in_db(phone_number, call_date_time):
+def update_call_date_in_db(phone_number, call_date_time, db_name):
     cursor, connection = None, None
 
     sql_query = (f'''
-                UPDATE public.main_callscheck
+                UPDATE {db_name}
                 SET call_date = '{call_date_time}'
                 WHERE client_phone = '{phone_number}'
                 ''')
@@ -157,8 +157,11 @@ def main():
 
     phone_numbers = cc_phones + crm_phones
 
-    for phone_number in phone_numbers:
-        data.append(check_call(phone_number, df))
+    for cc_phone in cc_phones:
+        data.append(check_call(cc_phone, df, cc_db))
+
+    for crm_phone in crm_phones:
+        data.append(check_call(crm_phone, df, crm_db))
 
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
