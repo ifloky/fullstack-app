@@ -239,7 +239,7 @@ class CRMCheckForm(ModelForm):
                            ('нет ответа', 'нет ответа'), ('номер не РБ', 'номер не РБ'), ('планирует', 'планирует'),
                            ('подумает', 'подумает'), ('чужой номер', 'чужой номер'), ]
 
-        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date', 'verified_date', 'user_name']
+        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date', 'first_deposit_date', 'user_name']
 
         widgets = {
             'client_id':
@@ -263,9 +263,9 @@ class CRMCheckForm(ModelForm):
                                            'placeholder': '01.01.2021', 'label': 'Дата звонка',
                                            'readonly': 'readonly'}),
 
-            'verified_date':
-                forms.DateInput(attrs={'class': 'form-control', 'id': 'verified_date',
-                                       'placeholder': '01.01.2022', 'label': 'Дата верификации',
+            'first_deposit_date':
+                forms.DateInput(attrs={'class': 'form-control', 'id': 'first_deposit_date',
+                                       'placeholder': '01.01.2022', 'label': 'Дата первого депозита',
                                        'blank': True, 'null': True, 'required': False}),
 
             'user_name':
@@ -279,19 +279,19 @@ class CRMCheckForm(ModelForm):
             'client_phone': 'Номер телефона клиента',
             'call_result': 'Результат звонка',
             'call_date': 'Дата звонка',
-            'verified_date': 'Дата верификации',
+            'first_deposit_date': 'Дата верификации',
             'user_name': 'Имя оператора',
         }
 
         blank = {
             'client_name': True,
             'call_date': True,
-            'verified_date': True,
+            'first_deposit_date': True,
         }
 
         required = {
             'client_name': False,
-            'verified_date': False,
+            'first_deposit_date': False,
         }
 
 

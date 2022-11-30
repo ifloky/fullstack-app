@@ -812,13 +812,13 @@ class CRMView(ListView):
         elif filter_date is not None:
             queryset = CRMCheck.objects.all().order_by('-id').filter(~Q(call_result="есть фото")
                                                                      & ~Q(call_result="номер не РБ")
-                                                                     & Q(verified_date=None)
+                                                                     & Q(first_deposit_date=None)
                                                                      & Q(upload_date_short=filter_date))
             return queryset
         else:
             queryset = CRMCheck.objects.all().order_by('-id').filter(~Q(call_result="есть фото")
                                                                      & ~Q(call_result="номер не РБ")
-                                                                     & Q(verified_date=None))
+                                                                     & Q(first_deposit_date=None))
             return queryset
 
 
