@@ -927,7 +927,7 @@ class AddDataFromCRMView(View):
     # model = AddDataFromText
     form_class = AddDataFromTextForm
     template_name = 'main/add_crm_data.html'
-    success_url = reverse_lazy('main:add_crm_data')
+    success_url = reverse_lazy('main:crm_rep')
 
     def get(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
