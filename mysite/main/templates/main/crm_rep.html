@@ -141,7 +141,11 @@
              <button type="submit">Найти</button>
         </form>
     </div>
+    {% if is_paginated %}
 
+        {% include 'main/includes/pagination.html' %}
+
+    {% endif %}
     <div style="padding-left:10%;width:98%;">
         <table class="table table-striped">
           <thead>
@@ -172,12 +176,6 @@
           </tbody>
         </table>
     </div>
-
-    {% if is_paginated %}
-
-        {% include 'main/includes/pagination.html' %}
-
-    {% endif %}
 
   {% else %}
 
