@@ -19,13 +19,14 @@
             }
         }
     };
+    
         var var_page = getUrlParameter('display_type');
         var var_month = getUrlParameter('month');
         var var_year = getUrlParameter('year');
         $('.change_url').each(function(){
             var a_link = $(this).attr('href');
             if (var_page === undefined) {
-                $(this).attr('href', '?' + a_link)
+                $(this).attr('href', '?' + sPageURL)
             } else {
 <!--                $('input[value=var_page]').prop('checked', true);-->
                 $(this).attr('href', '?display_type=' + var_page + '&month=' + var_month + '&year=' + var_year + '&' + a_link);
@@ -169,3 +170,5 @@
   {% endif %}
 
   {% endblock %}
+
+
