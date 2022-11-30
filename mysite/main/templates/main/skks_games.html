@@ -3,7 +3,7 @@
   {% block content %}
 
     <script>
-      
+ 
 
   $(document).ready(function () {
     var getUrlParameter = function getUrlParameter(sParam) {
@@ -28,11 +28,11 @@
     $('.change_url').each(function () {
       var a_link = $(this).attr('href');
       if (game_provider) {
-        $(this).attr('href', a_link + '&game_provider=' + game_provider);
+        $(this).attr('href', '?' + a_link + '&game_provider=' + game_provider);
       } else if (game_name) {
-        $(this).attr('href', a_link + '&game_name=' + game_name);
+        $(this).attr('href',  '?' + a_link + '&game_name=' + game_name);
       } else if (game_id) {
-        $(this).attr('href', a_link + '&game_id=' + game_id);
+        $(this).attr('href', '?' + a_link + '&game_id=' + game_id);
       }
     });
 
