@@ -26,7 +26,8 @@ from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, Appea
 from .forms import CRMCheckForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
-from .models import GameListFromSite, CRMCheck
+from .models import GameListFromSite
+from .models import CRMCheck
 
 import credentials
 import requests

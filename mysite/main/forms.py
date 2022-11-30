@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
-from .models import GameListFromSite, CRMCheck
+from .models import GameListFromSite
+from .models import CRMCheck
 
 import datetime
 
@@ -239,7 +240,8 @@ class CRMCheckForm(ModelForm):
                            ('нет ответа', 'нет ответа'), ('номер не РБ', 'номер не РБ'), ('планирует', 'планирует'),
                            ('подумает', 'подумает'), ('чужой номер', 'чужой номер'), ]
 
-        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date', 'first_deposit_date', 'user_name']
+        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date',
+                  'first_deposit_date', 'user_name']
 
         widgets = {
             'client_id':
