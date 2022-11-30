@@ -985,7 +985,7 @@ class AddDataFromCRMView(View):
                         connection.rollback()
                 else:
                     continue
-            return redirect('main:add_crm_data')
+            return redirect('main:crm_rep')
 
         return render(request, self.template_name, {'form': form})
 
