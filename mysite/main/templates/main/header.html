@@ -22,11 +22,17 @@
     {% block content %}
 
     {% endblock %}
-    <script>
-    window.addEventListener('load', function() {
-        let activeLink = document.querySelector('a[href*="'+window.location.href.toString().split(window.location.host)[1].slice(1,-1)+'"]');
+
+
+<script>
+  
+    window.addEventListener('load', function () {
+        let activeLink = document.querySelector('a[href*="' + window.location.pathname.toString().slice(1, -1) + '"]');
+        console.log(activeLink)
         activeLink.style.background = '#28a745';
-        });
-    </script>
-  </body>
+    });
+
+</script>
+
+</body>
 </html>
