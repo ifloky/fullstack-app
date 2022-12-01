@@ -979,7 +979,7 @@ class AddDataFromCRMView(View):
                     client_phone = '+' + client_data[0][2]  # get client phone
                     upload_date = datetime.datetime.now()  # get upload date
                     upload_date_short = upload_date.strftime('%m-%Y')  # get upload date short
-                    """ sql query added client_id and client_phone to sql table main_callscheck """
+                    """ sql query added client_id and client_phone to sql table main_crmcheck """
                     try:
                         with connection.cursor() as cursor:
                             cursor.execute("INSERT INTO main_crmcheck "

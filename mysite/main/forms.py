@@ -315,24 +315,6 @@ class AddDataFromTextForm(forms.Form):
         return text
 
 
-class AddDataFromCRMForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'id': 'text',
-                                                        'placeholder': 'Сюда вставляем текст'}))
-    label = {
-        'text': 'Текст',
-    }
-
-    def clean_text(self):
-        text = self.cleaned_data['text']
-        if not text:
-            raise forms.ValidationError('Вы не ввели текст')
-        return text
-
-    def save(self):
-        text = self.cleaned_data['text']
-        return text
-
-
 class AppealReportForm(ModelForm):
     class Meta:
         model = AppealReport
