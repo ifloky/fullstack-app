@@ -713,7 +713,7 @@ class CallsView(ListView):
         year_id = self.request.GET.get('year')
 
         now_date = datetime.datetime.now()
-        last_month = now_date.month, now_date.year
+        last_month = str(now_date.month) + '-' + str(now_date.year)
 
         if month_id is None and year_id is None:
             filter_date = None
@@ -792,7 +792,7 @@ class CRMView(ListView):
         phone_number = self.request.GET.get('phone_number')
 
         now_date = datetime.datetime.now()
-        last_month = now_date.month, now_date.year
+        last_month = str(now_date.month) + '-' + str(now_date.year)
 
         if display_type == '1':
             user_name = self.request.user.first_name + ' ' + self.request.user.last_name
