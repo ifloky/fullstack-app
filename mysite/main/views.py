@@ -711,6 +711,10 @@ class CallsView(ListView):
     def get_queryset(self):
         month_id = self.request.GET.get('month')
         year_id = self.request.GET.get('year')
+
+        now_date = datetime.datetime.now()
+        last_month = now_date.month, now_date.year
+
         if month_id is None and year_id is None:
             filter_date = None
         else:
@@ -752,7 +756,8 @@ class CallsView(ListView):
         else:
             queryset = CallsCheck.objects.all().order_by('-id').filter(~Q(call_result="есть фото")
                                                                        & ~Q(call_result="номер не РБ")
-                                                                       & Q(verified_date=None))
+                                                                       & Q(verified_date=None)
+                                                                       & Q(upload_date_short=last_month))
             return queryset
 
 
@@ -785,6 +790,9 @@ class CRMView(ListView):
         # print(filter_date)
         display_type = self.request.GET.get('display_type')
         phone_number = self.request.GET.get('phone_number')
+
+        now_date = datetime.datetime.now()
+        last_month = now_date.month, now_date.year
 
         if display_type == '1':
             user_name = self.request.user.first_name + ' ' + self.request.user.last_name
@@ -819,7 +827,8 @@ class CRMView(ListView):
         else:
             queryset = CRMCheck.objects.all().order_by('-id').filter(~Q(call_result="есть фото")
                                                                      & ~Q(call_result="номер не РБ")
-                                                                     & Q(first_deposit_date=None))
+                                                                     & Q(first_deposit_date=None)
+                                                                     & Q(upload_date_short=last_month))
             return queryset
 
 

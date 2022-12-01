@@ -98,6 +98,7 @@ class CRMCheck(models.Model):
     call_result = models.CharField(max_length=200, blank=True, null=True)
     call_date = models.DateTimeField(blank=True, null=True, default=timezone.localtime)
     first_deposit_date = models.DateField(blank=True, null=True)
+    first_deposit_amount = models.IntegerField(blank=True, null=True)
     user_name = models.CharField(max_length=200, blank=True, null=True)
     upload_date = models.DateTimeField(auto_now_add=True)
     upload_date_short = models.CharField(max_length=7, default=datetime.date.today().strftime("%m-%Y"))
