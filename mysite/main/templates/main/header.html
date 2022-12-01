@@ -15,7 +15,7 @@
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
   </head>
- <body>
+  <body>
 
     {% include 'main/includes/navbar.html' %}
 
@@ -23,16 +23,48 @@
 
     {% endblock %}
 
+        <script>
+            window.addEventListener('load', function () {
+                let activeLink = document.querySelector('a[href*="' + window.location.pathname.toString().slice(1, -1) + '"]');
+                activeLink.style.background = '#28a745';
+            });
+        </script>
 
-<script>
-  
-    window.addEventListener('load', function () {
-        let activeLink = document.querySelector('a[href*="' + window.location.pathname.toString().slice(1, -1) + '"]');
-        console.log(activeLink)
-        activeLink.style.background = '#28a745';
-    });
+        <script>
+            $(document).ready(function() {
+            var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
 
-</script>
+                for (i = 0; i < sURLVariables.length; i++) {
+                    sParameterName = sURLVariables[i].split('=');
 
-</body>
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1] === undefined ? true : sParameterName[1];
+                    }
+                }
+            };
+                var var_page = getUrlParameter('display_type');
+                var var_month = getUrlParameter('month');
+                var var_year = getUrlParameter('year');
+                $('.change_url').each(function(){
+                    var a_link = $(this).attr('href');
+                    if (var_page === undefined) {
+                           if (var_month) {
+                            $(this).attr('href', '?month=' + var_month + '&year=' + var_year + '&' + a_link)
+                        } else {
+                            $(this).attr('href', '?' + a_link)
+                        }
+                    }
+                    else {
+                        $(this).attr('href', '?display_type=' + var_page + '&month=' + var_month + '&year=' + var_year + '&' + a_link);
+                    };
+
+                });
+
+        });
+        </script>
+    </body>
 </html>
