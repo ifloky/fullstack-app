@@ -17,21 +17,6 @@
 
   {% if user.is_authenticated %}
 
-    <script>
-      $(document).ready(function() {
-              $(document).keypress(function(event) {
-                  if(event.keyCode==13){
-                      $(event.target).parent().next().find('input').focus();
-                      event.preventDefault();
-                  }
-              });
-          });
-    </script>
-    <script>
-      $(document).ready(function(){
-        $("#user_name").attr("value", '{{user.first_name}} {{user.last_name}}');
-      });
-    </script>
       <div style="padding:5px;margin-top:30px;">
 
         <form action="{% url 'main:add_personal_report' %}" method="post">

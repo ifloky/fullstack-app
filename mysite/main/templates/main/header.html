@@ -22,11 +22,27 @@
     {% block content %}
 
     {% endblock %}
+        <script>
+        $(document).ready(function() {
+                $(document).keypress(function(event) {
+                    if(event.keyCode==13){
+                        $(event.target).parent().next().find('input').focus();
+                        event.preventDefault();
+                    }
+                });
+            });
+        </script>
+
+        <script>
+        $(document).ready(function(){
+          $("#user_name").attr("value", '{{user.first_name}} {{user.last_name}}');
+        });
+        </script>
 
         <script>
             window.addEventListener('load', function () {
                 let activeLink = document.querySelector('a[href*="' + window.location.pathname.toString().slice(1, -1) + '"]');
-                activeLink.style.background = '#28a745';
+                activeLink.style.background = 'rgb(40, 167, 69)';
             });
         </script>
 
