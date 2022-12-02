@@ -1042,6 +1042,47 @@ def get_personal_cc_report(start_date, end_date):
     return report_list
 
 
+def get_personal_crm_report(short_date):
+    """ This function get data from callscheck db table and return it as list of dicts """
+    cursor, connection = None, None
+
+    report_list = []
+
+    sql_query = (f'''
+                SELECT user_name AS "user_name", 
+                    SUM(case when first_deposit_date is not Null then 1 else 0 end) AS "Количество первых депозитов"
+                FROM public.main_crmcheck
+                WHERE upload_date_short = '{short_date}'
+                                                    AND user_name != 'null' 
+                                                    AND call_result != 'есть фото'
+                                                    AND call_result != 'номер не РБ' 
+                GROUP BY user_name
+                ORDER BY user_name ASC''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        report_list = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return report_list
+
+
 def get_personal_appeal_report(date_short):
     """ This function get data from callscheck db table and return it as list of dicts """
     cursor, connection = None, None
@@ -1200,6 +1241,7 @@ def cc_report(request):
     end_date = str(end_date.date()).replace('-', '.')
 
     calls_report = get_personal_cc_report(start_date, end_date)
+    crm_report = get_personal_crm_report(date_short)
     appeal_report = get_personal_appeal_report(date_short)
     calls_sum = get_cc_report(start_date, end_date)
     appeal_sum = get_appeal_report(date_short)
@@ -1217,6 +1259,7 @@ def cc_report(request):
         'heads': heads,
         'support_heads': support_heads_users,
         'calls_report': calls_report,
+        'crm_report': crm_report,
         'appeal_report': appeal_report,
         'calls_sum': calls_sum,
         'appeal_sum': appeal_sum,
@@ -1623,20 +1666,19 @@ class AddGameDisableView(View):
     template_name = 'main/add_game_disable.html'
     success_url = '/disabled_games/'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
-        crm_users = User.objects.filter(groups__name='crm')
+        game_control_users = User.objects.filter(groups__name='game_control')
 
         data = {
             'site_adm': site_adm_users,
-            'crm': crm_users,
+            'game_control': game_control_users,
             'superuser': User.objects.filter(is_superuser=True),
             'form': self.form_class,
         }
-        form = self.form_class()
         return render(request, self.template_name, data)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
