@@ -172,3 +172,19 @@ class GameListFromSite(models.Model):
     class Meta:
         verbose_name = 'Список игр из сайта (Production)'
         verbose_name_plural = 'Список игр из сайта (Production)'
+
+
+class GameDisableList(models.Model):
+    objects = None
+
+    game_name = models.CharField(max_length=200)
+    game_provider = models.CharField(max_length=200)
+    game_disable_date = models.DateTimeField(default=timezone.localtime)
+    user_name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.game_name
+
+    class Meta:
+        verbose_name = 'Список отключенных игр'
+        verbose_name_plural = 'Список отключенных игр'

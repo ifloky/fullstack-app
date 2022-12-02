@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
-from .models import GameListFromSite
+from .models import GameListFromSite, GameDisableList
 from .models import CRMCheck
 
 import datetime
@@ -454,4 +454,38 @@ class GameListFromSiteForm(ModelForm):
             'game_name': 'Название игры',
             'game_provider': 'Провайдер игры',
             'game_status': 'Статус игры',
+        }
+
+
+class GameDisableListForm(ModelForm):
+    class Meta:
+        model = GameDisableList
+
+        fields = ['game_name', 'game_provider', 'game_disable_date', 'user_name']
+
+        queryset = GameListFromSkks.objects.values_list('game_provider', flat=True).order_by('game_provider').distinct()
+        providers_list = [(provider, provider) for provider in queryset]
+
+        widgets = {
+            'game_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_name', 'label': 'Название игры'}),
+
+            'game_provider':
+                forms.widgets.Select(attrs={'class': 'form-control', 'id': 'game_provider', 'label': 'Провайдер игры'}
+                                     , choices=providers_list),
+
+            'game_disable_date':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'game_disable_date', 'readonly': 'readonly',
+                                       'label': 'Дата отключения'}),
+
+            'user_name':
+                forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly',
+                                       'label': 'Пользователь'}),
+        }
+
+        labels = {
+            'game_name': 'Название игры',
+            'game_provider': 'Провайдер игры',
+            'game_disable_date': 'Дата отключения',
+            'user_name': 'Пользователь',
         }

@@ -7,7 +7,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail, BadHeaderError
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode
@@ -23,10 +23,10 @@ from django.urls.base import reverse_lazy
 
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm, GameListFromSiteForm
-from .forms import CRMCheckForm
+from .forms import CRMCheckForm, GameDisableListForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
-from .models import GameListFromSite
+from .models import GameListFromSite, GameDisableList
 from .models import CRMCheck
 
 import credentials
@@ -1401,8 +1401,6 @@ class GameListFromSkksView(ListView):
     context_object_name = 'game_list'
     paginate_by = 15
 
-    games_count = GameListFromSkks.objects.all().count()
-
     def get_queryset(self):
         game_id = self.request.GET.get('game_id')
         game_name = self.request.GET.get('game_name')
@@ -1441,7 +1439,7 @@ class GameListFromSkksView(ListView):
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['game_control'] = User.objects.filter(groups__name='game_control')
         context['superuser'] = User.objects.filter(is_superuser=True)
-        context['games_count'] = self.games_count
+        context['games_count'] = GameListFromSkks.objects.all().count()
         return context
 
 
@@ -1453,8 +1451,6 @@ class GameListFromSkksTestView(ListView):
     template_name = 'main/skks_games_test.html'
     context_object_name = 'game_list_test'
     paginate_by = 15
-
-    games_count = GameListFromSkksTest.objects.all().count()
 
     def get_queryset(self):
         game_id = self.request.GET.get('game_id')
@@ -1494,7 +1490,7 @@ class GameListFromSkksTestView(ListView):
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['game_control'] = User.objects.filter(groups__name='game_control')
         context['superuser'] = User.objects.filter(is_superuser=True)
-        context['games_count'] = self.games_count
+        context['games_count'] = GameListFromSkksTest.objects.all().count()
         return context
 
 
@@ -1506,8 +1502,6 @@ class GameListFromSiteView(ListView):
     template_name = 'main/site_games.html'
     context_object_name = 'game_list_site'
     paginate_by = 15
-
-    games_count = GameListFromSite.objects.all().count()
 
     def get_queryset(self):
         game_name = self.request.GET.get('game_name')
@@ -1549,7 +1543,7 @@ class GameListFromSiteView(ListView):
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['game_control'] = User.objects.filter(groups__name='game_control')
         context['superuser'] = User.objects.filter(is_superuser=True)
-        context['games_count'] = self.games_count
+        context['games_count'] = GameListFromSite.objects.all().count()
         return context
 
 
@@ -1562,11 +1556,11 @@ class CompareGamesListView(ListView):
 
     def get_queryset(self):
         queryset = GameListFromSite.objects.filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name'))) \
-            .order_by('game_provider')
+            .filter(~Q(game_name__in=GameDisableList.objects.values('game_name'))).order_by('game_provider')
         return queryset
 
     games_count = GameListFromSite.objects.filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name'))) \
-        .count()
+        .filter(~Q(game_name__in=GameDisableList.objects.values('game_name'))).count()
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CompareGamesListView, self).get_context_data(**kwargs)
@@ -1575,3 +1569,76 @@ class CompareGamesListView(ListView):
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['games_count'] = self.games_count
         return context
+
+
+class GameDisableListView(ListView):
+    """ This class return game list page """
+
+    model = GameDisableList
+    form_class = GameDisableListForm
+    template_name = 'main/game_disable.html'
+    context_object_name = 'game_disable_list'
+    paginate_by = 15
+
+    # games_count = GameDisableList.objects.all().count()
+
+    def get_queryset(self):
+        game_name = self.request.GET.get('game_name')
+        game_provider = self.request.GET.get('game_provider')
+        queryset = GameDisableList.objects.all().order_by('-game_disable_date')
+
+        try:
+            if game_name is not None:
+                game_name = game_name.strip()
+                queryset = GameDisableList.objects.filter(Q(game_name__icontains=game_name)) \
+                    .order_by('game_name')
+                return queryset
+        except ValueError:
+            return queryset
+
+        try:
+            if game_provider is not None:
+                game_provider = game_provider.strip()
+                queryset = GameDisableList.objects.filter(Q(game_provider__icontains=game_provider)) \
+                    .order_by('game_name')
+                return queryset
+        except ValueError:
+            return queryset
+
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(GameDisableListView, self).get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['game_control'] = User.objects.filter(groups__name='game_control')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['games_count'] = GameDisableList.objects.all().count()
+        return context
+
+
+class AddGameDisableView(View):
+    """ This class add game to disable list """
+    model = GameDisableList
+    form_class = GameDisableListForm
+    template_name = 'main/add_game_disable.html'
+    success_url = '/disabled_games/'
+
+    def get(self, request, *args, **kwargs):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        crm_users = User.objects.filter(groups__name='crm')
+
+        data = {
+            'site_adm': site_adm_users,
+            'crm': crm_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+        }
+        form = self.form_class()
+        return render(request, self.template_name, data)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {'form': form})
