@@ -1,4 +1,8 @@
+import credentials
+import requests
+import datetime
 import psycopg2
+
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
@@ -6,6 +10,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail, BadHeaderError
+from django.db.models import Count
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
@@ -29,9 +34,7 @@ from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameLis
 from .models import GameListFromSite, GameDisableList
 from .models import CRMCheck
 
-import credentials
-import requests
-import datetime
+from itertools import chain
 
 
 def homepage(request):
@@ -1442,7 +1445,7 @@ class GameListFromSkksView(ListView):
     form_class = GameListFromSkksForm
     template_name = 'main/skks_games.html'
     context_object_name = 'game_list'
-    paginate_by = 15
+    paginate_by = 20
 
     def get_queryset(self):
         game_id = self.request.GET.get('game_id')
@@ -1493,7 +1496,7 @@ class GameListFromSkksTestView(ListView):
     form_class = GameListFromSkksTestForm
     template_name = 'main/skks_games_test.html'
     context_object_name = 'game_list_test'
-    paginate_by = 15
+    paginate_by = 20
 
     def get_queryset(self):
         game_id = self.request.GET.get('game_id')
@@ -1544,7 +1547,7 @@ class GameListFromSiteView(ListView):
     form_class = GameListFromSiteForm
     template_name = 'main/site_games.html'
     context_object_name = 'game_list_site'
-    paginate_by = 15
+    paginate_by = 20
 
     def get_queryset(self):
         game_name = self.request.GET.get('game_name')
@@ -1590,12 +1593,12 @@ class GameListFromSiteView(ListView):
         return context
 
 
-class CompareGamesListView(ListView):
+class MissingGamesListView(ListView):
     """ This class compare tables with games """
 
     template_name = 'main/missing_games.html'
     context_object_name = 'missing_games'
-    paginate_by = 15
+    paginate_by = 20
 
     def get_queryset(self):
         queryset = GameListFromSite.objects.filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name'))) \
@@ -1606,7 +1609,7 @@ class CompareGamesListView(ListView):
         .filter(~Q(game_name__in=GameDisableList.objects.values('game_name'))).count()
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(CompareGamesListView, self).get_context_data(**kwargs)
+        context = super(MissingGamesListView, self).get_context_data(**kwargs)
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['game_control'] = User.objects.filter(groups__name='game_control')
         context['superuser'] = User.objects.filter(is_superuser=True)
@@ -1621,7 +1624,7 @@ class GameDisableListView(ListView):
     form_class = GameDisableListForm
     template_name = 'main/game_disable.html'
     context_object_name = 'game_disable_list'
-    paginate_by = 15
+    paginate_by = 20
 
     # games_count = GameDisableList.objects.all().count()
 
@@ -1684,3 +1687,46 @@ class AddGameDisableView(View):
             form.save()
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {'form': form})
+
+
+class CCReportView(View):
+    """ This class return CC report page """
+    template_name = 'main/cc_report2.html'
+    context_object_name = 'cc_report'
+
+    month = datetime.datetime.now().month - 1
+    year = datetime.datetime.now().year
+
+    filter_date = str(month) + '-' + str(year)
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        game_control_users = User.objects.filter(groups__name='game_control')
+
+        queryset_cc = CallsCheck.objects.values('user_name') \
+            .filter(Q(upload_date_short=self.filter_date)) \
+            .annotate(
+            answered_calls=Count('call_result', filter=Q(call_result='нет ответа')),
+            unanswered_calls=Count('call_result', filter=~Q(call_result='нет ответа')),
+            verifications=Count('verified_date')) \
+            .order_by('user_name')
+
+        queryset_crm = CRMCheck.objects.values('user_name') \
+            .filter(Q(upload_date_short=self.filter_date)) \
+            .annotate(
+            first_deposit=Count('first_deposit_date', filter=Q(first_deposit_date__isnull=False))) \
+            .order_by('user_name')
+
+        queryset = sorted(
+            chain(queryset_cc, queryset_crm),
+            key=lambda user_name: user_name['user_name']
+        )
+
+        data = {
+            'site_adm': site_adm_users,
+            'game_control': game_control_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'queryset': queryset,
+            'filter_date': self.filter_date,
+        }
+        return render(request, self.template_name, data)

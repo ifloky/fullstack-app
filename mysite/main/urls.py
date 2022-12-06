@@ -43,5 +43,7 @@ urlpatterns = [
     path('site_games/', views.GameListFromSiteView.as_view(), name='site_games'),
     path('disabled_games/', views.GameDisableListView.as_view(), name='disabled_games'),
     path('add_game_disable/', views.AddGameDisableView.as_view(), name='add_game_disable'),
-    path('missing_games/', views.CompareGamesListView.as_view(), name='missing_games'),
+    path('missing_games/', views.MissingGamesListView.as_view(), name='missing_games'),
+
+    path('cc_report2/', views.CCReportView.as_view(), name='cc_report2'),
 ]
