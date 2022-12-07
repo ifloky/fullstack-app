@@ -1605,15 +1605,14 @@ class MissingGamesListView(ListView):
             .filter(~Q(game_name__in=GameDisableList.objects.values('game_name'))).order_by('game_provider')
         return queryset
 
-    games_count = GameListFromSite.objects.filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name'))) \
-        .filter(~Q(game_name__in=GameDisableList.objects.values('game_name'))).count()
-
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(MissingGamesListView, self).get_context_data(**kwargs)
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['game_control'] = User.objects.filter(groups__name='game_control')
         context['superuser'] = User.objects.filter(is_superuser=True)
-        context['games_count'] = self.games_count
+        context['games_count'] = GameListFromSite.objects \
+            .filter(~Q(game_name__in=GameListFromSkks.objects.values('game_name'))) \
+            .filter(~Q(game_name__in=GameDisableList.objects.values('game_name'))).count()
         return context
 
 
