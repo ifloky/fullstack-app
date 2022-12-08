@@ -1018,12 +1018,18 @@ def get_personal_cc_report(filter_date):
             .filter(upload_date_short__icontains=filter_date)\
             .filter(user_name=user_name)\
             .filter(~Q(call_result='нет ответа'))\
+            .filter(~Q(call_result='верифицирован до звонка'))\
+            .filter(~Q(call_result='есть фото'))\
+            .filter(~Q(call_result='номер не РБ'))\
             .count()
 
         unanswered_calls = CallsCheck.objects\
             .filter(upload_date_short__icontains=filter_date)\
             .filter(user_name=user_name)\
-            .filter(Q(call_result='нет ответа'))\
+            .filter(Q(call_result='нет ответа')) \
+            .filter(~Q(call_result='верифицирован до звонка')) \
+            .filter(~Q(call_result='есть фото')) \
+            .filter(~Q(call_result='номер не РБ')) \
             .count()
 
         verifications = CallsCheck.objects\
