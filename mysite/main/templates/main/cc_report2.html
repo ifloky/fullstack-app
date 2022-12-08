@@ -80,38 +80,57 @@
         </table>
     </div>
 
-  <div id="container" style="padding-left:10%;margin-top:50px;width:98%;">
-    <canvas id="pie-chart"></canvas>
-  </div>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <div id="container" style="padding-left:15%;width:90%;">
+        <canvas id="chart" style="display:block;height:20px;"></canvas>
+    </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
   <script>
+    let ctx = document.getElementById("chart").getContext("2d");
 
-  var labels = [{% for report in user_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %} {% endfor %}];
-  var data = [{% for report in user_report %} {{ report.answered_calls }} {% if not forloop.last %}, {% endif %} {% endfor %}];
-
-    var config = {
-      type: 'pie',
-      data: {
-        datasets: [{
-          data: data,
-          backgroundColor: ['#696969', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'],
-          label: 'Population'
-        }],
-        labels: labels
-      },
-      options: {
-        responsive: true
-      }
-    };
-
-    window.onload = function () {
-      var ctx = document.getElementById('pie-chart').getContext('2d');
-      window.myPie = new Chart(ctx, config);
-      console.log(window.myPie = new Chart(ctx, config));
-    };
-
+        let chart = new Chart(ctx, {
+          type: "bar",
+          data: {
+             labels: [{% for report in user_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                datasets: [
+                {
+                  label: "Отвеченые звонки",
+                  backgroundColor: "#79AEC8",
+                  borderColor: "#417690",
+                  data: [{% for report in user_report %}{{ report.answered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                },
+                {
+                  label: "Неотвеченые звонки",
+                  backgroundColor: "#FA8072",
+                  borderColor: "#417690",
+                  data: [{% for report in user_report %}{{ report.unanswered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                },
+                {
+                  label: "Количество верификаций",
+                  backgroundColor: "#3CB371",
+                  borderColor: "#417690",
+                  data: [{% for report in user_report %}{{ report.verifications }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                },
+                {
+                  label: "Количество депозитов",
+                  backgroundColor: "#FFD700",
+                  borderColor: "#417690",
+                  data: [{% for report in user_report %}{{ report.deposit_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                },
+                {
+                  label: "Сумма депозитов",
+                  backgroundColor: "#DA70D6",
+                  borderColor: "#417690",
+                  data: [{% for report in user_report %}{{ report.deposit_sum }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                }
+             ]
+          },
+          options: {
+             title: {
+                text: "Calls by operator",
+                display: true
+             }
+          }
+        });
   </script>
 
 
