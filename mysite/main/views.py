@@ -1188,7 +1188,7 @@ def get_cc_report(filter_date):
 
     verification = CallsCheck.objects \
         .filter(upload_date_short__icontains=filter_date) \
-        .filter(Q(call_result='есть фото')) \
+        .filter(~Q(verified_date=None)) \
         .count()
 
     deposit_count = CRMCheck.objects \
