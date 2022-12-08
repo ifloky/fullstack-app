@@ -84,31 +84,32 @@
     <canvas id="pie-chart"></canvas>
   </div>
 
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
   <script>
 
-    var labels = ['{{ user_report.0.user_name }}', '{{ user_report.1.user_name }}'];
-    var data = [{{ user_report.0.answered_calls }}, {{ user_report.1.answered_calls }}];
+  var labels = [{% for report in user_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %} {% endfor %}];
+  var data = [{% for report in user_report %} {{ report.answered_calls }} {% if not forloop.last %}, {% endif %} {% endfor %}];
+
     var config = {
       type: 'pie',
       data: {
         datasets: [{
           data: data,
-          backgroundColor: [
-            '#696969', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'
-          ],
-          label: 'Оператор'
+          backgroundColor: ['#696969', '#808080', '#A9A9A9', '#C0C0C0', '#D3D3D3'],
+          label: 'Population'
         }],
-        labels: labels,
+        labels: labels
       },
       options: {
         responsive: true
       }
     };
 
-    window.unload = function() {
+    window.onload = function () {
       var ctx = document.getElementById('pie-chart').getContext('2d');
       window.myPie = new Chart(ctx, config);
+      console.log(window.myPie = new Chart(ctx, config));
     };
 
   </script>
