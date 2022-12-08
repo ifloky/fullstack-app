@@ -1861,6 +1861,7 @@ class CCReportView(View):
     def get(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
         game_control_users = User.objects.filter(groups__name='game_control')
+        support_heads = User.objects.filter(groups__name='support_heads')
 
         month = request.GET.get('month', None)
         if month is None:
@@ -1877,6 +1878,7 @@ class CCReportView(View):
         data = {
             'site_adm': site_adm_users,
             'game_control': game_control_users,
+            'support_heads': support_heads,
             'superuser': User.objects.filter(is_superuser=True),
             'user_report': self.create_personal_cc_report(month, year),
             'calls_sum': self.create_personal_cc_report_sum(month, year),
