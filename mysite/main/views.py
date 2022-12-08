@@ -10,7 +10,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail, BadHeaderError
-from django.db.models import Count
+from django.db.models import Sum
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
@@ -33,8 +33,6 @@ from .forms import CRMCheckForm, GameDisableListForm
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
 from .models import GameListFromSite, GameDisableList
 from .models import CRMCheck
-
-from itertools import chain
 
 
 def homepage(request):
@@ -1002,7 +1000,66 @@ class AddDataFromCRMView(View):
         return render(request, self.template_name, {'form': form})
 
 
-def get_personal_cc_report(start_date, end_date):
+def get_personal_cc_report(filter_date):
+
+    get_uniq_users = CallsCheck.objects\
+        .filter(upload_date_short__icontains=filter_date)\
+        .filter(~Q(user_name='Tamara Rozganova'))\
+        .filter(~Q(user_name='Величко Оксана'))\
+        .values('user_name')\
+        .distinct()
+
+    user_report = []
+
+    for user in get_uniq_users:
+        user_name = user['user_name']
+
+        answered_calls = CallsCheck.objects\
+            .filter(upload_date_short__icontains=filter_date)\
+            .filter(user_name=user_name)\
+            .filter(~Q(call_result='нет ответа'))\
+            .count()
+
+        unanswered_calls = CallsCheck.objects\
+            .filter(upload_date_short__icontains=filter_date)\
+            .filter(user_name=user_name)\
+            .filter(Q(call_result='нет ответа'))\
+            .count()
+
+        verifications = CallsCheck.objects\
+            .filter(upload_date_short__icontains=filter_date)\
+            .filter(user_name=user_name)\
+            .filter(~Q(verified_date=None))\
+            .count()
+
+        deposit_count = CRMCheck.objects\
+            .filter(upload_date_short__icontains=filter_date)\
+            .filter(user_name=user_name)\
+            .filter(~Q(first_deposit_date=None))\
+            .count()
+
+        deposit_sum = CRMCheck.objects\
+            .filter(upload_date_short__icontains=filter_date)\
+            .filter(user_name=user_name)\
+            .filter(~Q(first_deposit_amount=None))\
+            .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
+
+        if deposit_sum is None:
+            deposit_sum = 0
+
+        user_report.append({
+            'user_name': user_name,
+            'answered_calls': answered_calls,
+            'unanswered_calls': unanswered_calls,
+            'verifications': verifications,
+            'deposit_count': deposit_count,
+            'deposit_sum': deposit_sum,
+        })
+
+    return user_report
+
+
+def get_personal_cc_report_old(start_date, end_date):
     """ This function get data from callscheck db table and return it as list of dicts """
     cursor, connection = None, None
 
@@ -1243,7 +1300,7 @@ def cc_report(request):
     end_date = datetime.datetime.strptime(end_date, '%d.%m.%Y') + relativedelta(months=1)
     end_date = str(end_date.date()).replace('-', '.')
 
-    calls_report = get_personal_cc_report(start_date, end_date)
+    calls_report = get_personal_cc_report(date_short)
     crm_report = get_personal_crm_report(date_short)
     appeal_report = get_personal_appeal_report(date_short)
     calls_sum = get_cc_report(start_date, end_date)
@@ -1702,30 +1759,63 @@ class CCReportView(View):
         site_adm_users = User.objects.filter(groups__name='site_adm')
         game_control_users = User.objects.filter(groups__name='game_control')
 
-        queryset_cc = CallsCheck.objects.values('user_name') \
-            .filter(Q(upload_date_short=self.filter_date)) \
-            .annotate(
-            answered_calls=Count('call_result', filter=Q(call_result='нет ответа')),
-            unanswered_calls=Count('call_result', filter=~Q(call_result='нет ответа')),
-            verifications=Count('verified_date')) \
-            .order_by('user_name')
+        get_uniq_users = CallsCheck.objects\
+            .filter(upload_date_short__icontains=self.filter_date)\
+            .values('user_name')\
+            .distinct()
 
-        queryset_crm = CRMCheck.objects.values('user_name') \
-            .filter(Q(upload_date_short=self.filter_date)) \
-            .annotate(
-            first_deposit=Count('first_deposit_date', filter=Q(first_deposit_date__isnull=False))) \
-            .order_by('user_name')
+        user_report = []
 
-        queryset = sorted(
-            chain(queryset_cc, queryset_crm),
-            key=lambda user_name: user_name['user_name']
-        )
+        for user in get_uniq_users:
+            user_name = user['user_name']
+
+            answered_calls = CallsCheck.objects\
+                .filter(upload_date_short__icontains=self.filter_date)\
+                .filter(user_name=user_name)\
+                .filter(~Q(call_result='нет ответа'))\
+                .count()
+
+            unanswered_calls = CallsCheck.objects\
+                .filter(upload_date_short__icontains=self.filter_date)\
+                .filter(user_name=user_name)\
+                .filter(Q(call_result='нет ответа'))\
+                .count()
+
+            verifications = CallsCheck.objects\
+                .filter(upload_date_short__icontains=self.filter_date)\
+                .filter(user_name=user_name)\
+                .filter(~Q(verified_date=None))\
+                .count()
+
+            deposit_count = CRMCheck.objects\
+                .filter(upload_date_short__icontains=self.filter_date)\
+                .filter(user_name=user_name)\
+                .filter(~Q(first_deposit_date=None))\
+                .count()
+
+            deposit_sum = CRMCheck.objects\
+                .filter(upload_date_short__icontains=self.filter_date)\
+                .filter(user_name=user_name)\
+                .filter(~Q(first_deposit_amount=None))\
+                .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
+
+            if deposit_sum is None:
+                deposit_sum = 0
+
+            user_report.append({
+                'user_name': user_name,
+                'answered_calls': answered_calls,
+                'unanswered_calls': unanswered_calls,
+                'verifications': verifications,
+                'deposit_count': deposit_count,
+                'deposit_sum': deposit_sum,
+            })
 
         data = {
             'site_adm': site_adm_users,
             'game_control': game_control_users,
             'superuser': User.objects.filter(is_superuser=True),
-            'queryset': queryset,
             'filter_date': self.filter_date,
+            'user_report': user_report,
         }
         return render(request, self.template_name, data)

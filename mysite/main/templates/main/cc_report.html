@@ -61,16 +61,22 @@
                 <th scope="col">Отвеченые звонки</th>
                 <th scope="col">Неотвеченые звонки</th>
                 <th scope="col">Количество верификаций</th>
-<!--                <th scope="col">Количество депозитов</th>-->
+                <th scope="col">Количество депозитов</th>
+                <th scope="col">Сумма депозитов</th>
              </tr>
           </thead>
           <tbody>
         {% for report in calls_report %}
-            <tr>
-                {% for x in report %} <td align="center">{{ x }}</td>
-                {% endfor %}
+            <tr align="center">
+                <td>{{ report.user_name }}</td>
+                <td>{{ report.answered_calls }}</td>
+                <td>{{ report.unanswered_calls }}</td>
+                <td>{{ report.verifications }}</td>
+                <td>{{ report.deposit_count }}</td>
+                <td>{{ report.deposit_sum }}</td>
             </tr>
         {% endfor %}
+
           </tbody>
         </table>
     </div>

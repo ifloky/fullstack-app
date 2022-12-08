@@ -62,16 +62,18 @@
                 <th scope="col">Неотвеченые звонки</th>
                 <th scope="col">Количество верификаций</th>
                 <th scope="col">Количество депозитов</th>
+                <th scope="col">Сумма депозитов</th>
              </tr>
           </thead>
           <tbody>
-        {% for report in queryset %}
+        {% for report in user_report %}
             <tr align="center">
                 <td>{{ report.user_name }}</td>
                 <td>{{ report.answered_calls }}</td>
                 <td>{{ report.unanswered_calls }}</td>
                 <td>{{ report.verifications }}</td>
-                <td>{{ report.first_deposit }}</td>
+                <td>{{ report.deposit_count }}</td>
+                <td>{{ report.deposit_sum }}</td>
             </tr>
         {% endfor %}
 

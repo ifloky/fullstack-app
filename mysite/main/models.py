@@ -86,8 +86,8 @@ class CallsCheck(models.Model):
         return self.client_id
 
     class Meta:
-        verbose_name = 'Проверка звонков'
-        verbose_name_plural = 'Проверка звонков'
+        verbose_name = 'Проверка не верифицированных клиентов'
+        verbose_name_plural = 'Проверка не верифицированных клиентов'
 
 
 class CRMCheck(models.Model):
@@ -107,8 +107,8 @@ class CRMCheck(models.Model):
         return self.client_id
 
     class Meta:
-        verbose_name = 'Проверка бездепозитников'
-        verbose_name_plural = 'Проверка бездепозитников'
+        verbose_name = 'Проверка клиентов не сделавших депозит'
+        verbose_name_plural = 'Проверка клиентов не сделавших депозит'
 
 
 class AppealReport(models.Model):
