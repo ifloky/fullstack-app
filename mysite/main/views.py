@@ -1066,49 +1066,6 @@ def get_personal_cc_report(filter_date):
     return user_report
 
 
-def get_personal_cc_report_old(start_date, end_date):
-    """ This function get data from callscheck db table and return it as list of dicts """
-    cursor, connection = None, None
-
-    report_list = []
-
-    sql_query = (f'''
-                SELECT user_name AS "user_name", 
-                    SUM(case when call_result != 'нет ответа' then 1 else 0 end)  AS "Неотвеченые звонки",
-                    SUM(case when call_result != 'нет ответа' then 0 else 1 end ) AS "Отвеченые звонки",
-                    SUM(case when verified_date is not Null then 1 else 0 end) AS "Количество верификаций"
-                FROM public.main_callscheck
-                WHERE upload_date >= '{start_date}' AND upload_date < '{end_date}' 
-                                                    AND user_name != 'null' 
-                                                    AND call_result != 'есть фото'
-                                                    AND call_result != 'номер не РБ' 
-                GROUP BY user_name
-                ORDER BY user_name ASC''')
-
-    try:
-        connection = psycopg2.connect(database=credentials.db_name,
-                                      user=credentials.db_username,
-                                      password=credentials.db_password,
-                                      host=credentials.db_host,
-                                      port=credentials.db_port,
-                                      )
-
-        cursor = connection.cursor()
-        cursor.execute(sql_query)
-
-        report_list = cursor.fetchall()
-
-    except (Exception, psycopg2.Error) as error:
-        print("Error while connecting to PostgresSQL", error)
-
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
-
-    return report_list
-
-
 def get_personal_crm_report(short_date):
     """ This function get data from callscheck db table and return it as list of dicts """
     cursor, connection = None, None
@@ -1193,49 +1150,71 @@ def get_personal_appeal_report(date_short):
     return report_list
 
 
-def get_cc_report(start_date, end_date):
-    """ This function get data from callscheck db table and return it as list of dicts """
-    cursor, connection = None, None
+def get_cc_report(filter_date):
 
-    report_list = []
+    data = []
 
-    sql_query = (f'''
-                SELECT
-                    SUM(case when client_phone != '' then 1 else 0 end) AS "Общее количество звонков",
-                    SUM(case when call_result != 'нет ответа' then 1 else 0 end)  AS "Количество звонков без ответа",
-                    SUM(case when call_result != 'нет ответа' then 0 else 1 end ) AS "Количество звонков с ответом",
-                    SUM(case when call_result = 'подумает' then 1 else 0 end ) AS "Подумает",
-                    SUM(case when call_result = 'планирует' then 1 else 0 end ) AS "Паланирует",
-                    SUM(case when call_result = 'не будет' OR call_result = 'не будет, перезвонил 
-                    сам' then 1 else 0 end) AS "Не будет",
-                    SUM(case when call_result = 'номер не РБ' then 1 else 0 end ) AS "Номер не РБ",
-                    SUM(case when verified_date is not Null then 1 else 0 end) AS "Количество верификаций"
-                FROM public.main_callscheck
-                WHERE upload_date >= '{start_date}' AND upload_date < '{end_date}' 
-                ''')
+    calls_count = CallsCheck.objects \
+        .filter(upload_date_short__icontains=filter_date) \
+        .filter(~Q(call_date=None)) \
+        .count()
 
-    try:
-        connection = psycopg2.connect(database=credentials.db_name,
-                                      user=credentials.db_username,
-                                      password=credentials.db_password,
-                                      host=credentials.db_host,
-                                      port=credentials.db_port,
-                                      )
+    no_answer_calls = CallsCheck.objects \
+        .filter(upload_date_short__icontains=filter_date) \
+        .filter(Q(call_result='нет ответа')) \
+        .count()
 
-        cursor = connection.cursor()
-        cursor.execute(sql_query)
+    answer_call = calls_count - no_answer_calls
 
-        report_list = cursor.fetchall()
+    think_about_it = CallsCheck.objects \
+        .filter(upload_date_short__icontains=filter_date) \
+        .filter(Q(call_result='подумает')) \
+        .count()
 
-    except (Exception, psycopg2.Error) as error:
-        print("Error while connecting to PostgresSQL", error)
+    plans_to_game = CallsCheck.objects \
+        .filter(upload_date_short__icontains=filter_date) \
+        .filter(Q(call_result='планирует')) \
+        .count()
 
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
+    will_not_game = CallsCheck.objects \
+        .filter(upload_date_short__icontains=filter_date) \
+        .filter(Q(call_result='не будет')) \
+        .count()
 
-    return report_list
+    no_rb_number = CallsCheck.objects \
+        .filter(upload_date_short__icontains=filter_date) \
+        .filter(Q(call_result='номер не РБ')) \
+        .count()
+
+    verification = CallsCheck.objects \
+        .filter(upload_date_short__icontains=filter_date) \
+        .filter(Q(call_result='есть фото')) \
+        .count()
+
+    deposit_count = CRMCheck.objects \
+        .filter(upload_date_short__icontains=filter_date) \
+        .filter(~Q(first_deposit_date=None)) \
+        .count()
+
+    deposit_sum = CRMCheck.objects \
+        .filter(upload_date_short__icontains=filter_date) \
+        .filter(~Q(first_deposit_amount=None)) \
+        .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
+
+    data.append({
+        'calls_count': calls_count,
+        'no_answer_calls': no_answer_calls,
+        'answer_call': answer_call,
+        'think_about_it': think_about_it,
+        'plans_to_game': plans_to_game,
+        'will_not_game': will_not_game,
+        'no_rb_number': no_rb_number,
+        'verification': verification,
+        'deposit_count': deposit_count,
+        'deposit_sum': deposit_sum,
+    })
+
+    return data
 
 
 def get_appeal_report(date_short):
@@ -1310,7 +1289,7 @@ def cc_report(request):
     calls_report = get_personal_cc_report(date_short)
     crm_report = get_personal_crm_report(date_short)
     appeal_report = get_personal_appeal_report(date_short)
-    calls_sum = get_cc_report(start_date, end_date)
+    calls_sum = get_cc_report(date_short)
     appeal_sum = get_appeal_report(date_short)
 
     months = MonthsForm()

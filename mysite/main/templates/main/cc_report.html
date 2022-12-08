@@ -89,20 +89,28 @@
           <thead>
             <tr align="center">
                 <th scope="col">Общее количество звонков</th>
-                <th scope="col">Количество звонков без ответа</th>
-                <th scope="col">Количество звонков с ответом</th>
+                <th scope="col">Не отвеченные звонки</th>
+                <th scope="col">Успешные звонки</th>
                 <th scope="col">Подумает</th>
                 <th scope="col">Паланирует</th>
                 <th scope="col">Не будет</th>
                 <th scope="col">Номер не РБ</th>
                 <th scope="col">Количество верификаций</th>
+                <th scope="col">Количество / Сумма депозитов</th>
             </tr>
           </thead>
           <tbody>
         {% for report in calls_sum %}
-            <tr>
-                {% for x in report %} <td align="center">{{ x }}</td>
-                {% endfor %}
+            <tr align="center">
+                <td>{{ report.calls_count }}</td>
+                <td>{{ report.no_answer_calls }}</td>
+                <td>{{ report.answer_call }}</td>
+                <td>{{ report.think_about_it }}</td>
+                <td>{{ report.plans_to_game }}</td>
+                <td>{{ report.will_not_game }}</td>
+                <td>{{ report.no_rb_number }}</td>
+                <td>{{ report.verification }}</td>
+                <td>{{ report.deposit_count }} / {{ report.deposit_sum }}</td>
             </tr>
         {% endfor %}
           </tbody>
