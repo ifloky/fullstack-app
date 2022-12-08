@@ -1791,6 +1791,73 @@ class CCReportView(View):
 
         return user_personal_cc_report
 
+    @staticmethod
+    def create_personal_cc_report_sum(month, year):
+        filter_date = str(month) + '-' + str(year)
+        data = []
+
+        calls_count = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(~Q(call_date=None)) \
+            .count()
+
+        no_answer_calls = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(Q(call_result='нет ответа')) \
+            .count()
+
+        answer_call = calls_count - no_answer_calls
+
+        think_about_it = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(Q(call_result='подумает')) \
+            .count()
+
+        plans_to_game = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(Q(call_result='планирует')) \
+            .count()
+
+        will_not_game = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(Q(call_result='не будет')) \
+            .count()
+
+        no_rb_number = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(Q(call_result='номер не РБ')) \
+            .count()
+
+        verification = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(~Q(verified_date=None)) \
+            .count()
+
+        deposit_count = CRMCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(~Q(first_deposit_date=None)) \
+            .count()
+
+        deposit_sum = CRMCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(~Q(first_deposit_amount=None)) \
+            .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
+
+        data.append({
+            'calls_count': calls_count,
+            'no_answer_calls': no_answer_calls,
+            'answer_call': answer_call,
+            'think_about_it': think_about_it,
+            'plans_to_game': plans_to_game,
+            'will_not_game': will_not_game,
+            'no_rb_number': no_rb_number,
+            'verification': verification,
+            'deposit_count': deposit_count,
+            'deposit_sum': deposit_sum,
+        })
+
+        return data
+
     def get(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
         game_control_users = User.objects.filter(groups__name='game_control')
@@ -1812,6 +1879,7 @@ class CCReportView(View):
             'game_control': game_control_users,
             'superuser': User.objects.filter(is_superuser=True),
             'user_report': self.create_personal_cc_report(month, year),
+            'calls_sum': self.create_personal_cc_report_sum(month, year),
             'months': MonthsForm(),
             'years': YearsForm(),
         }
