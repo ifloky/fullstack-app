@@ -241,7 +241,7 @@ class CRMCheckForm(ModelForm):
                            ('подумает', 'подумает'), ('чужой номер', 'чужой номер'), ]
 
         fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date',
-                  'first_deposit_date', 'user_name']
+                  'first_deposit_date', 'first_deposit_amount', 'user_name']
 
         widgets = {
             'client_id':
@@ -270,6 +270,12 @@ class CRMCheckForm(ModelForm):
                                        'placeholder': '01.01.2022', 'label': 'Дата первого депозита',
                                        'blank': True, 'null': True, 'required': False}),
 
+            'first_deposit_amount':
+                forms.NumberInput(attrs={'class': 'form-control', 'id': 'first_deposit_amount',
+                                         'placeholder': 'Тут пишем сумму первого депозита',
+                                         'label': 'Сумма первого депозита', 'blank': True, 'null': True,
+                                         'required': False}),
+
             'user_name':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'user_name', 'readonly': 'readonly',
                                        'label': 'Имя оператора'}),
@@ -282,6 +288,7 @@ class CRMCheckForm(ModelForm):
             'call_result': 'Результат звонка',
             'call_date': 'Дата звонка',
             'first_deposit_date': 'Дата первого депозита',
+            'first_deposit_amount': 'Сумма первого депозита',
             'user_name': 'Имя оператора',
         }
 
@@ -471,8 +478,8 @@ class GameDisableListForm(ModelForm):
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'game_name', 'label': 'Название игры'}),
 
             'game_provider':
-                forms.widgets.Select(attrs={'class': 'form-control', 'id': 'game_provider', 'label': 'Провайдер игры'}
-                                     , choices=providers_list),
+                forms.widgets.Select(attrs={'class': 'form-control', 'id': 'game_provider', 'label': 'Провайдер игры'},
+                                     choices=providers_list),
 
             'game_disable_date':
                 forms.TextInput(attrs={'class': 'form-control', 'id': 'game_disable_date', 'readonly': 'readonly',
