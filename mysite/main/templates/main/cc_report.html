@@ -59,7 +59,7 @@
             <tr align="center">
                 <th scope="col">Оператор</th>
                 <th scope="col">Отвеченые звонки</th>
-                <th scope="col">Неотвеченые звонки</th>
+                <th scope="col">Неотвеченные звонки</th>
                 <th scope="col">Количество верификаций</th>
                 <th scope="col">Количество депозитов</th>
                 <th scope="col">Сумма депозитов</th>
@@ -89,8 +89,8 @@
           <thead>
             <tr align="center">
                 <th scope="col">Общее количество звонков</th>
-                <th scope="col">Не отвеченные звонки</th>
-                <th scope="col">Успешные звонки</th>
+                <th scope="col">Отвеченые звонки</th>
+                <th scope="col">Неотвеченные звонки</th>
                 <th scope="col">Подумает</th>
                 <th scope="col">Паланирует</th>
                 <th scope="col">Не будет</th>
@@ -103,8 +103,8 @@
         {% for report in calls_sum %}
             <tr align="center">
                 <td>{{ report.calls_count }}</td>
-                <td>{{ report.no_answer_calls }}</td>
                 <td>{{ report.answer_call }}</td>
+                <td>{{ report.no_answer_calls }}</td>
                 <td>{{ report.think_about_it }}</td>
                 <td>{{ report.plans_to_game }}</td>
                 <td>{{ report.will_not_game }}</td>
