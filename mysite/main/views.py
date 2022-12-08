@@ -1001,13 +1001,12 @@ class AddDataFromCRMView(View):
 
 
 def get_personal_cc_report(filter_date):
-
-    get_uniq_users = CallsCheck.objects\
-        .filter(upload_date_short__icontains=filter_date)\
-        .filter(~Q(user_name='Tamara Rozganova'))\
-        .filter(~Q(user_name='Величко Оксана'))\
-        .filter(~Q(user_name=None))\
-        .values('user_name')\
+    get_uniq_users = CallsCheck.objects \
+        .filter(upload_date_short__icontains=filter_date) \
+        .filter(~Q(user_name='Tamara Rozganova')) \
+        .filter(~Q(user_name='Величко Оксана')) \
+        .filter(~Q(user_name=None)) \
+        .values('user_name') \
         .distinct()
 
     user_report = []
@@ -1015,40 +1014,40 @@ def get_personal_cc_report(filter_date):
     for user in get_uniq_users:
         user_name = user['user_name']
 
-        answered_calls = CallsCheck.objects\
-            .filter(upload_date_short__icontains=filter_date)\
-            .filter(user_name=user_name)\
-            .filter(~Q(call_result='нет ответа'))\
-            .filter(~Q(call_result='верифицирован до звонка'))\
-            .filter(~Q(call_result='есть фото'))\
-            .filter(~Q(call_result='номер не РБ'))\
+        answered_calls = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(user_name=user_name) \
+            .filter(~Q(call_result='нет ответа')) \
+            .filter(~Q(call_result='верифицирован до звонка')) \
+            .filter(~Q(call_result='есть фото')) \
+            .filter(~Q(call_result='номер не РБ')) \
             .count()
 
-        unanswered_calls = CallsCheck.objects\
-            .filter(upload_date_short__icontains=filter_date)\
-            .filter(user_name=user_name)\
+        unanswered_calls = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(user_name=user_name) \
             .filter(Q(call_result='нет ответа')) \
             .filter(~Q(call_result='верифицирован до звонка')) \
             .filter(~Q(call_result='есть фото')) \
             .filter(~Q(call_result='номер не РБ')) \
             .count()
 
-        verifications = CallsCheck.objects\
-            .filter(upload_date_short__icontains=filter_date)\
-            .filter(user_name=user_name)\
-            .filter(~Q(verified_date=None))\
+        verifications = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(user_name=user_name) \
+            .filter(~Q(verified_date=None)) \
             .count()
 
-        deposit_count = CRMCheck.objects\
-            .filter(upload_date_short__icontains=filter_date)\
-            .filter(user_name=user_name)\
-            .filter(~Q(first_deposit_date=None))\
+        deposit_count = CRMCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(user_name=user_name) \
+            .filter(~Q(first_deposit_date=None)) \
             .count()
 
-        deposit_sum = CRMCheck.objects\
-            .filter(upload_date_short__icontains=filter_date)\
-            .filter(user_name=user_name)\
-            .filter(~Q(first_deposit_amount=None))\
+        deposit_sum = CRMCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(user_name=user_name) \
+            .filter(~Q(first_deposit_amount=None)) \
             .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
 
         if deposit_sum is None:
@@ -1151,7 +1150,6 @@ def get_personal_appeal_report(date_short):
 
 
 def get_cc_report(filter_date):
-
     data = []
 
     calls_count = CallsCheck.objects \
@@ -1731,59 +1729,58 @@ class CCReportView(View):
     template_name = 'main/cc_report2.html'
     context_object_name = 'cc_report'
 
-    month = datetime.datetime.now().month - 1
-    year = datetime.datetime.now().year
+    @staticmethod
+    def create_personal_cc_report(month, year):
+        filter_date = str(month) + '-' + str(year)
 
-    filter_date = str(month) + '-' + str(year)
-
-    def get(self, request):
-        site_adm_users = User.objects.filter(groups__name='site_adm')
-        game_control_users = User.objects.filter(groups__name='game_control')
-
-        get_uniq_users = CallsCheck.objects\
-            .filter(upload_date_short__icontains=self.filter_date)\
-            .values('user_name')\
+        # Get all users
+        get_uniq_users = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(~Q(user_name='Tamara Rozganova')) \
+            .filter(~Q(user_name='Величко Оксана')) \
+            .filter(~Q(user_name=None)) \
+            .values('user_name') \
             .distinct()
 
-        user_report = []
+        user_personal_cc_report = []
 
         for user in get_uniq_users:
             user_name = user['user_name']
 
-            answered_calls = CallsCheck.objects\
-                .filter(upload_date_short__icontains=self.filter_date)\
-                .filter(user_name=user_name)\
-                .filter(~Q(call_result='нет ответа'))\
+            answered_calls = CallsCheck.objects \
+                .filter(upload_date_short__icontains=filter_date) \
+                .filter(user_name=user_name) \
+                .filter(~Q(call_result='нет ответа')) \
                 .count()
 
-            unanswered_calls = CallsCheck.objects\
-                .filter(upload_date_short__icontains=self.filter_date)\
-                .filter(user_name=user_name)\
-                .filter(Q(call_result='нет ответа'))\
+            unanswered_calls = CallsCheck.objects \
+                .filter(upload_date_short__icontains=filter_date) \
+                .filter(user_name=user_name) \
+                .filter(Q(call_result='нет ответа')) \
                 .count()
 
-            verifications = CallsCheck.objects\
-                .filter(upload_date_short__icontains=self.filter_date)\
-                .filter(user_name=user_name)\
-                .filter(~Q(verified_date=None))\
+            verifications = CallsCheck.objects \
+                .filter(upload_date_short__icontains=filter_date) \
+                .filter(user_name=user_name) \
+                .filter(~Q(verified_date=None)) \
                 .count()
 
-            deposit_count = CRMCheck.objects\
-                .filter(upload_date_short__icontains=self.filter_date)\
-                .filter(user_name=user_name)\
-                .filter(~Q(first_deposit_date=None))\
+            deposit_count = CRMCheck.objects \
+                .filter(upload_date_short__icontains=filter_date) \
+                .filter(user_name=user_name) \
+                .filter(~Q(first_deposit_date=None)) \
                 .count()
 
-            deposit_sum = CRMCheck.objects\
-                .filter(upload_date_short__icontains=self.filter_date)\
-                .filter(user_name=user_name)\
-                .filter(~Q(first_deposit_amount=None))\
+            deposit_sum = CRMCheck.objects \
+                .filter(upload_date_short__icontains=filter_date) \
+                .filter(user_name=user_name) \
+                .filter(~Q(first_deposit_amount=None)) \
                 .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
 
             if deposit_sum is None:
                 deposit_sum = 0
 
-            user_report.append({
+            user_personal_cc_report.append({
                 'user_name': user_name,
                 'answered_calls': answered_calls,
                 'unanswered_calls': unanswered_calls,
@@ -1792,11 +1789,31 @@ class CCReportView(View):
                 'deposit_sum': deposit_sum,
             })
 
+        return user_personal_cc_report
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        game_control_users = User.objects.filter(groups__name='game_control')
+
+        month = request.GET.get('month', None)
+        if month is None:
+            month = datetime.datetime.now().month
+        else:
+            month = int(month)
+
+        year = request.GET.get('year', None)
+        if year is None:
+            year = datetime.datetime.now().year
+        else:
+            year = int(year)
+
         data = {
             'site_adm': site_adm_users,
             'game_control': game_control_users,
             'superuser': User.objects.filter(is_superuser=True),
-            'filter_date': self.filter_date,
-            'user_report': user_report,
+            'user_report': self.create_personal_cc_report(month, year),
+            'months': MonthsForm(),
+            'years': YearsForm(),
         }
+
         return render(request, self.template_name, data)
