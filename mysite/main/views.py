@@ -1281,11 +1281,6 @@ def cc_report(request):
 
     date_short = str(month_id) + '-' + str(year_id)
 
-    start_date = f'01.{month_id}.{year_id}'
-    end_date = f'01.{month_id}.{year_id}'
-    end_date = datetime.datetime.strptime(end_date, '%d.%m.%Y') + relativedelta(months=1)
-    end_date = str(end_date.date()).replace('-', '.')
-
     calls_report = get_personal_cc_report(date_short)
     crm_report = get_personal_crm_report(date_short)
     appeal_report = get_personal_appeal_report(date_short)
