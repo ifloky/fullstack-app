@@ -1006,6 +1006,7 @@ def get_personal_cc_report(filter_date):
         .filter(upload_date_short__icontains=filter_date)\
         .filter(~Q(user_name='Tamara Rozganova'))\
         .filter(~Q(user_name='Величко Оксана'))\
+        .filter(~Q(user_name=None))\
         .values('user_name')\
         .distinct()
 
