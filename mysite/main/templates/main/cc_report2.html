@@ -51,7 +51,7 @@
 
     <div style="padding-left:10%;width:98%;">
         <header>
-            <h4>Отчет по обзвону неверифицированных клиентов</h4>
+            <h4>Персональный отчет по обзвону не верифицированных клиентов</h4>
         </header>
         <table class="table table-striped">
           <thead>
@@ -77,10 +77,43 @@
         {% endfor %}
           </tbody>
         </table>
+        <header>
+            <h4>Суммарные значения по обзвону не верифицированных клиентов</h4>
+        </header>
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col">Общее количество звонков</th>
+                <th scope="col">Отвеченые звонки</th>
+                <th scope="col">Неотвеченные звонки</th>
+                <th scope="col">Подумает</th>
+                <th scope="col">Паланирует</th>
+                <th scope="col">Не будет</th>
+                <th scope="col">Номер не РБ</th>
+                <th scope="col">Количество верификаций</th>
+                <th scope="col">Количество / Сумма депозитов</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for report in calls_sum %}
+            <tr align="center">
+                <td>{{ report.calls_count }}</td>
+                <td>{{ report.answer_call }}</td>
+                <td>{{ report.no_answer_calls }}</td>
+                <td>{{ report.think_about_it }}</td>
+                <td>{{ report.plans_to_game }}</td>
+                <td>{{ report.will_not_game }}</td>
+                <td>{{ report.no_rb_number }}</td>
+                <td>{{ report.verification }}</td>
+                <td>{{ report.deposit_count }} / {{ report.deposit_sum }}</td>
+            </tr>
+        {% endfor %}
+          </tbody>
+        </table>
         <canvas id="chart" style="display:block;height:20px;"></canvas>
     </div>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
-  <script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+    <script>
     let ctx = document.getElementById("chart").getContext("2d");
 
         let chart = new Chart(ctx, {
@@ -122,50 +155,11 @@
           },
           options: {
              title: {
-<!--                text: "Calls by operator",-->
                 display: true
              }
           }
         });
-  </script>
-
-
-
-    <div style="padding-left:10%;width:98%;">
-        <header>
-            <h4>Суммарные значения по обзвону неверифицированных клиентов</h4>
-        </header>
-        <table class="table table-striped">
-          <thead>
-            <tr align="center">
-                <th scope="col">Общее количество звонков</th>
-                <th scope="col">Отвеченые звонки</th>
-                <th scope="col">Неотвеченные звонки</th>
-                <th scope="col">Подумает</th>
-                <th scope="col">Паланирует</th>
-                <th scope="col">Не будет</th>
-                <th scope="col">Номер не РБ</th>
-                <th scope="col">Количество верификаций</th>
-                <th scope="col">Количество / Сумма депозитов</th>
-            </tr>
-          </thead>
-          <tbody>
-        {% for report in calls_sum %}
-            <tr align="center">
-                <td>{{ report.calls_count }}</td>
-                <td>{{ report.answer_call }}</td>
-                <td>{{ report.no_answer_calls }}</td>
-                <td>{{ report.think_about_it }}</td>
-                <td>{{ report.plans_to_game }}</td>
-                <td>{{ report.will_not_game }}</td>
-                <td>{{ report.no_rb_number }}</td>
-                <td>{{ report.verification }}</td>
-                <td>{{ report.deposit_count }} / {{ report.deposit_sum }}</td>
-            </tr>
-        {% endfor %}
-          </tbody>
-        </table>
-    </div>
+    </script>
 
 <!--    <div style="padding-left:10%;width:98%;">-->
 <!--        <header>-->
