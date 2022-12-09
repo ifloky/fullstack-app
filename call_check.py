@@ -39,7 +39,6 @@ def create_df(call_date='2022-11-01'):
         df = pd.DataFrame(data, columns=[c[0] for c in cursor.description])
         cursor.close()
         connection.close()
-        # print('Загружено из базы АТС:', str(len(df)), 'записей')
     except Error as e:
         print(e)
     return df
@@ -98,11 +97,11 @@ def check_call(phone_number, df, db_name):
     for index, row in df.iterrows():
         if row['client'] == phone_number:
             check = row['client'], row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
-            call_date_time = row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
+            call_date_time = row['CallDateTime'] - timedelta(hours=3)
+            call_date_time = call_date_time.strftime("%Y-%m-%d %H:%M:%S")
             client_number = row['client']
             check = str(check).replace('(', '').replace(')', '').replace("'", '')
             update_call_date_in_db(client_number, call_date_time, db_name)
-            # print(check)
             print(client_number, call_date_time)
             return check
     print(str(phone_number) + ', ' + 'No Calls')
@@ -111,7 +110,6 @@ def check_call(phone_number, df, db_name):
 
 def update_call_date_in_db(phone_number, call_date_time, db_name):
     cursor, connection = None, None
-
     sql_query = (f'''
                 UPDATE {db_name}
                 SET call_date = '{call_date_time}'
@@ -141,7 +139,7 @@ def update_call_date_in_db(phone_number, call_date_time, db_name):
 
 
 def get_date_15_days_ago():
-    date_30_days_ago = datetime.now() - timedelta(days=15)
+    date_30_days_ago = datetime.now() - timedelta(days=40)
     return date_30_days_ago.strftime('%Y-%m-%d')
 
 
