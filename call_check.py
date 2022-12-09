@@ -139,8 +139,8 @@ def update_call_date_in_db(phone_number, call_date_time, db_name):
 
 
 def get_date_15_days_ago():
-    date_30_days_ago = datetime.now() - timedelta(days=40)
-    return date_30_days_ago.strftime('%Y-%m-%d')
+    date_15_days_ago = datetime.now() - timedelta(days=15)
+    return date_15_days_ago.strftime('%Y-%m-%d')
 
 
 def main():
