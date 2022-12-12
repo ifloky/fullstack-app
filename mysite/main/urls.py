@@ -31,7 +31,7 @@ urlpatterns = [
     path('crm_rep/', views.CRMView.as_view(), name='crm_rep'),
     path('update_crm/<int:pk>', views.UpdateCRMView.as_view(), name='update_crm'),
 
-    path('cc_report/', views.cc_report, name='cc_report'),
+    path('cc_report/', views.CCReportView.as_view(), name='cc_report'),
     path('appeal/', views.AppealReportView.as_view(), name='appeal'),
     path('appeal_rep/', views.AppealReportListView.as_view(), name='appeal_rep'),
     path('update_appeal/<int:pk>', views.UpdateAppealView.as_view(), name='update_appeal'),
@@ -44,6 +44,4 @@ urlpatterns = [
     path('disabled_games/', views.GameDisableListView.as_view(), name='disabled_games'),
     path('add_game_disable/', views.AddGameDisableView.as_view(), name='add_game_disable'),
     path('missing_games/', views.MissingGamesListView.as_view(), name='missing_games'),
-
-    path('cc_report2/', views.CCReportView.as_view(), name='cc_report2'),
 ]

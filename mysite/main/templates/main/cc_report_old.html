@@ -1,0 +1,176 @@
+{% extends 'main/header.html' %}
+
+
+  {% block content %}
+
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        display: flex;
+        align-items: center;
+        justify-content: right;
+    }
+
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
+
+    input {
+        width: 100%;
+        padding: 8px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+    }
+
+    button {
+        width: 200px;
+        padding: 8px 20px;
+        margin: 8px 0;
+    }
+
+    th {
+        vertical-align:
+        middle !important;
+        text-align: center;
+    }
+
+    </style>
+
+  {% if user.is_authenticated %}
+
+    <div style="padding-left:10%;margin-top:50px;width:98%;">
+        <form method="GET" action="/cc_report" >
+             {{ months }} {{ years }}
+        <input type="submit" value="Показать отчет">
+    </form>
+    </div>
+
+    <div style="padding-left:10%;width:98%;">
+        <header>
+            <h4>Персональный отчет по обзвону не верифицированных клиентов</h4>
+        </header>
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col">Оператор</th>
+                <th scope="col">Отвеченые звонки</th>
+                <th scope="col">Неотвеченные звонки</th>
+                <th scope="col">Количество верификаций</th>
+                <th scope="col">Количество депозитов</th>
+                <th scope="col">Сумма депозитов</th>
+             </tr>
+          </thead>
+          <tbody>
+        {% for report in calls_report %}
+            <tr align="center">
+                <td>{{ report.user_name }}</td>
+                <td>{{ report.answered_calls }}</td>
+                <td>{{ report.unanswered_calls }}</td>
+                <td>{{ report.verifications }}</td>
+                <td>{{ report.deposit_count }}</td>
+                <td>{{ report.deposit_sum }}</td>
+            </tr>
+        {% endfor %}
+
+          </tbody>
+        </table>
+    </div>
+
+    <div style="padding-left:10%;width:98%;">
+        <header>
+            <h4>Суммарные значения по обзвону не верифицированных клиентов</h4>
+        </header>
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col">Общее количество звонков</th>
+                <th scope="col">Отвеченые звонки</th>
+                <th scope="col">Неотвеченные звонки</th>
+                <th scope="col">Подумает</th>
+                <th scope="col">Паланирует</th>
+                <th scope="col">Не будет</th>
+                <th scope="col">Номер не РБ</th>
+                <th scope="col">Количество верификаций</th>
+                <th scope="col">Количество / Сумма депозитов</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for report in calls_sum %}
+            <tr align="center">
+                <td>{{ report.calls_count }}</td>
+                <td>{{ report.answer_call }}</td>
+                <td>{{ report.no_answer_calls }}</td>
+                <td>{{ report.think_about_it }}</td>
+                <td>{{ report.plans_to_game }}</td>
+                <td>{{ report.will_not_game }}</td>
+                <td>{{ report.no_rb_number }}</td>
+                <td>{{ report.verification }}</td>
+                <td>{{ report.deposit_count }} / {{ report.deposit_sum }}</td>
+            </tr>
+        {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+    <div style="padding-left:10%;width:98%;">
+        <header>
+            <h4>Отчет по обработанным обращениям</h4>
+        </header>
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col">Оператор</th>
+                <th scope="col">Входящие вызовы</th>
+                <th scope="col">Исходящие вызовы</th>
+                <th scope="col">Почтовые обращаения</th>
+                <th scope="col">Чаты</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for report in appeal_report %}
+            <tr>
+                {% for x in report %} <td align="center">{{ x }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+    <div style="padding-left:10%;width:98%;">
+        <header>
+            <h4>Суммарные значения по обработанным обращениям</h4>
+        </header>
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col">Входящие вызовы</th>
+                <th scope="col">Исходящие вызовы</th>
+                <th scope="col">Почтовые обращаения</th>
+                <th scope="col">Чаты</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for report in appeal_sum %}
+            <tr>
+                {% for x in report %} <td align="center">{{ x }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+
+  {% else %}
+
+        {% include 'main/includes/non_authorised.html' %}
+
+  {% endif %}
+
+  {% endblock %}
