@@ -1858,6 +1858,93 @@ class CCReportView(View):
 
         return data
 
+    @staticmethod
+    def create_personal_appeal_report(month, year):
+        filter_date = str(month) + '-' + str(year)
+
+        # Get all users
+        get_uniq_users = AppealReport.objects \
+            .filter(appeal_date_short__icontains=filter_date) \
+            .filter(~Q(user_name='Tamara Rozganova')) \
+            .filter(~Q(user_name='Величко Оксана')) \
+            .filter(~Q(user_name=None)) \
+            .values('user_name') \
+            .distinct()
+
+        user_personal_appeal_report = []
+
+        for user in get_uniq_users:
+            user_name = user['user_name']
+
+            appeal_incoming_calls_count = AppealReport.objects \
+                .filter(appeal_date_short__icontains=filter_date) \
+                .filter(user_name=user_name) \
+                .filter(Q(appeal_type='Звонок входящий')) \
+                .count()
+
+            appeal_outgoing_calls_count = AppealReport.objects \
+                .filter(appeal_date_short__icontains=filter_date) \
+                .filter(user_name=user_name) \
+                .filter(Q(appeal_type='Звонок исходящий')) \
+                .count()
+
+            appeal_chats_count = AppealReport.objects \
+                .filter(appeal_date_short__icontains=filter_date) \
+                .filter(user_name=user_name) \
+                .filter(Q(appeal_type='Чат') | Q(appeal_type='Телеграмм') | Q(appeal_type='Ватсап')) \
+                .count()
+
+            appeal_mail_count = AppealReport.objects \
+                .filter(appeal_date_short__icontains=filter_date) \
+                .filter(user_name=user_name) \
+                .filter(Q(appeal_type='Почта')) \
+                .count()
+
+            user_personal_appeal_report.append({
+                'user_name': user_name,
+                'appeal_incoming_calls_count': appeal_incoming_calls_count,
+                'appeal_outgoing_calls_count': appeal_outgoing_calls_count,
+                'appeal_chats_count': appeal_chats_count,
+                'appeal_mail_count': appeal_mail_count,
+            })
+
+        return user_personal_appeal_report
+
+    @staticmethod
+    def create_appeal_report_sum(month, year):
+        filter_date = str(month) + '-' + str(year)
+        data = []
+
+        appeal_incoming_calls_count = AppealReport.objects \
+            .filter(appeal_date_short__icontains=filter_date) \
+            .filter(Q(appeal_type='Звонок входящий')) \
+            .count()
+
+        appeal_outgoing_calls_count = AppealReport.objects \
+            .filter(appeal_date_short__icontains=filter_date) \
+            .filter(Q(appeal_type='Звонок исходящий')) \
+            .count()
+
+        ''' this params chats count by type: telegram, vatsap, chat '''
+        appeal_chats_count = AppealReport.objects \
+            .filter(appeal_date_short__icontains=filter_date) \
+            .filter(Q(appeal_type='Чат') | Q(appeal_type='Телеграмм') | Q(appeal_type='Ватсап')) \
+            .count()
+
+        appeal_mail_count = AppealReport.objects \
+            .filter(appeal_date_short__icontains=filter_date) \
+            .filter(Q(appeal_type='Почта')) \
+            .count()
+
+        data.append({
+            'appeal_incoming_calls_count': appeal_incoming_calls_count,
+            'appeal_outgoing_calls_count': appeal_outgoing_calls_count,
+            'appeal_chats_count': appeal_chats_count,
+            'appeal_mail_count': appeal_mail_count,
+        })
+
+        return data
+
     def get(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
         game_control_users = User.objects.filter(groups__name='game_control')
@@ -1880,8 +1967,10 @@ class CCReportView(View):
             'game_control': game_control_users,
             'support_heads': support_heads,
             'superuser': User.objects.filter(is_superuser=True),
-            'user_report': self.create_personal_cc_report(month, year),
+            'calls_report': self.create_personal_cc_report(month, year),
             'calls_sum': self.create_personal_cc_report_sum(month, year),
+            'appeal_report': self.create_personal_appeal_report(month, year),
+            'appeal_report_sum': self.create_appeal_report_sum(month, year),
             'months': MonthsForm(),
             'years': YearsForm(),
         }

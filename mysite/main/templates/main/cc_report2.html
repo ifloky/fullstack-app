@@ -65,7 +65,7 @@
              </tr>
           </thead>
           <tbody>
-        {% for report in user_report %}
+        {% for report in calls_report %}
             <tr align="center">
                 <td>{{ report.user_name }}</td>
                 <td>{{ report.answered_calls }}</td>
@@ -121,37 +121,37 @@
         let chart = new Chart(ctx, {
           type: "bar",
           data: {
-             labels: [{% for report in user_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+             labels: [{% for report in calls_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
                 datasets: [
                 {
                   label: "Отвеченые звонки",
                   backgroundColor: "#79AEC8",
                   borderColor: "#417690",
-                  data: [{% for report in user_report %}{{ report.answered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                  data: [{% for report in calls_report %}{{ report.answered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
                 },
                 {
                   label: "Неотвеченые звонки",
                   backgroundColor: "#FA8072",
                   borderColor: "#417690",
-                  data: [{% for report in user_report %}{{ report.unanswered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                  data: [{% for report in calls_report %}{{ report.unanswered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
                 },
                 {
                   label: "Количество верификаций",
                   backgroundColor: "#3CB371",
                   borderColor: "#417690",
-                  data: [{% for report in user_report %}{{ report.verifications }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                  data: [{% for report in calls_report %}{{ report.verifications }}{% if not forloop.last %}, {% endif %}{% endfor %}]
                 },
                 {
                   label: "Количество депозитов",
                   backgroundColor: "#FFD700",
                   borderColor: "#417690",
-                  data: [{% for report in user_report %}{{ report.deposit_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                  data: [{% for report in calls_report %}{{ report.deposit_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
                 },
                 {
                   label: "Сумма депозитов",
                   backgroundColor: "#DA70D6",
                   borderColor: "#417690",
-                  data: [{% for report in user_report %}{{ report.deposit_sum }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                  data: [{% for report in calls_report %}{{ report.deposit_sum }}{% if not forloop.last %}, {% endif %}{% endfor %}]
                 }
             ]
           },
@@ -163,54 +163,102 @@
         });
     </script>
 
-<!--    <div style="padding-left:10%;width:98%;">-->
-<!--        <header>-->
-<!--            <h4>Отчет по обработанным обращениям</h4>-->
-<!--        </header>-->
-<!--        <table class="table table-striped">-->
-<!--          <thead>-->
-<!--            <tr align="center">-->
-<!--                <th scope="col">Оператор</th>-->
-<!--                <th scope="col">Входящие вызовы</th>-->
-<!--                <th scope="col">Исходящие вызовы</th>-->
-<!--                <th scope="col">Почтовые обращаения</th>-->
-<!--                <th scope="col">Чаты</th>-->
-<!--            </tr>-->
-<!--          </thead>-->
-<!--          <tbody>-->
-<!--        {% for report in appeal_report %}-->
-<!--            <tr>-->
-<!--                {% for x in report %} <td align="center">{{ x }}</td>-->
-<!--                {% endfor %}-->
-<!--            </tr>-->
-<!--        {% endfor %}-->
-<!--          </tbody>-->
-<!--        </table>-->
-<!--    </div>-->
+    <div style="padding-left:10%;margin-top:30px;width:98%;">
+        <header>
+            <h4>Отчет по обработанным обращениям</h4>
+        </header>
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col">Оператор</th>
+                <th scope="col">Входящие вызовы</th>
+                <th scope="col">Исходящие вызовы</th>
+                <th scope="col">Чаты</th>
+                <th scope="col">Почтовые обращаения</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for report in appeal_report %}
+            <tr align="center">
+                <td>{{ report.user_name }}</td>
+                <td>{{ report.appeal_incoming_calls_count }}</td>
+                <td>{{ report.appeal_outgoing_calls_count }}</td>
+                <td>{{ report.appeal_chats_count }}</td>
+                <td>{{ report.appeal_mail_count }}</td>
+            </tr>
+        {% endfor %}
+          </tbody>
+        </table>
 
-<!--    <div style="padding-left:10%;margin-top:30px;width:98%;">-->
-<!--        <header>-->
-<!--            <h4>Суммарные значения по обработанным обращениям</h4>-->
-<!--        </header>-->
-<!--        <table class="table table-striped">-->
-<!--          <thead>-->
-<!--            <tr align="center">-->
-<!--                <th scope="col">Входящие вызовы</th>-->
-<!--                <th scope="col">Исходящие вызовы</th>-->
-<!--                <th scope="col">Почтовые обращаения</th>-->
-<!--                <th scope="col">Чаты</th>-->
-<!--            </tr>-->
-<!--          </thead>-->
-<!--          <tbody>-->
-<!--        {% for report in appeal_sum %}-->
-<!--            <tr>-->
-<!--                {% for x in report %} <td align="center">{{ x }}</td>-->
-<!--                {% endfor %}-->
-<!--            </tr>-->
-<!--        {% endfor %}-->
-<!--          </tbody>-->
-<!--        </table>-->
-<!--    </div>-->
+        <header>
+            <h4>Суммарные значения по обработанным обращениям</h4>
+        </header>
+        <table class="table table-striped">
+          <thead>
+            <tr align="center">
+                <th scope="col">Входящие вызовы</th>
+                <th scope="col">Исходящие вызовы</th>
+                <th scope="col">Чаты</th>
+                <th scope="col">Почтовые обращаения</th>
+            </tr>
+          </thead>
+          <tbody>
+        {% for report in appeal_report_sum %}
+            <tr align="center">
+                <td>{{ report.appeal_incoming_calls_count }}</td>
+                <td>{{ report.appeal_outgoing_calls_count }}</td>
+                <td>{{ report.appeal_chats_count }}</td>
+                <td>{{ report.appeal_mail_count }}</td>
+            </tr>
+        {% endfor %}
+          </tbody>
+        </table>
+
+        <canvas id="appeal_chart" style="display:block; width: 100%; height: 400px;">
+        </canvas>
+
+    </div>
+    <script>
+    let ctx2 = document.getElementById("appeal_chart").getContext("2d");
+
+        let appeal_chart = new Chart(ctx2, {
+          type: "bar",
+          data: {
+             labels: [{% for report in appeal_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                datasets: [
+                {
+                  label: "Входящие вызовы",
+                  backgroundColor: "#79AEC8",
+                  borderColor: "#417690",
+                  data: [{% for report in appeal_report %}{{ report.appeal_incoming_calls_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                },
+                {
+                  label: "Исходящие вызовы",
+                  backgroundColor: "#FA8072",
+                  borderColor: "#417690",
+                  data: [{% for report in appeal_report %}{{ report.appeal_outgoing_calls_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                },
+                {
+                  label: "Чаты",
+                  backgroundColor: "#3CB371",
+                  borderColor: "#417690",
+                  data: [{% for report in appeal_report %}{{ report.appeal_chats_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                },
+                {
+                  label: "Почта",
+                  backgroundColor: "#FFD700",
+                  borderColor: "#417690",
+                  data: [{% for report in appeal_report %}{{ report.appeal_mail_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                }
+            ]
+          },
+          options: {
+            title: {
+                display: true
+            }
+           }
+        });
+    </script>
 
 <script>
   $(document).keydown(function (e) {
