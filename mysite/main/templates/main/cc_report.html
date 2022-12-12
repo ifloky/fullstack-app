@@ -51,7 +51,9 @@
 
     <div style="padding-left:10%;width:98%;">
         <header>
-            <h4>Персональный отчет по обзвону не верифицированных клиентов</h4>
+            {% for month in months %}
+            <h4>Персональный отчет по обзвону не верифицированных клиентов, за {{ month.month_id }}</h4>
+            {% endfor %}
         </header>
         <table class="table table-striped">
           <thead>
