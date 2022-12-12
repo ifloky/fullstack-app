@@ -1477,6 +1477,7 @@ class CCReportView(View):
                 'verifications': verifications,
                 'deposit_count': deposit_count,
                 'deposit_sum': deposit_sum,
+                'filter_date': filter_date,
             })
 
         return user_personal_cc_report
@@ -1663,6 +1664,7 @@ class CCReportView(View):
             'appeal_report_sum': self.create_appeal_report_sum(month, year),
             'months': MonthsForm(),
             'years': YearsForm(),
+            'report_period': str(month) + '-' + str(year),
         }
 
         return render(request, self.template_name, data)

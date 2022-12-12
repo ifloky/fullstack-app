@@ -43,7 +43,7 @@
   {% if user.is_authenticated %}
 
     <div style="padding-left:10%;margin-top:50px;width:98%;">
-      <form method="GET" action="/cc_report" id="form_report">
+      <form class="noprint" method="GET" action="/cc_report" id="form_report">
             {{ months }} {{ years }}
         <input type="submit" value="Показать отчет">
     </form>
@@ -51,9 +51,7 @@
 
     <div style="padding-left:10%;width:98%;">
         <header>
-            {% for month in months %}
-            <h4>Персональный отчет по обзвону не верифицированных клиентов, за {{ month.month_id }}</h4>
-            {% endfor %}
+            <h4>Персональный отчет по обзвону не верифицированных клиентов, за {{ report_period }}</h4>
         </header>
         <table class="table table-striped">
           <thead>
@@ -80,7 +78,7 @@
           </tbody>
         </table>
         <header>
-            <h4>Суммарные значения по обзвону не верифицированных клиентов</h4>
+            <h4>Суммарные значения по обзвону не верифицированных клиентов, за {{ report_period }}</h4>
         </header>
         <table class="table table-striped">
           <thead>
@@ -167,7 +165,7 @@
 
     <div style="padding-left:10%;margin-top:30px;width:98%;">
         <header>
-            <h4>Отчет по обработанным обращениям</h4>
+            <h4>Отчет по обработанным обращениям, за {{ report_period }}</h4>
         </header>
         <table class="table table-striped">
           <thead>
@@ -193,7 +191,7 @@
         </table>
 
         <header>
-            <h4>Суммарные значения по обработанным обращениям</h4>
+            <h4>Суммарные значения по обработанным обращениям, за {{ report_period }}</h4>
         </header>
         <table class="table table-striped">
           <thead>
