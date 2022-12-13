@@ -93,6 +93,14 @@ def load_phone_number_from_db(db_name):
     return phones
 
 
+def count_calls_in_df(df, phone_number):
+    count = 0
+    for index, row in df.iterrows():
+        if row['client'] == phone_number:
+            count += 1
+    return count
+
+
 def check_call(phone_number, df, db_name):
     for index, row in df.iterrows():
         if row['client'] == phone_number:
@@ -101,8 +109,9 @@ def check_call(phone_number, df, db_name):
             call_date_time = call_date_time.strftime("%Y-%m-%d %H:%M:%S")
             client_number = row['client']
             check = str(check).replace('(', '').replace(')', '').replace("'", '')
+            calls = count_calls_in_df(df, phone_number)
             update_call_date_in_db(client_number, call_date_time, db_name)
-            print(f'{client_number}, {call_date_time}, Всего звонков по номеру: {client_number}, {len(df)}')
+            print(f'{client_number}, {call_date_time}, Всего звонков по номеру: {client_number} - {calls}')
             return check
     print(str(phone_number) + ', ' + 'No Calls')
     return str(phone_number)+', ' + 'No Calls'
