@@ -102,7 +102,7 @@ def check_call(phone_number, df, db_name):
             client_number = row['client']
             check = str(check).replace('(', '').replace(')', '').replace("'", '')
             update_call_date_in_db(client_number, call_date_time, db_name)
-            print(client_number, call_date_time)
+            print(f'{client_number}, {call_date_time}, Всего звонков по номеру: {client_number}, {len(df)}')
             return check
     print(str(phone_number) + ', ' + 'No Calls')
     return str(phone_number)+', ' + 'No Calls'
