@@ -70,7 +70,8 @@ def save_game_list_to_db(game_list, db_name, env):
         elif game_type == 12:
             game_type = 'Букмекерская онлайн-TV игра'
         game_name: str = x['name'].replace("'", "''")
-        game_name_find: str = x['name'].replace("'", "''").lower().replace(' ', '')
+        game_name_find: str = x['name'].replace(': Hold and Win', '').replace("'", "").replace(' ', '')\
+            .replace('-', '').replace('’', '').replace(':', '').replace('.', '').replace('&', '').lower()
         try:
             vendor: str = x['vendor_name']
         except KeyError:

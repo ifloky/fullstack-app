@@ -81,6 +81,7 @@ class CallsCheck(models.Model):
     user_name = models.CharField(max_length=200, blank=True, null=True)
     upload_date = models.DateTimeField(auto_now_add=True)
     upload_date_short = models.CharField(max_length=7, default=datetime.date.today().strftime("%m-%Y"))
+    calls_count = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.client_id
@@ -102,6 +103,7 @@ class CRMCheck(models.Model):
     user_name = models.CharField(max_length=200, blank=True, null=True)
     upload_date = models.DateTimeField(auto_now_add=True)
     upload_date_short = models.CharField(max_length=7, default=datetime.date.today().strftime("%m-%Y"))
+    calls_count = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.client_id
@@ -184,7 +186,8 @@ class GameDisableList(models.Model):
     game_provider = models.CharField(max_length=200)
     game_disable_date = models.DateTimeField(default=timezone.localtime)
     user_name = models.CharField(max_length=200)
-    game_name_find = models.CharField(null=True, blank=True, max_length=200)
+    game_name_find = models.CharField(null=True, blank=True, max_length=200,
+                                      default='game_name'.upper().replace(' ', ''))
 
     def __str__(self):
         return self.game_name
