@@ -134,6 +134,7 @@ class GameListFromSkks(models.Model):
     game_type = models.CharField(max_length=200)
     game_provider = models.CharField(max_length=200)
     game_permitted_date = models.DateTimeField(default=timezone.localtime)
+    game_name_find = models.CharField(null=True, blank=True, max_length=200)
 
     def __str__(self):
         return self.game_name
@@ -150,6 +151,7 @@ class GameListFromSkksTest(models.Model):
     game_type = models.CharField(max_length=200)
     game_provider = models.CharField(max_length=200)
     game_permitted_date = models.DateTimeField(default=timezone.localtime)
+    game_name_find = models.CharField(null=True, blank=True, max_length=200)
 
     def __str__(self):
         return self.game_name
@@ -165,6 +167,7 @@ class GameListFromSite(models.Model):
     game_name = models.CharField(max_length=200)
     game_provider = models.CharField(max_length=200)
     game_status = models.CharField(max_length=200)
+    game_name_find = models.CharField(null=True, blank=True, max_length=200)
 
     def __str__(self):
         return self.game_name
@@ -181,6 +184,7 @@ class GameDisableList(models.Model):
     game_provider = models.CharField(max_length=200)
     game_disable_date = models.DateTimeField(default=timezone.localtime)
     user_name = models.CharField(max_length=200)
+    game_name_find = models.CharField(null=True, blank=True, max_length=200)
 
     def __str__(self):
         return self.game_name
