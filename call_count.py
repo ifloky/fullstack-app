@@ -153,6 +153,8 @@ def get_date_of_time_delta(delta):
 
 
 def main():
+    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"Start script at {current_date}")
     cc_db = 'public.main_callscheck'
     crm_db = 'public.main_crmcheck'
     date_range = get_date_of_time_delta(7).strftime('%Y-%m-%d')

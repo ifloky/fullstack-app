@@ -153,6 +153,8 @@ def get_date_15_days_ago():
 
 
 def main():
+    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"Start script at {current_date}")
     cc_db = 'public.main_callscheck'
     crm_db = 'public.main_crmcheck'
     date_range = get_date_15_days_ago()
