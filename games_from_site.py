@@ -1,5 +1,4 @@
 import datetime
-from pprint import pprint
 
 import requests
 import psycopg2
@@ -83,7 +82,7 @@ def get_game_info(game_date, db_name):
     counter = 0
     game_data = game_date.json()['games']
     for game in game_data:
-        game_name = game['name'].replace("'", "''").replace('™', '').lower()
+        game_name = game['name'].replace("'", "''").replace('™', '')
         game_provider = game['provider_title']
         game_status = game['status']
 

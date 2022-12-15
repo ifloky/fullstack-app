@@ -69,7 +69,7 @@ def save_game_list_to_db(game_list, db_name, env):
             game_type = 'Цилиндрическая игра (рулетка) в лайв режиме'
         elif game_type == 12:
             game_type = 'Букмекерская онлайн-TV игра'
-        game_name: str = x['name'].replace("'", "''").lower()
+        game_name: str = x['name'].replace("'", "''")
         try:
             vendor: str = x['vendor_name']
         except KeyError:
