@@ -1034,6 +1034,16 @@ def view_log_file(request):
         print(e)
         site_file = 'Файл не найден'
 
+    try:
+        with open('./call_count.log', 'r', encoding='UTF-8') as f:
+            site_file = f.read().split('\n')
+    except FileNotFoundError:
+        with open('/home/pgadmin/reports_site/call_count.log', 'r', encoding='UTF-8') as f:
+            site_file = f.read().split('\n')
+    except Exception as e:
+        print(e)
+        site_file = 'Файл не найден'
+
     data = {
         'site_adm': site_adm_users,
         'log_file': file,
