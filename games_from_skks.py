@@ -70,6 +70,7 @@ def save_game_list_to_db(game_list, db_name, env):
         elif game_type == 12:
             game_type = 'Букмекерская онлайн-TV игра'
         game_name: str = x['name'].replace("'", "''")
+        game_name_find: str = x['name'].replace("'", "''").lower().replace(' ', '')
         try:
             vendor: str = x['vendor_name']
         except KeyError:
@@ -86,8 +87,8 @@ def save_game_list_to_db(game_list, db_name, env):
                                       )
         cursor = connection.cursor()
         cursor.execute(
-            f"INSERT INTO {db_name} (game_id, game_type, game_name, game_permitted_date, game_provider) "
-            f"VALUES ({game_id}, '{game_type}', '{game_name}', '{permitted_date}', '{vendor}')")
+            f"INSERT INTO {db_name} (game_id, game_type, game_name, game_permitted_date, game_provider, game_name_find)"
+            f"VALUES ({game_id}, '{game_type}', '{game_name}', '{permitted_date}', '{vendor}', '{game_name_find}');")
         counter += 1
         connection.commit()
         connection.close()

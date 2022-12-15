@@ -83,6 +83,7 @@ def get_game_info(game_date, db_name):
     game_data = game_date.json()['games']
     for game in game_data:
         game_name = game['name'].replace("'", "''").replace('™', '')
+        game_name_find = game['name'].replace("'", "''").replace('™', '').lower().replace(' ', '')
         game_provider = game['provider_title']
         game_status = game['status']
 
@@ -94,8 +95,8 @@ def get_game_info(game_date, db_name):
                                       )
         cursor = connection.cursor()
         cursor.execute(
-            f"INSERT INTO {db_name} (game_name, game_provider, game_status) "
-            f"VALUES ('{game_name}', '{game_provider}', '{game_status}')")
+            f"INSERT INTO {db_name} (game_name, game_provider, game_status, game_name_find) "
+            f"VALUES ('{game_name}', '{game_provider}', '{game_status}', '{game_name_find}');")
         counter += 1
         connection.commit()
         connection.close()
