@@ -112,7 +112,6 @@ def check_call(phone_number, df, db_name):
             check = str(check).replace('(', '').replace(')', '').replace("'", '')
             calls = count_calls_in_df(df, phone_number)
             update_call_date_in_db(client_number, db_name, calls)
-            print(f'Всего звонков по номеру {client_number}: {calls}')
             return check, calls
     print(str(phone_number) + ', ' + 'No Calls')
     return str(phone_number)+', ' + 'No Calls'
@@ -137,7 +136,7 @@ def update_call_date_in_db(phone_number, db_name, calls):
         cursor = connection.cursor()
         cursor.execute(sql_query)
         connection.commit()
-        # print('Call Date Updated to client number:', phone_number)
+        print('Calls count updated to Client number:', phone_number, 'call count:', calls)
 
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgresSQL", error)
@@ -156,7 +155,7 @@ def get_date_of_time_delta(delta):
 def main():
     cc_db = 'public.main_callscheck'
     crm_db = 'public.main_crmcheck'
-    date_range = get_date_of_time_delta(7).strftime('%Y-%m-%d')
+    date_range = get_date_of_time_delta(3).strftime('%Y-%m-%d')
     print('Date range:', date_range, 'to', datetime.now().strftime('%Y-%m-%d'))
     start_job_time = time.perf_counter()
     data = []
