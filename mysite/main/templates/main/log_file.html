@@ -19,21 +19,13 @@
     </style>
 
   {% if user.is_authenticated %}
-    <div style="padding-left:10%;margin-top:30px;width:98%;">
-      <br>
-      {% for line in log_file %}
-
-              {{ line }}<br>
-
-      {% endfor %}
-    </div>
-    <div style="padding-left:10%;width:98%;">
+    <div style="padding-left:10%;margin-top:60px;width:98%;">
       {% for line in skks_file %}
 
               {{ line }}<br>
 
       {% endfor %}
-    </div><br>
+    </div>
     <div style="padding-left:10%;width:98%;">
       {% for line in site_file %}
 
@@ -41,6 +33,13 @@
 
       {% endfor %}
     </div><br>
+    <div style="padding-left:10%;width:98%;">
+      {% for line in log_file %}
+
+              {{ line }}<br>
+
+      {% endfor %}
+    </div>
     <div style="padding-left:10%;width:98%;">
       {% for line in call_count_file %}
 
