@@ -97,7 +97,7 @@
           <tbody>
         {% for report in calls_sum %}
             <tr align="center">
-                <td>{{ report.calls_count }}</td>
+                <td>{{ report.calls_count }} / {{ report.calls_sum }}</td>
                 <td>{{ report.answer_call }}</td>
                 <td>{{ report.no_answer_calls }}</td>
                 <td>{{ report.think_about_it }}</td>

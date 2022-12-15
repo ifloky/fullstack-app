@@ -1500,6 +1500,11 @@ class CCReportView(View):
             .filter(~Q(call_date=None)) \
             .count()
 
+        calls_sum = CallsCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(~Q(call_date=None)) \
+            .aggregate(Sum('calls_count'))['calls_count__sum']
+
         no_answer_calls = CallsCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
             .filter(Q(call_result='нет ответа')) \
@@ -1544,6 +1549,7 @@ class CCReportView(View):
 
         data.append({
             'calls_count': calls_count,
+            'calls_sum': calls_sum,
             'no_answer_calls': no_answer_calls,
             'answer_call': answer_call,
             'think_about_it': think_about_it,
