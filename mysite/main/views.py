@@ -1495,15 +1495,29 @@ class CCReportView(View):
         filter_date = str(month) + '-' + str(year)
         data = []
 
-        calls_count = CallsCheck.objects \
+        calls_count_cc = CallsCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
             .filter(~Q(call_date=None)) \
             .count()
 
-        calls_sum = CallsCheck.objects \
+        calls_count_crm = CRMCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(~Q(call_date=None)) \
+            .count()
+
+        calls_count = calls_count_cc + calls_count_crm
+
+        calls_sum_cc = CallsCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
             .filter(~Q(call_date=None)) \
             .aggregate(Sum('calls_count'))['calls_count__sum']
+
+        calls_sum_crm = CRMCheck.objects \
+            .filter(upload_date_short__icontains=filter_date) \
+            .filter(~Q(call_date=None)) \
+            .aggregate(Sum('calls_count'))['calls_count__sum']
+
+        calls_sum = calls_sum_cc + calls_sum_crm
 
         no_answer_calls = CallsCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
