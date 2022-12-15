@@ -1328,8 +1328,8 @@ class MissingGamesListView(ListView):
 
     def get_queryset(self):
         queryset = GameListFromSite.objects \
-            .filter(~Q(game_name_find__in=GameListFromSkks.objects.values('game_name_find'))) \
-            .filter(~Q(game_name_find__in=GameDisableList.objects.values('game_name_find'))) \
+            .filter(~Q(game_name_find__in=GameListFromSkks.objects.values('game_name_find'))
+                    & ~Q(game_name_find__in=GameDisableList.objects.values('game_name_find'))) \
             .order_by('game_provider')
         return queryset
 
@@ -1338,8 +1338,8 @@ class MissingGamesListView(ListView):
         queryset = GameListFromSite.objects \
             .filter(~Q(game_name_find__in=GameListFromSkks.objects.values('game_name_find'))
                     & ~Q(game_name_find__in=GameDisableList.objects.values('game_name_find'))) \
-            .order_by('game_provider')
-        return queryset.count()
+            .count()
+        return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(MissingGamesListView, self).get_context_data(**kwargs)
