@@ -1,16 +1,15 @@
 import psycopg2
+import pandas as pd
+import time
 
 from credentials import cc_db_host, cc_db_port, cc_db_name, cc_db_username, cc_db_password
 from datetime import timedelta, datetime
 from mysql.connector import Error, connect
-
-import pandas as pd
-import time
-
 from mysite import credentials
 
 
 def get_mysql_connection():
+    """ This function create connection to MySQL DB """
     print('Connecting to MySQL database...')
     try:
         connection = connect(host=cc_db_host,
@@ -23,7 +22,28 @@ def get_mysql_connection():
         print(e)
 
 
+def get_postgres_connection():
+    """ This function create connection to Postgres DB """
+    print('Connecting to Postgres database...')
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+        return connection
+    except Error as e:
+        print(e)
+
+
+def get_date_of_time_delta(delta):
+    date_15_days_ago = datetime.now() - timedelta(days=delta)
+    return date_15_days_ago
+
+
 def create_df(call_date):
+    """ This function create dataframe from DB table """
     current_date = datetime.now().strftime("%Y-%m-%d")
     print('Creating DataFrame...')
     df = []
@@ -31,8 +51,9 @@ def create_df(call_date):
         connection = get_mysql_connection()
         cursor = connection.cursor()
         query = (F'''
-                SELECT CallDateTime, Type, Operator, Client FROM asterisk.CallsCountAll
-                WHERE TYPE = 'Исходящий' AND CallDate between '{call_date}' and '{current_date}'
+                SELECT CallDateTime, Client FROM asterisk.CallsCountAll
+                WHERE TYPE = 'Исходящий' AND CallDate between '{call_date}' AND '{current_date}'
+                                         AND client NOT LIKE '%+375+375+%'
                 ''')
         cursor.execute(query)
         data = cursor.fetchall()
@@ -60,12 +81,7 @@ def load_phone_number_from_db(db_name, date_range):
                 ''')
 
     try:
-        connection = psycopg2.connect(database=credentials.db_name,
-                                      user=credentials.db_username,
-                                      password=credentials.db_password,
-                                      host=credentials.db_host,
-                                      port=credentials.db_port,
-                                      )
+        connection = get_postgres_connection()
 
         cursor = connection.cursor()
         cursor.execute(sql_query)
@@ -74,11 +90,10 @@ def load_phone_number_from_db(db_name, date_range):
 
         for phone in phone_list:
             if phone is not None:
-                phone = str(phone).replace(' ', '').replace('-', '').replace('(', '')
-                phone = phone.replace(')', '').replace("'", "").split(',')[0]
-                phones.append(phone)
+                phones.append(phone[0])
             else:
                 continue
+
         if db_name == 'public.main_callscheck':
             database_name = 'Call Centre'
         else:
@@ -104,19 +119,6 @@ def count_calls_in_df(df, phone_number):
     return count
 
 
-def check_call(phone_number, df, db_name):
-    for index, row in df.iterrows():
-        if row['client'] == phone_number:
-            check = row['client']
-            client_number = row['client']
-            check = str(check).replace('(', '').replace(')', '').replace("'", '')
-            calls = count_calls_in_df(df, phone_number)
-            update_call_date_in_db(client_number, db_name, calls)
-            return check, calls
-    print(str(phone_number) + ', ' + 'No Calls')
-    return str(phone_number)+', ' + 'No Calls'
-
-
 def update_call_date_in_db(phone_number, db_name, calls):
     cursor, connection = None, None
     sql_query = (f'''
@@ -126,12 +128,7 @@ def update_call_date_in_db(phone_number, db_name, calls):
                 ''')
 
     try:
-        connection = psycopg2.connect(database=credentials.db_name,
-                                      user=credentials.db_username,
-                                      password=credentials.db_password,
-                                      host=credentials.db_host,
-                                      port=credentials.db_port,
-                                      )
+        connection = get_postgres_connection()
 
         cursor = connection.cursor()
         cursor.execute(sql_query)
@@ -147,9 +144,14 @@ def update_call_date_in_db(phone_number, db_name, calls):
             connection.close()
 
 
-def get_date_of_time_delta(delta):
-    date_15_days_ago = datetime.now() - timedelta(days=delta)
-    return date_15_days_ago
+def check_calls_count(phone_number, df, db_name):
+    for index, row in df.iterrows():
+        if row['client'] == phone_number:
+            count_calls = count_calls_in_df(df, phone_number)
+            update_call_date_in_db(phone_number, db_name, count_calls)
+            return count_calls
+    print(str(phone_number) + ', ' + 'No Calls')
+    return str(phone_number)+', ' + 'No Calls'
 
 
 def main():
@@ -157,7 +159,7 @@ def main():
     print(f"Start script at {current_date}")
     cc_db = 'public.main_callscheck'
     crm_db = 'public.main_crmcheck'
-    date_range = get_date_of_time_delta(14).strftime('%Y-%m-%d')
+    date_range = get_date_of_time_delta(1).strftime('%Y-%m-%d')
     print('Date range:', date_range, 'to', datetime.now().strftime('%Y-%m-%d'))
     start_job_time = time.perf_counter()
     data = []
@@ -168,10 +170,10 @@ def main():
     phone_numbers = cc_phones + crm_phones
 
     for cc_phone in cc_phones:
-        data.append(check_call(cc_phone, df, cc_db))
+        data.append(check_calls_count(cc_phone, df, cc_db))
 
     for crm_phone in crm_phones:
-        data.append(check_call(crm_phone, df, crm_db))
+        data.append(check_calls_count(crm_phone, df, crm_db))
 
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
@@ -181,7 +183,9 @@ def main():
     print('Загружено из базы Отчетов:', len(phone_numbers), 'записей')
     print("Проверено и сохранено:", len(data), "номеров")
     print("Затрачено времени:", str(timedelta(seconds=working_time)))
-    print(f'Время выполнения: {time.perf_counter() - start_job_time:0.4f} seconds')
+    # measure memory after loading
+    from memory_profiler import memory_usage
+    print("Затрачено памяти:", (memory_usage())[-1], "Mb")
     print('\n')
 
 
