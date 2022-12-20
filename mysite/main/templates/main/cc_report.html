@@ -113,55 +113,75 @@
         <canvas id="chart" style="display: block; width: 98%; height: 400px;">
 
         </canvas>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
-    <script>
-    let ctx = document.getElementById("chart").getContext("2d");
+        <canvas id="chart_dep" style="display: block; width: 98%; height: 400px;">
 
-        let chart = new Chart(ctx, {
-          type: "bar",
-          data: {
-             labels: [{% for report in calls_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
-                datasets: [
-                {
-                  label: "Отвеченые звонки",
-                  backgroundColor: "#79AEC8",
-                  borderColor: "#417690",
-                  data: [{% for report in calls_report %}{{ report.answered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                },
-                {
-                  label: "Неотвеченые звонки",
-                  backgroundColor: "#FA8072",
-                  borderColor: "#417690",
-                  data: [{% for report in calls_report %}{{ report.unanswered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                },
-                {
-                  label: "Количество верификаций",
-                  backgroundColor: "#3CB371",
-                  borderColor: "#417690",
-                  data: [{% for report in calls_report %}{{ report.verifications }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                },
-                {
-                  label: "Количество депозитов",
-                  backgroundColor: "#FFD700",
-                  borderColor: "#417690",
-                  data: [{% for report in calls_report %}{{ report.deposit_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                },
-                {
-                  label: "Сумма депозитов",
-                  backgroundColor: "#DA70D6",
-                  borderColor: "#417690",
-                  data: [{% for report in calls_report %}{{ report.deposit_sum }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+        </canvas>
+    </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+        <script>
+        let ctx = document.getElementById("chart").getContext("2d");
+
+            let chart = new Chart(ctx, {
+              type: "bar",
+              data: {
+                 labels: [{% for report in calls_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    datasets: [
+                    {
+                      label: "Отвеченые звонки",
+                      backgroundColor: "#79AEC8",
+                      borderColor: "#417690",
+                      data: [{% for report in calls_report %}{{ report.answered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                    },
+                    {
+                      label: "Неотвеченые звонки",
+                      backgroundColor: "#FA8072",
+                      borderColor: "#417690",
+                      data: [{% for report in calls_report %}{{ report.unanswered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                    },
+                    {
+                      label: "Количество верификаций",
+                      backgroundColor: "#3CB371",
+                      borderColor: "#417690",
+                      data: [{% for report in calls_report %}{{ report.verifications }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                    },
+                    {
+                      label: "Количество депозитов",
+                      backgroundColor: "#FFD700",
+                      borderColor: "#417690",
+                      data: [{% for report in calls_report %}{{ report.deposit_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                    },
+                ]
+              },
+              options: {
+                title: {
+                    display: true
                 }
-            ]
-          },
-          options: {
-            title: {
-                display: true
-            }
-           }
-        });
-    </script>
+               }
+            });
+        </script>
+<script>
+        let ctx_dep = document.getElementById("chart_dep").getContext("2d");
+
+            let chart_dep = new Chart(ctx_dep, {
+              type: "bar",
+              data: {
+                 labels: [{% for report in calls_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    datasets: [
+                    {
+                      label: "Сумма депозитов",
+                      backgroundColor: "#DA70D6",
+                      borderColor: "#417690",
+                      data: [{% for report in calls_report %}{{ report.deposit_sum }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+                    }
+                ]
+              },
+              options: {
+                title: {
+                    display: true
+                }
+               }
+            });
+        </script>
 
     <div style="padding-left:10%;margin-top:30px;width:98%;">
         <header>
