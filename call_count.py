@@ -10,7 +10,6 @@ from mysite import credentials
 
 def get_mysql_connection():
     """ This function create connection to MySQL DB """
-    print('Connecting to MySQL database...')
     try:
         connection = connect(host=cc_db_host,
                              port=cc_db_port,
@@ -24,7 +23,6 @@ def get_mysql_connection():
 
 def get_postgres_connection():
     """ This function create connection to Postgres DB """
-    print('Connecting to Postgres database...')
     try:
         connection = psycopg2.connect(database=credentials.db_name,
                                       user=credentials.db_username,
@@ -45,6 +43,7 @@ def get_date_of_time_delta(delta):
 def create_df(call_date):
     """ This function create dataframe from DB table """
     current_date = datetime.now().strftime("%Y-%m-%d")
+    print('Connecting to MySQL database...')
     print('Creating DataFrame...')
     df = []
     try:
@@ -67,6 +66,7 @@ def create_df(call_date):
 
 def load_phone_number_from_db(db_name, date_range):
     """ This function get data from callscheck db table and return it as list of dicts """
+    print('Connecting to Postgres database...')
     cursor, connection = None, None
     current_date = datetime.now().strftime("%Y-%m-%d")
 
@@ -159,7 +159,7 @@ def main():
     print(f"Start script at {current_date}")
     cc_db = 'public.main_callscheck'
     crm_db = 'public.main_crmcheck'
-    date_range = get_date_of_time_delta(1).strftime('%Y-%m-%d')
+    date_range = get_date_of_time_delta(14).strftime('%Y-%m-%d')
     print('Date range:', date_range, 'to', datetime.now().strftime('%Y-%m-%d'))
     start_job_time = time.perf_counter()
     data = []
