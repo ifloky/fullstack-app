@@ -1086,7 +1086,7 @@ class AppealReportView(View):
             file.write('Пользователь: ' + user_name + '\n')
             file.write('----------------------------------------' + '\n')
             file.close()
-        elif datetime.time(20, 10) <= datetime.datetime.now().time() < datetime.time(24, 00):
+        elif datetime.time(20, 10) <= datetime.datetime.now().time() < datetime.time(23, 59, 59):
             shift_start = datetime.datetime.now().strftime('%Y-%m-%d 19:50:00+03')
             shift_end = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d 08:10:00+03')
             print('Время выполнения запроса:', datetime.datetime.now().strftime("%H:%M"))
