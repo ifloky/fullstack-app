@@ -1074,19 +1074,19 @@ class AppealReportView(View):
         shift_start = None
         shift_end = None
 
-        if '7:50' <= datetime.datetime.now().strftime("%H:%M") <= '20:10':
+        if 8 <= datetime.datetime.now().hour < 20:
             shift_start = datetime.datetime.now().strftime('%Y-%m-%d 07:50:00+03')
             shift_end = datetime.datetime.now().strftime('%Y-%m-%d 20:10:00+03')
             print('\n')
             print(datetime.datetime.now())
             print(shift_start, shift_end, user_name, '\n')
-        elif '20:10' <= datetime.datetime.now().strftime("%H:%M") < '24:00':
+        elif 20 <= datetime.datetime.now().hour < 24:
             shift_start = datetime.datetime.now().strftime('%Y-%m-%d 19:50:00+03')
             shift_end = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%Y-%m-%d 08:10:00+03')
             print('\n')
             print(datetime.datetime.now())
             print(shift_start, shift_end, user_name, '\n')
-        elif '0:00' <= datetime.datetime.now().strftime("%H:%M") < '7:50':
+        elif 0 <= datetime.datetime.now().hour < 8:
             shift_start = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d 19:50:00+03')
             shift_end = datetime.datetime.now().strftime('%Y-%m-%d 08:10:00+03')
             print('\n')
