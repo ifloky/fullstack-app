@@ -806,7 +806,7 @@ class CRMView(ListView):
             return queryset
         elif display_type == '3':
             queryset = CRMCheck.objects.all().order_by('-id'). \
-                filter(Q(call_date=None) & ~Q(call_result="есть фото")
+                filter(Q(call_date=None) & ~Q(call_result="есть депозит")
                        & ~Q(call_result="номер не РБ") & ~Q(user_name=None)
                        & Q(upload_date_short=filter_date))
             return queryset
