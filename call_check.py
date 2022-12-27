@@ -136,7 +136,7 @@ def update_call_date_in_db(phone_number, call_date_time, db_name):
         cursor = connection.cursor()
         cursor.execute(sql_query)
         connection.commit()
-        print('Call Date Updated to client number:', phone_number)
+        # print('Call Date Updated to client number:', phone_number)
 
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgresSQL", error)
