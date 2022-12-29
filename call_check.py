@@ -56,6 +56,12 @@ def load_phone_number_from_db(db_name):
                 WHERE call_date is null AND call_result != 'есть фото' AND call_result != 'номер не РБ' 
                 ''')
 
+    sql_query_crm = (f'''
+                SELECT client_phone
+                FROM {db_name}
+                WHERE call_date is null AND call_result != 'есть депозит' AND call_result != 'номер не РБ' 
+                ''')
+
     try:
         connection = psycopg2.connect(database=credentials.db_name,
                                       user=credentials.db_username,
@@ -65,7 +71,10 @@ def load_phone_number_from_db(db_name):
                                       )
 
         cursor = connection.cursor()
-        cursor.execute(sql_query)
+        if db_name == 'public.main_callscheck':
+            cursor.execute(sql_query)
+        else:
+            cursor.execute(sql_query_crm)
 
         phone_list = cursor.fetchall()
 
@@ -102,6 +111,11 @@ def count_calls_in_df(df, phone_number):
 
 
 def check_call(phone_number, df, db_name):
+    if db_name == 'public.main_callscheck':
+        database_name = 'Call Centre'
+    else:
+        database_name = 'CRM'
+
     for index, row in df.iterrows():
         if row['client'] == phone_number:
             check = row['client'], row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
@@ -113,7 +127,7 @@ def check_call(phone_number, df, db_name):
             update_call_date_in_db(client_number, call_date_time, db_name)
             # print(f'{client_number}, {call_date_time}\nВсего звонков по номеру {client_number}: {calls}')
             return check, calls
-    # print(str(phone_number) + ', ' + 'No Calls')
+    print(str(phone_number) + ', ' + 'No Calls' + ', From: ' + database_name)
     return str(phone_number)+', ' + 'No Calls'
 
 
