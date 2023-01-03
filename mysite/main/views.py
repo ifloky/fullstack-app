@@ -717,9 +717,9 @@ class CallsView(ListView):
         last_month = str(now_date.month) + '-' + str(now_date.year)
 
         if month_id is None and year_id is None:
-            filter_date = None
+            filter_date = datetime.datetime.now().strftime('%m''-''%Y')
         else:
-            filter_date = month_id + '-' + year_id
+            filter_date = str(month_id) + '-' + str(year_id)
         # print(filter_date)
         display_type = self.request.GET.get('display_type')
         phone_number = self.request.GET.get('phone_number')
@@ -785,7 +785,7 @@ class CRMView(ListView):
         month_id = self.request.GET.get('month')
         year_id = self.request.GET.get('year')
         if month_id is None and year_id is None:
-            filter_date = None
+            filter_date = datetime.datetime.now().strftime('%m''-''%Y')
         else:
             filter_date = month_id + '-' + year_id
         # print(filter_date)
@@ -1458,7 +1458,8 @@ class CCReportView(View):
 
     @staticmethod
     def create_personal_cc_report(month, year):
-        filter_date = str(month) + '-' + str(year)
+        # filter_date = str(month) + '-' + str(year)
+        filter_date = datetime.datetime.now().strftime('%m''-''%Y')
 
         # Get all users
         get_uniq_users = CallsCheck.objects \
@@ -1521,7 +1522,8 @@ class CCReportView(View):
 
     @staticmethod
     def create_personal_cc_report_sum(month, year):
-        filter_date = str(month) + '-' + str(year)
+        # filter_date = str(month) + '-' + str(year)
+        filter_date = datetime.datetime.now().strftime('%m''-''%Y')
         data = []
 
         calls_count_cc = CallsCheck.objects \
@@ -1546,6 +1548,11 @@ class CCReportView(View):
             .filter(~Q(call_date=None)) \
             .aggregate(Sum('calls_count'))['calls_count__sum']
 
+        if calls_sum_cc is None:
+            calls_sum_cc = 0
+        if calls_sum_crm is None:
+            calls_sum_crm = 0
+        print(calls_sum_cc, calls_sum_crm)
         calls_sum = calls_sum_cc + calls_sum_crm
 
         no_answer_calls = CallsCheck.objects \
@@ -1608,7 +1615,8 @@ class CCReportView(View):
 
     @staticmethod
     def create_personal_appeal_report(month, year):
-        filter_date = str(month) + '-' + str(year)
+        # filter_date = str(month) + '-' + str(year)
+        filter_date = datetime.datetime.now().strftime('%m''-''%Y')
 
         # Get all users
         get_uniq_users = AppealReport.objects \
@@ -1660,7 +1668,8 @@ class CCReportView(View):
 
     @staticmethod
     def create_appeal_report_sum(month, year):
-        filter_date = str(month) + '-' + str(year)
+        # filter_date = str(month) + '-' + str(year)
+        filter_date = datetime.datetime.now().strftime('%m''-''%Y')
         data = []
 
         appeal_incoming_calls_count = AppealReport.objects \
