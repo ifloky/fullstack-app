@@ -1458,8 +1458,9 @@ class CCReportView(View):
 
     @staticmethod
     def create_personal_cc_report(month, year):
-        # filter_date = str(month) + '-' + str(year)
-        filter_date = datetime.datetime.now().strftime('%m''-''%Y')
+        filter_date = str(month) + '-' + str(year)
+        # filter_date = datetime.datetime.now().strftime('%m''-''%Y')
+        print(filter_date)
 
         # Get all users
         get_uniq_users = CallsCheck.objects \
@@ -1522,8 +1523,8 @@ class CCReportView(View):
 
     @staticmethod
     def create_personal_cc_report_sum(month, year):
-        # filter_date = str(month) + '-' + str(year)
-        filter_date = datetime.datetime.now().strftime('%m''-''%Y')
+        filter_date = str(month) + '-' + str(year)
+        # filter_date = datetime.datetime.now().strftime('%m''-''%Y')
         data = []
 
         calls_count_cc = CallsCheck.objects \
@@ -1552,7 +1553,7 @@ class CCReportView(View):
             calls_sum_cc = 0
         if calls_sum_crm is None:
             calls_sum_crm = 0
-        print(calls_sum_cc, calls_sum_crm)
+        # print(calls_sum_cc, calls_sum_crm)
         calls_sum = calls_sum_cc + calls_sum_crm
 
         no_answer_calls = CallsCheck.objects \
@@ -1615,8 +1616,8 @@ class CCReportView(View):
 
     @staticmethod
     def create_personal_appeal_report(month, year):
-        # filter_date = str(month) + '-' + str(year)
-        filter_date = datetime.datetime.now().strftime('%m''-''%Y')
+        filter_date = str(month) + '-' + str(year)
+        # filter_date = datetime.datetime.now().strftime('%m''-''%Y')
 
         # Get all users
         get_uniq_users = AppealReport.objects \
@@ -1668,8 +1669,8 @@ class CCReportView(View):
 
     @staticmethod
     def create_appeal_report_sum(month, year):
-        # filter_date = str(month) + '-' + str(year)
-        filter_date = datetime.datetime.now().strftime('%m''-''%Y')
+        filter_date = str(month) + '-' + str(year)
+        # filter_date = datetime.datetime.now().strftime('%m''-''%Y')
         data = []
 
         appeal_incoming_calls_count = AppealReport.objects \
