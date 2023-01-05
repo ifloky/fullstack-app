@@ -1459,8 +1459,7 @@ class CCReportView(View):
     @staticmethod
     def create_personal_cc_report(month, year):
         filter_date = str(month) + '-' + str(year)
-        # filter_date = datetime.datetime.now().strftime('%m''-''%Y')
-        print(filter_date)
+        user_personal_cc_report = []
 
         # Get all users
         get_uniq_users = CallsCheck.objects \
@@ -1471,8 +1470,7 @@ class CCReportView(View):
             .values('user_name') \
             .distinct()
 
-        user_personal_cc_report = []
-
+        # Get all users with calls
         for user in get_uniq_users:
             user_name = user['user_name']
 
@@ -1524,7 +1522,6 @@ class CCReportView(View):
     @staticmethod
     def create_personal_cc_report_sum(month, year):
         filter_date = str(month) + '-' + str(year)
-        # filter_date = datetime.datetime.now().strftime('%m''-''%Y')
         data = []
 
         calls_count_cc = CallsCheck.objects \
@@ -1553,7 +1550,6 @@ class CCReportView(View):
             calls_sum_cc = 0
         if calls_sum_crm is None:
             calls_sum_crm = 0
-        # print(calls_sum_cc, calls_sum_crm)
         calls_sum = calls_sum_cc + calls_sum_crm
 
         no_answer_calls = CallsCheck.objects \
@@ -1617,7 +1613,7 @@ class CCReportView(View):
     @staticmethod
     def create_personal_appeal_report(month, year):
         filter_date = str(month) + '-' + str(year)
-        # filter_date = datetime.datetime.now().strftime('%m''-''%Y')
+        user_personal_appeal_report = []
 
         # Get all users
         get_uniq_users = AppealReport.objects \
@@ -1627,8 +1623,6 @@ class CCReportView(View):
             .filter(~Q(user_name=None)) \
             .values('user_name') \
             .distinct()
-
-        user_personal_appeal_report = []
 
         for user in get_uniq_users:
             user_name = user['user_name']
@@ -1670,7 +1664,6 @@ class CCReportView(View):
     @staticmethod
     def create_appeal_report_sum(month, year):
         filter_date = str(month) + '-' + str(year)
-        # filter_date = datetime.datetime.now().strftime('%m''-''%Y')
         data = []
 
         appeal_incoming_calls_count = AppealReport.objects \
@@ -1683,7 +1676,7 @@ class CCReportView(View):
             .filter(Q(appeal_type='Звонок исходящий')) \
             .count()
 
-        ''' this params chats count by type: telegram, vatsap, chat '''
+        ''' this params chats count by type: Telegram, WhatsApp, Chat '''
         appeal_chats_count = AppealReport.objects \
             .filter(appeal_date_short__icontains=filter_date) \
             .filter(Q(appeal_type='Чат') | Q(appeal_type='Телеграмм') | Q(appeal_type='Ватсап')) \
