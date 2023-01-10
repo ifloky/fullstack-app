@@ -43,7 +43,7 @@ def get_date_of_time_delta(delta):
 
 def create_df(data_range):
     """ This function create dataframe from DB table """
-    print('Connecting to MySQL database...')
+    print('Connecting to Deposit database...')
     print('Creating DataFrame...')
     cursor, connection = None, None
     df = []
