@@ -1513,12 +1513,20 @@ class CCReportView(View):
                 .filter(upload_date_short__icontains=filter_date) \
                 .filter(user_name=user_name) \
                 .filter(~Q(first_deposit_date=None)) \
+                .filter(~Q(call_result='есть депозит')) \
+                .filter(~Q(call_result='чужой номер')) \
+                .filter(~Q(call_result='номер не РБ')) \
+                .filter(~Q(call_result='нет ответа')) \
                 .count()
 
             deposit_sum = CRMCheck.objects \
                 .filter(upload_date_short__icontains=filter_date) \
                 .filter(user_name=user_name) \
                 .filter(~Q(first_deposit_amount=None)) \
+                .filter(~Q(call_result='есть депозит')) \
+                .filter(~Q(call_result='чужой номер')) \
+                .filter(~Q(call_result='номер не РБ')) \
+                .filter(~Q(call_result='нет ответа')) \
                 .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
 
             if deposit_sum is None:
@@ -1604,11 +1612,19 @@ class CCReportView(View):
         deposit_count = CRMCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
             .filter(~Q(first_deposit_date=None)) \
+            .filter(~Q(call_result='есть депозит')) \
+            .filter(~Q(call_result='чужой номер')) \
+            .filter(~Q(call_result='номер не РБ')) \
+            .filter(~Q(call_result='нет ответа')) \
             .count()
 
         deposit_sum = CRMCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
             .filter(~Q(first_deposit_amount=None)) \
+            .filter(~Q(call_result='есть депозит')) \
+            .filter(~Q(call_result='чужой номер')) \
+            .filter(~Q(call_result='номер не РБ')) \
+            .filter(~Q(call_result='нет ответа')) \
             .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
 
         data.append({
