@@ -195,6 +195,8 @@ def main():
     print("Проверено и сохранено:", len(data), "номеров")
     print("Затрачено времени:", str(timedelta(seconds=working_time)))
     print(f'Время выполнения: {time.perf_counter() - start_job_time:0.4f} seconds')
+    from memory_profiler import memory_usage
+    print("Затрачено памяти:", (memory_usage())[-1], "Mb")
     print('\n')
 
 
