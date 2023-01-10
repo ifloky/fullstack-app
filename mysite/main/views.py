@@ -1044,12 +1044,23 @@ def view_log_file(request):
         print(e)
         call_count_file = 'Файл не найден'
 
+    try:
+        with open('./first_dep.log', 'r', encoding='UTF-8') as f:
+            first_dep_file = f.read().split('\n')
+    except FileNotFoundError:
+        with open('/home/pgadmin/reports_site/first_dep.log', 'r', encoding='UTF-8') as f:
+            first_dep_file = f.read().split('\n')
+    except Exception as e:
+        print(e)
+        first_dep_file = 'Файл не найден'
+
     data = {
         'site_adm': site_adm_users,
         'log_file': file,
         'skks_file': skks_file,
         'site_file': site_file,
         'call_count_file': call_count_file,
+        'first_dep_file': first_dep_file,
     }
     return render(request, "main/log_file.html", data)
 
@@ -1063,13 +1074,7 @@ class AppealReportView(View):
     success_url = reverse_lazy('main:appeal')
 
     def get(self, request):
-
-        site_adm_users = User.objects.filter(groups__name='site_adm')
-        support_heads_users = User.objects.filter(groups__name='support_heads')
-        support_users = User.objects.filter(groups__name='support')
-
         user_name = self.request.user.first_name + ' ' + self.request.user.last_name
-        # user_name = 'Екатерина Данилюк'
 
         shift_start = None
         shift_end = None
@@ -1144,9 +1149,9 @@ class AppealReportView(View):
         chats_count = chat_count + telegram_count + whatsapp_count
 
         data = {
-            'site_adm': site_adm_users,
-            'support_heads': support_heads_users,
-            'support': support_users,
+            'site_adm': User.objects.filter(groups__name='site_adm'),
+            'support_heads': User.objects.filter(groups__name='support_heads'),
+            'support': User.objects.filter(groups__name='support'),
             'superuser': User.objects.filter(is_superuser=True),
             'calls_in_count': calls_in_count,
             'calls_out_count': calls_out_count,
