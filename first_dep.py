@@ -156,7 +156,7 @@ def main():
     db_name = 'public.main_crmcheck'
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"Start script at {current_date}")
-    date_range = get_date_of_time_delta(72).strftime('%Y-%m-%d')
+    date_range = get_date_of_time_delta(32).strftime('%Y-%m-%d')
     print('Date range:', date_range, 'to', datetime.now().strftime('%Y-%m-%d'))
     start_job_time = time.perf_counter()
 
