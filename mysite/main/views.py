@@ -1005,50 +1005,50 @@ def view_log_file(request):
     site_adm_users = User.objects.filter(groups__name='site_adm')
 
     try:
-        with open('./call_check.log', 'r', encoding='UTF-8') as f:
+        with open('./logs/call_check.log', 'r', encoding='UTF-8') as f:
             file = f.read().split('\n')
     except FileNotFoundError:
-        with open('/home/pgadmin/reports_site/call_check.log', 'r', encoding='UTF-8') as f:
+        with open('/home/pgadmin/reports_site/logs/call_check.log', 'r', encoding='UTF-8') as f:
             file = f.read().split('\n')
     except Exception as e:
         print(e)
         file = 'Файл не найден'
 
     try:
-        with open('./skks_check.log', 'r', encoding='UTF-8') as f:
+        with open('./logs/skks_check.log', 'r', encoding='UTF-8') as f:
             skks_file = f.read().split('\n')
     except FileNotFoundError:
-        with open('/home/pgadmin/reports_site/skks_check.log', 'r', encoding='UTF-8') as f:
+        with open('/home/pgadmin/reports_site/logs/skks_check.log', 'r', encoding='UTF-8') as f:
             skks_file = f.read().split('\n')
     except Exception as e:
         print(e)
         skks_file = 'Файл не найден'
 
     try:
-        with open('./site_check.log', 'r', encoding='UTF-8') as f:
+        with open('./logs/site_check.log', 'r', encoding='UTF-8') as f:
             site_file = f.read().split('\n')
     except FileNotFoundError:
-        with open('/home/pgadmin/reports_site/site_check.log', 'r', encoding='UTF-8') as f:
+        with open('/home/pgadmin/reports_site/logs/site_check.log', 'r', encoding='UTF-8') as f:
             site_file = f.read().split('\n')
     except Exception as e:
         print(e)
         site_file = 'Файл не найден'
 
     try:
-        with open('./call_count.log', 'r', encoding='UTF-8') as f:
+        with open('./logs/call_count.log', 'r', encoding='UTF-8') as f:
             call_count_file = f.read().split('\n')
     except FileNotFoundError:
-        with open('/home/pgadmin/reports_site/call_count.log', 'r', encoding='UTF-8') as f:
+        with open('/home/pgadmin/reports_site/logs/call_count.log', 'r', encoding='UTF-8') as f:
             call_count_file = f.read().split('\n')
     except Exception as e:
         print(e)
         call_count_file = 'Файл не найден'
 
     try:
-        with open('./first_dep.log', 'r', encoding='UTF-8') as f:
+        with open('./logs/first_dep.log', 'r', encoding='UTF-8') as f:
             first_dep_file = f.read().split('\n')
     except FileNotFoundError:
-        with open('/home/pgadmin/reports_site/first_dep.log', 'r', encoding='UTF-8') as f:
+        with open('/home/pgadmin/reports_site/logs/first_dep.log', 'r', encoding='UTF-8') as f:
             first_dep_file = f.read().split('\n')
     except Exception as e:
         print(e)
