@@ -1481,9 +1481,7 @@ class CCReportView(View):
         # Get all users
         get_uniq_users = CallsCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
-            .filter(~Q(user_name='Tamara Rozganova')) \
-            .filter(~Q(user_name='Величко Оксана')) \
-            .filter(~Q(user_name=None)) \
+            .filter(~Q(user_name='Tamara Rozganova') & ~Q(user_name='Величко Оксана') & ~Q(user_name=None)) \
             .values('user_name') \
             .distinct()
 
@@ -1513,20 +1511,16 @@ class CCReportView(View):
                 .filter(upload_date_short__icontains=filter_date) \
                 .filter(user_name=user_name) \
                 .filter(~Q(first_deposit_date=None)) \
-                .filter(~Q(call_result='есть депозит')) \
-                .filter(~Q(call_result='чужой номер')) \
-                .filter(~Q(call_result='номер не РБ')) \
-                .filter(~Q(call_result='нет ответа')) \
+                .filter(~Q(call_result='есть депозит') & ~Q(call_result='чужой номер')
+                        & ~Q(call_result='номер не РБ') & ~Q(call_result='нет ответа')) \
                 .count()
 
             deposit_sum = CRMCheck.objects \
                 .filter(upload_date_short__icontains=filter_date) \
                 .filter(user_name=user_name) \
                 .filter(~Q(first_deposit_amount=None)) \
-                .filter(~Q(call_result='есть депозит')) \
-                .filter(~Q(call_result='чужой номер')) \
-                .filter(~Q(call_result='номер не РБ')) \
-                .filter(~Q(call_result='нет ответа')) \
+                .filter(~Q(call_result='есть депозит') & ~Q(call_result='чужой номер')
+                        & ~Q(call_result='номер не РБ') & ~Q(call_result='нет ответа')) \
                 .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
 
             if deposit_sum is None:
@@ -1612,19 +1606,15 @@ class CCReportView(View):
         deposit_count = CRMCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
             .filter(~Q(first_deposit_date=None)) \
-            .filter(~Q(call_result='есть депозит')) \
-            .filter(~Q(call_result='чужой номер')) \
-            .filter(~Q(call_result='номер не РБ')) \
-            .filter(~Q(call_result='нет ответа')) \
+            .filter(~Q(call_result='есть депозит') & ~Q(call_result='чужой номер')
+                    & ~Q(call_result='номер не РБ') & ~Q(call_result='нет ответа')) \
             .count()
 
         deposit_sum = CRMCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
             .filter(~Q(first_deposit_amount=None)) \
-            .filter(~Q(call_result='есть депозит')) \
-            .filter(~Q(call_result='чужой номер')) \
-            .filter(~Q(call_result='номер не РБ')) \
-            .filter(~Q(call_result='нет ответа')) \
+            .filter(~Q(call_result='есть депозит') & ~Q(call_result='чужой номер')
+                    & ~Q(call_result='номер не РБ') & ~Q(call_result='нет ответа')) \
             .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
 
         data.append({
@@ -1651,9 +1641,7 @@ class CCReportView(View):
         # Get all users
         get_uniq_users = AppealReport.objects \
             .filter(appeal_date_short__icontains=filter_date) \
-            .filter(~Q(user_name='Tamara Rozganova')) \
-            .filter(~Q(user_name='Величко Оксана')) \
-            .filter(~Q(user_name=None)) \
+            .filter(~Q(user_name='Tamara Rozganova') & ~Q(user_name='Величко Оксана') & ~Q(user_name=None)) \
             .values('user_name') \
             .distinct()
 
