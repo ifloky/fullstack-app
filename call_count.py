@@ -1,5 +1,7 @@
+# pip install polars-lts-cpu
+
 import psycopg2
-import pandas as pd
+import polars as pl
 import time
 
 from credentials import cc_db_host, cc_db_port, cc_db_name, cc_db_username, cc_db_password
@@ -56,7 +58,7 @@ def create_df(call_date):
                 ''')
         cursor.execute(query)
         data = cursor.fetchall()
-        df = pd.DataFrame(data, columns=[c[0] for c in cursor.description])
+        df = pl.DataFrame(data, columns=[c[0] for c in cursor.description])
         cursor.close()
         connection.close()
     except Error as e:
@@ -114,9 +116,20 @@ def load_phone_number_from_db(db_name, date_range):
 def count_calls_in_df(df, phone_number):
     count = 0
     for index, row in df.iterrows():
-        if row['client'] == phone_number:
+        if row == phone_number:
             count += 1
+    # print(str(phone_number) + ', ' + str(count))
     return count
+
+
+def check_calls_count(phone_number, df, db_name):
+    for index, row in df.iterrows():
+        if row == phone_number:
+            count_calls = count_calls_in_df(df, phone_number)
+            update_call_date_in_db(phone_number, db_name, count_calls)
+            return count_calls
+    print(str(phone_number) + ', ' + 'No Calls')
+    return str(phone_number)+', ' + 'No Calls'
 
 
 def update_call_date_in_db(phone_number, db_name, calls):
@@ -144,16 +157,6 @@ def update_call_date_in_db(phone_number, db_name, calls):
             connection.close()
 
 
-def check_calls_count(phone_number, df, db_name):
-    for index, row in df.iterrows():
-        if row['client'] == phone_number:
-            count_calls = count_calls_in_df(df, phone_number)
-            update_call_date_in_db(phone_number, db_name, count_calls)
-            return count_calls
-    print(str(phone_number) + ', ' + 'No Calls')
-    return str(phone_number)+', ' + 'No Calls'
-
-
 def main():
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"Start script at {current_date}")
@@ -178,7 +181,7 @@ def main():
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
 
-    print('Задание выполненно в:', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print('Задание выполнено в:', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print('Загружено из базы АТС:', str(len(df)), 'записей')
     print('Загружено из базы Отчетов:', len(phone_numbers), 'записей')
     print("Проверено и сохранено:", len(data), "номеров")
