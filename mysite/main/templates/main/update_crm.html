@@ -36,6 +36,7 @@
     <div style="padding:5px;margin-top:30px;">
 
         <form action="" method="post">
+            <input type="hidden" name="return_to"  value="{{ request.META.HTTP_REFERER }}">
             {% csrf_token %}<p class="flex-wrap">
             {{ form.as_p }}<p class="flex-wrap">
             <button class="btn btn-success" type="submit">Сохранить</button>

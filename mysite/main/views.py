@@ -838,7 +838,10 @@ class UpdateCallView(UpdateView):
     model = CallsCheck
     form_class = CallsCheckForm
     template_name = 'main/update_calls.html'
-    success_url = reverse_lazy('main:calls_rep')
+
+    def form_valid(self, form):
+        form.save()
+        return redirect(self.request.POST['return_to'])
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -854,7 +857,10 @@ class UpdateCRMView(UpdateView):
     model = CRMCheck
     form_class = CRMCheckForm
     template_name = 'main/update_crm.html'
-    success_url = reverse_lazy('main:crm_rep')
+
+    def form_valid(self, form):
+        form.save()
+        return redirect(self.request.POST['return_to'])
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
