@@ -80,7 +80,7 @@ class CallsCheck(models.Model):
     verified_date = models.CharField(max_length=10, blank=True, null=True)
     user_name = models.CharField(max_length=200, blank=True, null=True)
     upload_date = models.DateTimeField(auto_now_add=True)
-    upload_date_short = models.CharField(max_length=7, default=datetime.date.today().strftime("%m-%Y"))
+    upload_date_short = models.CharField(max_length=7, default=datetime.datetime.now().strftime("%m-%Y"))
     calls_count = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
@@ -102,7 +102,7 @@ class CRMCheck(models.Model):
     first_deposit_amount = models.IntegerField(blank=True, null=True)
     user_name = models.CharField(max_length=200, blank=True, null=True)
     upload_date = models.DateTimeField(auto_now_add=True)
-    upload_date_short = models.CharField(max_length=7, default=datetime.date.today().strftime("%m-%Y"))
+    upload_date_short = models.CharField(max_length=7, default=datetime.datetime.now().strftime("%m-%Y"))
     calls_count = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
@@ -119,7 +119,7 @@ class AppealReport(models.Model):
     appeal_result = models.CharField(max_length=200)
     appeal_date = models.DateTimeField(default=timezone.localtime)
     user_name = models.CharField(max_length=200)
-    appeal_date_short = models.CharField(max_length=7, default=datetime.date.today().strftime("%m-%Y"))
+    appeal_date_short = models.CharField(max_length=7, default=datetime.datetime.now().strftime("%m-%Y"))
 
     def __str__(self):
         return self.appeal_type
