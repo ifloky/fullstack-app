@@ -162,7 +162,6 @@ def main():
     start_job_time = time.perf_counter()
 
     df = create_df(date_range)
-    print(df)
     print('DataFrame created successfully...')
     clients = load_client_id_from_db(date_range)
     print('Clients loaded successfully...')
