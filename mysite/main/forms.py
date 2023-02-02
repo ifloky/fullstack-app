@@ -173,7 +173,7 @@ class CallsCheckForm(ModelForm):
                            ('нет ответа', 'нет ответа'), ('номер не РБ', 'номер не РБ'), ('планирует', 'планирует'),
                            ('подумает', 'подумает'), ('чужой номер', 'чужой номер'), ]
 
-        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date', 'verified_date', 'user_name']
+        fields = ['client_id', 'client_name', 'client_phone', 'call_result', 'call_date', 'user_name']
 
         widgets = {
             'client_id':
