@@ -1629,15 +1629,13 @@ class CCReportView(View):
         deposit_count = CRMCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
             .filter(~Q(first_deposit_date=None)) \
-            .filter(~Q(call_result='есть депозит') & ~Q(call_result='чужой номер')
-                    & ~Q(call_result='номер не РБ') & ~Q(call_result='нет ответа')) \
+            .filter(Q(call_result='не будет') | Q(call_result='подумает') | Q(call_result='планирует')) \
             .count()
 
         deposit_sum = CRMCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
             .filter(~Q(first_deposit_amount=None)) \
-            .filter(~Q(call_result='есть депозит') & ~Q(call_result='чужой номер')
-                    & ~Q(call_result='номер не РБ') & ~Q(call_result='нет ответа')) \
+            .filter(Q(call_result='не будет') | Q(call_result='подумает') | Q(call_result='планирует')) \
             .aggregate(Sum('first_deposit_amount'))['first_deposit_amount__sum']
 
         data.append({
