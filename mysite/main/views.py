@@ -1607,6 +1607,8 @@ class CCReportView(View):
         verification = CallsCheck.objects \
             .filter(upload_date_short__icontains=filter_date) \
             .filter(~Q(verified_date=None)) \
+            .filter(~Q(call_result='есть депозит') & ~Q(call_result='чужой номер')
+                    & ~Q(call_result='номер не РБ') & ~Q(call_result='нет ответа')) \
             .count()
 
         deposit_count = CRMCheck.objects \

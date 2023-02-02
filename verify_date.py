@@ -119,11 +119,10 @@ def get_verified_date_in_df(df, client):
 
 def update_call_date_in_db(client, db_name, verified_date,):
     cursor, connection = None, None
-    date_time_obj = datetime.strptime(verified_date, '%Y-%m-%d')
 
     sql_query = (f'''
                 UPDATE {db_name}
-                SET verified_date = {date_time_obj.date()}
+                SET verified_date = '{verified_date}'
                 WHERE client_id = '{client}'
                 ''')
 
