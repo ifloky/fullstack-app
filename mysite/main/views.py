@@ -1060,6 +1060,16 @@ def view_log_file(request):
         print(e)
         first_dep_file = 'Файл не найден'
 
+    try:
+        with open('./logs/verify_date.log', 'r', encoding='UTF-8') as f:
+            verify_date_file = f.read().split('\n')
+    except FileNotFoundError:
+        with open('/home/pgadmin/reports_site/logs/verify_date.log', 'r', encoding='UTF-8') as f:
+            verify_date_file = f.read().split('\n')
+    except Exception as e:
+        print(e)
+        verify_date_file = 'Файл не найден'
+
     data = {
         'site_adm': site_adm_users,
         'log_file': file,
@@ -1067,6 +1077,7 @@ def view_log_file(request):
         'site_file': site_file,
         'call_count_file': call_count_file,
         'first_dep_file': first_dep_file,
+        'verify_date_file': verify_date_file,
     }
     return render(request, "main/log_file.html", data)
 
