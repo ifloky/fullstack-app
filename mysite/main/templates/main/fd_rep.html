@@ -38,7 +38,8 @@
       <tbody>
         {% for report in first_deposit %}
             <tr>
-                {% for x in report %} <td align="center">{{ x }}</td>
+                {% for x in report %}
+                    <td align="center">{{ x }}</td>
                 {% endfor %}
             </tr>
         {% endfor %}
@@ -51,5 +52,21 @@
         {% include 'main/includes/non_authorised.html' %}
 
   {% endif %}
+
+<script type="text/javascript">
+
+    let td = document.querySelectorAll('tr td:nth-child(1)'); //получаем первый td
+    console.log( td);
+    for (var i = 0; i < td.length; i++) {
+    let tdIn = td[i].innerHTML //получаем что внутри td
+    const linkA = document.createElement('a'); //создаём ссылку
+    linkA.innerHTML = tdIn; //вписываем текст по которому кликаем на ссылке
+    linkA.href = 'https://backoffice.betconstruct.com/#/customers/detail/'+tdIn; // вписываем саму ссылку куда переходим
+    linkA.target = '_blank'; // открываем ссылку в новой вкладке
+    td[i].innerHTML = ''; // опустошаем то что было в td
+    td[i].prepend(linkA); // вставляем линк в td
+    }
+
+</script>
 
   {% endblock %}
