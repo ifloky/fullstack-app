@@ -1770,3 +1770,53 @@ class CCReportView(View):
         }
 
         return render(request, self.template_name, data)
+
+
+def first_deposit_amount_over_1000(request):
+    """" This function return all users with first deposit amount over 1000 """
+    site_adm_users = User.objects.filter(groups__name='site_adm')
+    heads = User.objects.filter(groups__name='heads')
+    risks_users = User.objects.filter(groups__name='risks')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+    cursor, connection = None, None
+
+    first_deposit = []
+
+    sql_query = (f'''
+                SELECT client_id, is_verified, is_locked, amount, transaction_date, verification_date
+                    FROM public.v_client_deposit
+                    WHERE amount > 1000
+                    ORDER BY verification_date DESC
+                ''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.fd_db_name,
+                                      user=credentials.fd_db_username,
+                                      password=credentials.fd_db_password,
+                                      host=credentials.fd_db_host,
+                                      port=credentials.fd_db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        first_deposit = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    data = {
+        'site_adm': site_adm_users,
+        'heads': heads,
+        'risks': risks_users,
+        'risk_heads': risk_heads_users,
+        'first_deposit': first_deposit,
+    }
+
+    return render(request, "main/fd_rep.html", data)

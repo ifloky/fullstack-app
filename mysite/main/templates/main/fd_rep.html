@@ -1,0 +1,55 @@
+{% extends 'main/header.html' %}
+
+
+  {% block content %}
+
+  <style xmlns="http://www.w3.org/1999/html">
+    form {
+        width: 260px;
+        margin-top: 2%;
+    }
+
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:200px;margin-right:auto;}
+    .flex-wrap button {width:250px;margin-left:auto;}
+    .flex-wrap input {width:calc(100% - 250px);}
+    .flex-wrap select {width:calc(100% - 50px);}
+
+    form {display:flex;width:100%;}
+    select {margin-right:auto;width:30%;}
+    input {width:30%;}
+    th {vertical-align: middle !important;}
+    </style>
+
+  {% if user.is_authenticated %}
+
+    <div style="padding:20px;padding-left:10%;margin-top:30px;width:98%;">
+    <table class="table table-striped">
+      <thead>
+        <tr align="center">
+            <th scope="col" width="200">ID Клиента</th>
+            <th scope="col">Отметка о верификации</th>
+            <th scope="col">Отметка о блокировке</th>
+            <th scope="col">Сумма первого депозита</th>
+            <th scope="col">Дата первого депозита</th>
+            <th scope="col">Дата верификации</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in first_deposit %}
+            <tr>
+                {% for x in report %} <td align="center">{{ x }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+
+  {% else %}
+
+        {% include 'main/includes/non_authorised.html' %}
+
+  {% endif %}
+
+  {% endblock %}
