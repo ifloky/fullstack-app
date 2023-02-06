@@ -698,17 +698,6 @@ class CallsView(ListView):
     context_object_name = 'list_calls_reports'
     paginate_by = 30
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = self.form_class
-        context['site_adm'] = User.objects.filter(groups__name='site_adm')
-        context['superuser'] = User.objects.filter(is_superuser=True)
-        context['support'] = User.objects.filter(groups__name='support')
-        context['support_heads'] = User.objects.filter(groups__name='support_heads')
-        context['months'] = MonthsForm()
-        context['years'] = YearsForm()
-        return context
-
     def get_queryset(self):
         month_id = self.request.GET.get('month')
         year_id = self.request.GET.get('year')
@@ -760,6 +749,17 @@ class CallsView(ListView):
                                                                        & Q(verified_date=None)
                                                                        & Q(upload_date_short=last_month))
             return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['support'] = User.objects.filter(groups__name='support')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        context['months'] = MonthsForm()
+        context['years'] = YearsForm()
+        return context
 
 
 class CRMView(ListView):
