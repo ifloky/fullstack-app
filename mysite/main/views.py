@@ -1776,7 +1776,6 @@ def first_deposit_amount_over_1000(request):
     """" This function return all users with first deposit amount over 1000 """
     site_adm_users = User.objects.filter(groups__name='site_adm')
     heads = User.objects.filter(groups__name='heads')
-    risks_users = User.objects.filter(groups__name='risks')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
     cursor, connection = None, None
@@ -1814,7 +1813,6 @@ def first_deposit_amount_over_1000(request):
     data = {
         'site_adm': site_adm_users,
         'heads': heads,
-        'risks': risks_users,
         'risk_heads': risk_heads_users,
         'first_deposit': first_deposit,
     }

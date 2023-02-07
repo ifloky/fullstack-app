@@ -133,3 +133,16 @@ STATIC_ROOT = BASE_DIR / 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# LOGGING = {
+#     'version': 1,
+#     'handlers': {
+#         'console': {'class': 'logging.StreamHandler'},
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#         },
+#     },
+# }
