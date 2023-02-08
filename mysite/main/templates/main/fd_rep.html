@@ -5,25 +5,104 @@
 
   <style xmlns="http://www.w3.org/1999/html">
     form {
-        width: 260px;
-        margin-top: 2%;
+        display: flex;
+        align-items: center;
+        justify-content: right;
     }
 
     .flex-wrap {display:flex;}
-    .flex-wrap label {width:200px;margin-right:auto;}
-    .flex-wrap button {width:250px;margin-left:auto;}
-    .flex-wrap input {width:calc(100% - 250px);}
-    .flex-wrap select {width:calc(100% - 50px);}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
 
-    form {display:flex;width:100%;}
-    select {margin-right:auto;width:30%;}
-    input {width:30%;}
-    th {vertical-align: middle !important;}
+    input {
+        width: 20px;
+        padding: 8px 20px;
+        margin: 8px 0;
+        margin-right: 20px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+        height: 60px;
+        border-radius: 10px;
+    }
+
+    button {
+        width: 120px;
+        padding: 6px 30px;
+        margin: 8px 0;
+    }
+
+    th {
+        vertical-align:
+        middle !important;
+        text-align: center;
+    }
+
+    td {
+        vertical-align:
+        middle !important;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    label.filter {
+        margin-right: 10px;
+        display:flex;
+        align-items: center;
+        height: 60px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 0 30px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    label.filter:hover {
+        background: #d9d9d9;
+    }
+
+    select {
+        height: 60px;
+        border-radius: 10px !important;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    select:hover {
+        background: #d9d9d9;
+    }
+
+    button {
+        height: 60px;
+        border-radius: 10px !important;
+    }
+
+    button:hover {
+        background: #d9d9d9;
+    }
+
+    table {
+    counter-reset: rowNumber;
+    }
+
+    table .table_date {
+        counter-increment: rowNumber;
+    }
+
+    table .table_date th:first-child::before {
+        content: counter(rowNumber);
+        min-width: 1em;
+        margin-right: 1.5em;
+    }
     </style>
 
   {% if user.is_authenticated %}
 
-    <div style="padding:20px;padding-left:10%;margin-top:30px;width:98%;">
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
     <table class="table table-striped">
       <thead>
         <tr align="center">
@@ -39,7 +118,7 @@
         {% for report in first_deposit %}
             <tr>
                 {% for x in report %}
-                    <td align="center">{{ x }}</td>
+                    <td class="table_date" align="center">{{ x }}</td>
                 {% endfor %}
             </tr>
         {% endfor %}
