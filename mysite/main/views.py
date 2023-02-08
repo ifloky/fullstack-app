@@ -1818,3 +1818,53 @@ def first_deposit_amount_over_1000(request):
     }
 
     return render(request, "main/fd_rep.html", data)
+
+
+def no_close_rounds_rep(request):
+
+    site_adm_users = User.objects.filter(groups__name='site_adm')
+    heads = User.objects.filter(groups__name='heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+    cursor, connection = None, None
+
+    no_close_rounds = []
+
+    sql_query = (f'''
+                SELECT public.main_gamelistfromskks.game_name, public.main_gamelistfromskks.game_provider, 
+                public.no_close_rounds.game_id, public.no_close_rounds.count_game_id, public.no_close_rounds.date 
+                    FROM public.main_gamelistfromskks
+                    JOIN public.no_close_rounds 
+                    ON public.main_gamelistfromskks.game_id = public.no_close_rounds.game_id
+                    ORDER BY date DESC;
+                ''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.test_name,
+                                      user=credentials.test_username,
+                                      password=credentials.test_password,
+                                      host=credentials.test_host,
+                                      port=credentials.test_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        no_close_rounds = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    data = {
+        'site_adm': site_adm_users,
+        'heads': heads,
+        'risk_heads': risk_heads_users,
+        'no_close_rounds': no_close_rounds,
+    }
+
+    return render(request, "main/rounds_rep.html", data)

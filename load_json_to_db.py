@@ -33,7 +33,7 @@ async def main():
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     start_job_time = time.perf_counter()
     print(f"Start script at {current_date}")
-    dir_path = 'N93_20230206T165940'
+    dir_path = 'N93_20230208T100412'
     file_list = os.listdir(dir_path)
     tasks = [asyncio.create_task(save_data_to_db(f'{dir_path}/{file_name}')) for file_name in file_list]
     await asyncio.gather(*tasks)
