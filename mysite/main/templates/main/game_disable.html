@@ -133,6 +133,32 @@
         </table>
     </div>
 
+
+<script>
+  
+/* send form on click 'enter' */
+
+  $('#search_game_name').focus(function () {
+    form = $(this).parents('form')
+    document.onkeydown = (e) => {
+      if (e.keyCode === 13) {
+        form.submit();
+      }
+    }
+  });
+  
+  $('#search_game_provider').focus(function () {
+    form = $(this).parents('form')
+    document.onkeydown = (e) => {
+      if (e.keyCode === 13) {
+        form.submit();
+      }
+    }
+  });
+
+</script>
+
+
     {% if is_paginated %}
 
         {% include 'main/includes/pagination.html' %}
