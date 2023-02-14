@@ -1,134 +1,175 @@
-{% extends 'main/header.html' %}
+{% extends 'main/header.html' %} {% block content %}
 
+<style xmlns="http://www.w3.org/1999/html">
+  form {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+  }
 
-  {% block content %}
+  .flex-wrap {
+    display: flex;
+  }
+  .flex-wrap label {
+    width: 400px;
+    margin-right: auto;
+  }
+  .flex-wrap button {
+    width: 450px;
+    margin-right: auto;
+  }
+  .flex-wrap input {
+    width: calc(100% - 50px);
+  }
+  .flex-wrap select {
+    width: calc(100% - 250px);
+  }
 
-  <style xmlns="http://www.w3.org/1999/html">
-    form {
-        display: flex;
-        align-items: center;
-        justify-content: right;
-    }
+  input {
+    width: 20px;
+    padding: 8px 20px;
+    margin: 8px 0;
+    margin-right: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+    height: 60px;
+    border-radius: 10px;
+  }
 
-    .flex-wrap {display:flex;}
-    .flex-wrap label {width:400px;margin-right:auto;}
-    .flex-wrap button {width:450px;margin-right:auto;}
-    .flex-wrap input {width:calc(100% - 50px);}
-    .flex-wrap select {width:calc(100% - 250px);}
+  button {
+    width: 120px;
+    padding: 6px 30px;
+    margin: 8px 0;
+  }
 
-    input {
-        width: 20px;
-        padding: 8px 20px;
-        margin: 8px 0;
-        margin-right: 20px;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        -webkit-transition: 0.5s;
-        transition: 0.5s;
-        outline: none;
-        height: 60px;
-        border-radius: 10px;
-    }
+  th {
+    vertical-align: middle !important;
+    text-align: center;
+  }
 
-    button {
-        width: 120px;
-        padding: 6px 30px;
-        margin: 8px 0;
-    }
+  td {
+    vertical-align: middle !important;
+    text-align: center;
+    font-weight: bold;
+  }
 
-    th {
-        vertical-align:
-        middle !important;
-        text-align: center;
-    }
+  label.filter {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 0 30px;
+    cursor: pointer;
+    text-align: center;
+  }
 
-    td {
-        vertical-align:
-        middle !important;
-        text-align: center;
-        font-weight: bold;
-    }
+  label.filter:hover {
+    background: #d9d9d9;
+  }
 
-    label.filter {
-        margin-right: 10px;
-        display:flex;
-        align-items: center;
-        height: 60px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 0 30px;
-        cursor: pointer;
-        text-align: center;
-    }
+  select {
+    height: 60px;
+    border-radius: 10px !important;
+    margin-right: 10px;
+    cursor: pointer;
+  }
 
-    label.filter:hover {
-        background: #d9d9d9;
-    }
+  select:hover {
+    background: #d9d9d9;
+  }
 
-    select {
-        height: 60px;
-        border-radius: 10px !important;
-        margin-right: 10px;
-        cursor: pointer;
-    }
+  button {
+    height: 60px;
+    border-radius: 10px !important;
+  }
 
-    select:hover {
-        background: #d9d9d9;
-    }
+  button:hover {
+    background: #d9d9d9;
+  }
 
-    button {
-        height: 60px;
-        border-radius: 10px !important;
-    }
-
-    button:hover {
-        background: #d9d9d9;
-    }
-
-    table {
+  table {
     counter-reset: rowNumber;
-    }
+  }
 
-    table .table_date {
-        counter-increment: rowNumber;
-    }
+  table .table_date {
+    counter-increment: rowNumber;
+  }
 
-    table .table_date th:first-child::before {
-        content: counter(rowNumber);
-        min-width: 1em;
-        margin-right: 1.5em;
-    }
-    </style>
+  table .table_date th:first-child::before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 1.5em;
+  }
 
-  {% if user.is_authenticated %}
+  .srtBtn {
+    width: auto;
+    border: none;
+    border-radius: 5px !important;
+    padding: 3px 7px !important;
+    height: auto;
+    margin-right: 15px;
+    font-weight: 600;
+  }
+</style>
 
-    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
-    <table class="table table-striped">
-      <thead>
-        <tr align="center">
-            <th scope="col" width="300">Название игры</th>
-            <th scope="col">Провайдер</th>
-            <th scope="col">СККС ID</th>
-            <th scope="col">Количество не закрытых раундов</th>
-            <th scope="col">Дата</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for report in no_close_rounds %}
-            <tr>
-                {% for x in report %}
-                    <td class="table_date" align="center">{{ x }}</td>
-                {% endfor %}
-            </tr>
+{% if user.is_authenticated %}
+
+<div
+  style="
+    padding: 20px 0px;
+    padding-left: 9.5%;
+    margin-top: 30px;
+    width: 98%;
+    display: flex;
+    flex-direction: column;
+  "
+>
+  <div class="sortWrp">
+    <button class="srtBtn" onclick="sort(0)">По названию</button>
+    <button class="srtBtn" onclick="sort(1)">По провайдеру</button>
+    <button class="srtBtn" onclick="sort(2)">По СККС ID</button>
+    <button class="srtBtn" onclick="sort(3)">По колличеству раундов</button>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr align="center">
+        <th scope="col" width="300">Название игры</th>
+        <th scope="col">Провайдер</th>
+        <th scope="col">СККС ID</th>
+        <th scope="col">Количество не закрытых раундов</th>
+        <th scope="col">Дата</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for report in no_close_rounds %}
+      <tr>
+        {% for x in report %}
+        <td class="table_date" align="center">{{ x }}</td>
         {% endfor %}
-      </tbody>
-    </table>
-    </div>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
-  {% else %}
+// Function sort
+<script>
+  function sort(K) {
+    let table = document.getElementsByTagName("table")[0];
+    let sortedRows = Array.from(table.rows)
+      .slice(1)
+      .sort((rowA, rowB) =>
+        rowA.cells[K].innerHTML > rowB.cells[K].innerHTML ? 1 : -1
+      );
 
-        {% include 'main/includes/non_authorised.html' %}
+    table.tBodies[0].append(...sortedRows);
+  }
+</script>
 
-  {% endif %}
-
-  {% endblock %}
+{% else %} {% include 'main/includes/non_authorised.html' %} {% endif %} {%
+endblock %}
