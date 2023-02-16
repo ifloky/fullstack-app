@@ -32,18 +32,10 @@
         background-color: #ddd;
     }
 
-    a[href='#'] {
-      background-color: #4CAF50;
-      color: #fff;
-    }
-
-    a {
-      cursor: pointer;
-    }
 </style>
 
 <div class="pagination" style="padding: 20px 0px;padding-left:9.5%;width:98%;display:flex;justify-content:center">
-    {% comment %}<span class="step-links" style="display:block">
+    <span class="step-links" style="display:block">
         {% if page_obj.has_previous %}
          <a class="change_url" href="page={{ page_obj.previous_page_number }}">Previous</a>
         {% else %}
@@ -63,41 +55,7 @@
         {% else %}
           <a>Next</a>
         {% endif %}
-    </span>{% endcomment %}
-
-
-    {% if page_obj.has_previous %}
-      <a class="change_url" href="?page=1">Start</a>
-      <a class="change_url" href="page={{ page_obj.previous_page_number }}">Previous</a>
-    {% else %}
-      <a>Start</a>
-      <a>Previous</a>
-    {% endif %}
-
-    {% if page_obj.number > 10 %}
-        <span style="display:flex; align-items: end">...</span>
-    {% endif %}   
-
-    {% for num in page_obj.paginator.page_range %}
-      {% if page_obj.number == num %}
-        <a href="#">{{ num }}</a>
-      {% elif num > page_obj.number|add:'-10' and num < page_obj.number|add:'10' %}
-        <a href="?page={{ num }}">{{ num }}</a>
-      {% endif %}
-    {% endfor %}
-
-    {% if page_obj.has_next %}
-        <span style="display:flex; align-items: end">...</span>
-        <a class="change_url" href="page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
-    {% endif %}
-
-    {% if page_obj.has_next %}
-      <a class="change_url" href="page={{ page_obj.next_page_number }}">Next</a>
-      <a class="change_url" href="page={{ page_obj.paginator.num_pages }}">End</a>
-    {% else %}
-      <a>Next</a>
-      <a>End</a>
-    {% endif %}
+    </span>
 </div>
 
 <!--Pagination box-->

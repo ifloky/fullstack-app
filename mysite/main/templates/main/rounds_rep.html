@@ -107,13 +107,12 @@
   }
 
   .srtBtn {
-    width: auto;
+    width: 100%;
     border: none;
     border-radius: 5px !important;
-    padding: 3px 7px !important;
-    height: auto;
-    margin-right: 15px;
+    height: 100;
     font-weight: 600;
+    background: transparent;
   }
 </style>
 
@@ -129,19 +128,23 @@
     flex-direction: column;
   "
 >
-  <div class="sortWrp">
-    <button class="srtBtn" onclick="sort(0)">По названию</button>
-    <button class="srtBtn" onclick="sort(1)">По провайдеру</button>
-    <button class="srtBtn" onclick="sort(2)">По СККС ID</button>
-    <button class="srtBtn" onclick="sort(3)">По колличеству раундов</button>
-  </div>
   <table class="table table-striped">
     <thead>
       <tr align="center">
-        <th scope="col" width="300">Название игры</th>
-        <th scope="col">Провайдер</th>
-        <th scope="col">СККС ID</th>
-        <th scope="col">Количество не закрытых раундов</th>
+        <th scope="col" width="300">
+          <button class="srtBtn" onclick="sort(0)">Название игры</button>
+        </th>
+        <th scope="col">
+          <button class="srtBtn" onclick="sort(1)">Провайдер</button>
+        </th>
+        <th scope="col">
+          <button class="srtBtn" onclick="sortN(2)">СККС ID</button>
+        </th>
+        <th scope="col">
+          <button class="srtBtn" onclick="sortN(3)">
+            Количество не закрытых раундов
+          </button>
+        </th>
         <th scope="col">Дата</th>
       </tr>
     </thead>
@@ -166,7 +169,19 @@
       .sort((rowA, rowB) =>
         rowA.cells[K].innerHTML > rowB.cells[K].innerHTML ? 1 : -1
       );
+    table.tBodies[0].append(...sortedRows);
+  }
 
+  function sortN(K) {
+    let table = document.getElementsByTagName("table")[0];
+    let sortedRows = Array.from(table.rows)
+      .slice(1)
+      .sort((rowA, rowB) =>
+        parseInt(rowA.cells[K].innerHTML, 10) >
+        parseInt(rowB.cells[K].innerHTML, 10)
+          ? 1
+          : -1
+      );
     table.tBodies[0].append(...sortedRows);
   }
 </script>

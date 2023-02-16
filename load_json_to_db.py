@@ -15,7 +15,7 @@ async def load_json_data(file_name):
 
 
 async def save_data_to_db(file_name):
-    print(file_name)
+    start_job_time = time.perf_counter()
     json_data = await load_json_data(file_name)
     conn = psycopg2.connect(dbname=credentials.test_name, user=credentials.test_username,
                             password=credentials.test_password, host=credentials.test_host)
@@ -27,13 +27,16 @@ async def save_data_to_db(file_name):
     conn.commit()
     cur.close()
     conn.close()
+    stop_job_time = time.perf_counter()
+    working_time = stop_job_time - start_job_time
+    print(file_name, "Время сохранения в ДБ:", str(timedelta(seconds=working_time)))
 
 
 async def main():
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     start_job_time = time.perf_counter()
     print(f"Start script at {current_date}")
-    dir_path = 'N93_20230208T100412'
+    dir_path = 'N93_20230216T093139'
     file_list = os.listdir(dir_path)
     tasks = [asyncio.create_task(save_data_to_db(f'{dir_path}/{file_name}')) for file_name in file_list]
     await asyncio.gather(*tasks)
@@ -42,8 +45,7 @@ async def main():
     working_time = stop_job_time - start_job_time
 
     print(f"Script finished at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("Working time:", str(timedelta(seconds=working_time)))
-    print(f'Время выполнения: {time.perf_counter() - start_job_time:0.4f} seconds')
+    print("Время выполнения:", str(timedelta(seconds=working_time)))
     from memory_profiler import memory_usage
     print("Затрачено памяти:", (memory_usage())[-1], "Mb")
 
