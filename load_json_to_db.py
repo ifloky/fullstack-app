@@ -32,11 +32,17 @@ async def save_data_to_db(file_name):
     print(file_name, "Время сохранения в ДБ:", str(timedelta(seconds=working_time)))
 
 
+def find_dir_by_mask(mask):
+    catalogs = [d for d in os.listdir(os.getcwd()) if os.path.isdir(d) and d.startswith(mask)]
+    catalogs.sort()
+    return catalogs[-1]
+
+
 async def main():
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     start_job_time = time.perf_counter()
     print(f"Start script at {current_date}")
-    dir_path = 'N93_20230216T093139'
+    dir_path = find_dir_by_mask('N93_')
     file_list = os.listdir(dir_path)
     tasks = [asyncio.create_task(save_data_to_db(f'{dir_path}/{file_name}')) for file_name in file_list]
     await asyncio.gather(*tasks)
