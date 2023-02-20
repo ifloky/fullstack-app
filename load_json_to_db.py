@@ -3,30 +3,22 @@ import time
 import json
 import os
 import psycopg2
-
 from mysite import credentials
 from datetime import datetime, timedelta
+from memory_profiler import memory_usage
 
 
-async def load_json_data(file_name):
-    with open(file_name, 'r') as f:
-        json_data = json.load(f)
-    return json_data
-
-
-async def save_data_to_db(file_name):
+async def save_data_to_db(file_name, conn, cur):
     start_job_time = time.perf_counter()
-    json_data = await load_json_data(file_name)
-    conn = psycopg2.connect(dbname=credentials.test_name, user=credentials.test_username,
-                            password=credentials.test_password, host=credentials.test_host)
-    cur = conn.cursor()
-    for data in json_data:
-        cur.execute(
-            'INSERT INTO public.rounds (round_id, account_id, game_id, created_at) VALUES (%s, %s, %s, %s)',
-            (data['round_id'], data['account_id'], data['game_id'], data['created_at']))
+
+    with open(file_name) as my_file:
+        data = json.load(my_file)
+
+        query_sql = """ insert into public.rounds_clear
+            select * from json_populate_recordset(NULL::public.rounds_clear, %s) """
+        cur.execute(query_sql, (json.dumps(data),))
+
     conn.commit()
-    cur.close()
-    conn.close()
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
     print(file_name, "Время сохранения в ДБ:", str(timedelta(seconds=working_time)))
@@ -39,20 +31,25 @@ def find_dir_by_mask(mask):
 
 
 async def main():
+    conn = psycopg2.connect(dbname=credentials.test_name, user=credentials.test_username,
+                            password=credentials.test_password, host=credentials.test_host)
+    cur = conn.cursor()
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     start_job_time = time.perf_counter()
     print(f"Start script at {current_date}")
     dir_path = find_dir_by_mask('N93_')
     file_list = os.listdir(dir_path)
-    tasks = [asyncio.create_task(save_data_to_db(f'{dir_path}/{file_name}')) for file_name in file_list]
+    tasks = [asyncio.create_task(save_data_to_db(f'{dir_path}/{file_name}', conn, cur)) for file_name in file_list]
     await asyncio.gather(*tasks)
+
+    cur.close()
+    conn.close()
 
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
 
     print(f"Script finished at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("Время выполнения:", str(timedelta(seconds=working_time)))
-    from memory_profiler import memory_usage
     print("Затрачено памяти:", (memory_usage())[-1], "Mb")
 
 
