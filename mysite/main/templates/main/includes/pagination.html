@@ -70,8 +70,8 @@
       <a class="change_url" href="?page=1">Start</a>
       <a class="change_url" href="page={{ page_obj.previous_page_number }}">Previous</a>
     {% else %}
-      <a>Start</a>
-      <a>Previous</a>
+      <a class="change_url">Start</a>
+      <a class="change_url" >Previous</a>
     {% endif %}
 
     {% if page_obj.number > 10 %}
@@ -80,9 +80,9 @@
 
     {% for num in page_obj.paginator.page_range %}
       {% if page_obj.number == num %}
-        <a href="#">{{ num }}</a>
+        <a class="" href="#">{{ num }}</a>
       {% elif num > page_obj.number|add:'-10' and num < page_obj.number|add:'10' %}
-        <a href="?page={{ num }}">{{ num }}</a>
+        <a class="change_url "href="page={{ num }}">{{ num }}</a>
       {% endif %}
     {% endfor %}
 
@@ -95,8 +95,8 @@
       <a class="change_url" href="page={{ page_obj.next_page_number }}">Next</a>
       <a class="change_url" href="page={{ page_obj.paginator.num_pages }}">End</a>
     {% else %}
-      <a>Next</a>
-      <a>End</a>
+      <a class="change_url">Next</a>
+      <a class="change_url">End</a>
     {% endif %}
 </div>
 
