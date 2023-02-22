@@ -160,16 +160,17 @@
   </table>
 </div>
 
-// Function sort
+
 <script>
+  // Function sort
   function sort(K) {
     let table = document.getElementsByTagName("table")[0];
     let sortedRows = Array.from(table.rows)
       .slice(1)
       .sort((rowA, rowB) =>
-        rowA.cells[K].innerHTML > rowB.cells[K].innerHTML ? 1 : -1
+        rowA.cells[K].innerHTML < rowB.cells[K].innerHTML ? -1 : 1
       );
-    table.tBodies[0].append(...sortedRows);
+    table.tBodies[0].append(...sortedRows)
   }
 
   function sortN(K) {
@@ -177,13 +178,15 @@
     let sortedRows = Array.from(table.rows)
       .slice(1)
       .sort((rowA, rowB) =>
-        parseInt(rowA.cells[K].innerHTML, 10) >
+        parseInt(rowA.cells[K].innerHTML, 10) <
         parseInt(rowB.cells[K].innerHTML, 10)
-          ? 1
-          : -1
+          ? -1
+          : 1
       );
     table.tBodies[0].append(...sortedRows);
   }
+
+  
 </script>
 
 {% else %} {% include 'main/includes/non_authorised.html' %} {% endif %}
