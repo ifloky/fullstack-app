@@ -8,14 +8,14 @@ from datetime import datetime, timedelta
 from memory_profiler import memory_usage
 
 
-async def save_data_to_db(file_name, conn, cur):
+async def save_data_to_db(file_name, conn, cur, db_name):
     start_job_time = time.perf_counter()
 
     with open(file_name) as my_file:
         data = json.load(my_file)
 
-        query_sql = """ insert into public.rounds_clear
-            select * from json_populate_recordset(NULL::public.rounds_clear, %s) """
+        query_sql = f""" insert into {db_name}
+            select * from json_populate_recordset(NULL::{db_name}, %s) """
         cur.execute(query_sql, (json.dumps(data),))
 
     conn.commit()
@@ -30,16 +30,38 @@ def find_dir_by_mask(mask):
     return catalogs[-1]
 
 
+def clear_data(db_name):
+    connection = psycopg2.connect(database=credentials.db_name,
+                                  user=credentials.db_username,
+                                  password=credentials.db_password,
+                                  host=credentials.db_host,
+                                  port=credentials.db_port,
+                                  )
+    cursor = connection.cursor()
+    cursor.execute(
+        f"TRUNCATE TABLE {db_name} RESTART IDENTITY CASCADE;")
+    print(cursor.statusmessage)
+    connection.commit()
+    connection.close()
+
+
 async def main():
-    conn = psycopg2.connect(dbname=credentials.test_name, user=credentials.test_username,
-                            password=credentials.test_password, host=credentials.test_host)
-    cur = conn.cursor()
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     start_job_time = time.perf_counter()
     print(f"Start script at {current_date}")
+
+    conn = psycopg2.connect(dbname=credentials.db_name, user=credentials.db_username,
+                            password=credentials.db_password, host=credentials.db_host)
+    cur = conn.cursor()
+
+    db_name = 'public.main_nocloserounds'
+
+    clear_data(db_name)
+
     dir_path = find_dir_by_mask('N93_')
     file_list = os.listdir(dir_path)
-    tasks = [asyncio.create_task(save_data_to_db(f'{dir_path}/{file_name}', conn, cur)) for file_name in file_list]
+    tasks = [asyncio.create_task(
+        save_data_to_db(f'{dir_path}/{file_name}', conn, cur, db_name)) for file_name in file_list]
     await asyncio.gather(*tasks)
 
     cur.close()

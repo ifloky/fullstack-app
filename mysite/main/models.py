@@ -195,3 +195,34 @@ class GameDisableList(models.Model):
     class Meta:
         verbose_name = 'Список отключенных игр'
         verbose_name_plural = 'Список отключенных игр'
+
+
+class NoCloseRounds(models.Model):
+    objects = None
+
+    round_id = models.BigIntegerField()
+    account_id = models.BigIntegerField()
+    game_id = models.BigIntegerField()
+    created_at = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.round_id
+
+    class Meta:
+        verbose_name = 'Ошибки СККС'
+        verbose_name_plural = 'Ошибки СККС'
+
+
+class SkksErrors(models.Model):
+    objects = None
+
+    error_code = models.IntegerField()
+    error_description_en = models.CharField(max_length=200)
+    error_description_ru = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.error_code
+
+    class Meta:
+        verbose_name = 'Ошибки СККС'
+        verbose_name_plural = 'Ошибки СККС'
