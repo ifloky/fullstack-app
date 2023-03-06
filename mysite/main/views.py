@@ -441,7 +441,8 @@ def get_risks_report(start_date, end_date):
     sql_query = (f'''
                     SELECT * FROM public.risk_report
                     WHERE shift_date >= '{start_date}' AND shift_date < '{end_date}'
-                    ORDER BY shift_date ASC''')
+                    ORDER BY shift_date ASC
+                ''')
 
     try:
         connection = psycopg2.connect(database=credentials.db_name,
@@ -1822,31 +1823,26 @@ def first_deposit_amount_over_1000(request):
     return render(request, "main/fd_rep.html", data)
 
 
-def no_close_rounds_rep(request):
-
-    site_adm_users = User.objects.filter(groups__name='site_adm')
-    heads = User.objects.filter(groups__name='heads')
-    risk_heads_users = User.objects.filter(groups__name='risk_heads')
-
+def get_no_close_rounds_by_():
     cursor, connection = None, None
 
     no_close_rounds = []
 
     sql_query = (f'''
-                SELECT public.main_gamelistfromskks.game_name, public.main_gamelistfromskks.game_provider, 
-                public.no_close_rounds.game_id, public.no_close_rounds.count_game_id, public.no_close_rounds.date 
-                    FROM public.main_gamelistfromskks
-                    JOIN public.no_close_rounds 
-                    ON public.main_gamelistfromskks.game_id = public.no_close_rounds.game_id
-                    ORDER BY date DESC;
+                    SELECT public.main_gamelistfromskks.game_name, public.main_gamelistfromskks.game_provider, 
+                    public.no_close_rounds.game_id, public.no_close_rounds.count_game_id, public.no_close_rounds.date 
+                        FROM public.main_gamelistfromskks
+                        JOIN public.no_close_rounds 
+                        ON public.main_gamelistfromskks.game_id = public.no_close_rounds.game_id
+                        ORDER BY date DESC
                 ''')
 
     try:
-        connection = psycopg2.connect(database=credentials.test_name,
-                                      user=credentials.test_username,
-                                      password=credentials.test_password,
-                                      host=credentials.test_host,
-                                      port=credentials.test_port,
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
                                       )
 
         cursor = connection.cursor()
@@ -1862,6 +1858,120 @@ def no_close_rounds_rep(request):
             cursor.close()
             connection.close()
 
+    return no_close_rounds
+
+
+def get_no_close_rounds_by_day():
+    cursor, connection = None, None
+
+    no_close_rounds = []
+
+    sql_query = (f'''
+                    SELECT date, rounds_count, total_amount
+                        FROM public.rounds_by_day
+                        ORDER BY date DESC
+                ''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        no_close_rounds = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return no_close_rounds
+
+
+def get_no_close_rounds_amount():
+    cursor, connection = None, None
+
+    no_close_rounds = []
+
+    sql_query = (f'''
+                    SELECT * FROM public.total_amount
+                ''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        no_close_rounds = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return no_close_rounds
+
+
+def get_no_close_rounds_count():
+    cursor, connection = None, None
+
+    no_close_rounds = []
+
+    sql_query = (f'''
+                    SELECT COUNT(*)
+                        FROM public.main_nocloserounds
+                        WHERE game_id != 2 AND cmd is not null
+                ''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        no_close_rounds = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return no_close_rounds
+
+
+def no_close_rounds_rep(request):
+
+    site_adm_users = User.objects.filter(groups__name='site_adm')
+    heads = User.objects.filter(groups__name='heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+    no_close_rounds = get_no_close_rounds_by_()
+
     data = {
         'site_adm': site_adm_users,
         'heads': heads,
@@ -1870,3 +1980,25 @@ def no_close_rounds_rep(request):
     }
 
     return render(request, "main/rounds_rep.html", data)
+
+
+def no_close_rounds_report(request):
+
+    site_adm_users = User.objects.filter(groups__name='site_adm')
+    heads = User.objects.filter(groups__name='heads')
+    risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+    no_close_rounds_by_day = get_no_close_rounds_by_day()
+    no_close_rounds_amount = str(get_no_close_rounds_amount()[0][0])
+    no_close_rounds_count = str(get_no_close_rounds_count()[0][0])
+
+    data = {
+        'site_adm': site_adm_users,
+        'heads': heads,
+        'risk_heads': risk_heads_users,
+        'no_close_rounds_by_day': no_close_rounds_by_day,
+        'no_close_rounds_amount': no_close_rounds_amount,
+        'no_close_rounds_count': no_close_rounds_count,
+    }
+
+    return render(request, "main/rounds.html", data)

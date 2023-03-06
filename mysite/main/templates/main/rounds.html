@@ -1,0 +1,184 @@
+{% extends 'main/header.html' %} {% block content %}
+
+<style xmlns="http://www.w3.org/1999/html">
+  form {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+  }
+
+  .flex-wrap {
+    display: flex;
+  }
+  .flex-wrap label {
+    width: 400px;
+    margin-right: auto;
+  }
+  .flex-wrap button {
+    width: 450px;
+    margin-right: auto;
+  }
+  .flex-wrap input {
+    width: calc(100% - 50px);
+  }
+  .flex-wrap select {
+    width: calc(100% - 250px);
+  }
+
+  input {
+    width: 20px;
+    padding: 8px 20px;
+    margin: 8px 0;
+    margin-right: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+    height: 60px;
+    border-radius: 10px;
+  }
+
+  button {
+    width: 120px;
+    padding: 6px 30px;
+    margin: 8px 0;
+  }
+
+  th {
+    vertical-align: middle !important;
+    text-align: center;
+  }
+
+  td {
+    vertical-align: middle !important;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  label.filter {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 0 30px;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  label.filter:hover {
+    background: #d9d9d9;
+  }
+
+  select {
+    height: 60px;
+    border-radius: 10px !important;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+  select:hover {
+    background: #d9d9d9;
+  }
+
+  button {
+    height: 60px;
+    border-radius: 10px !important;
+  }
+
+  button:hover {
+    background: #d9d9d9;
+  }
+
+  table {
+    counter-reset: rowNumber;
+  }
+
+  table .table_date {
+    counter-increment: rowNumber;
+  }
+
+  table .table_date th:first-child::before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 1.5em;
+  }
+
+  .srtBtn {
+    width: 100%;
+    border: none;
+    border-radius: 5px !important;
+    height: 100;
+    font-weight: 600;
+    background: transparent;
+  }
+</style>
+
+{% if user.is_authenticated %}
+
+<div style="padding: 20px 0px; padding-left: 9.5%; margin-top: 30px; width: 98%; display: flex; flex-direction: column;">
+
+  <b>Общее количество незакрытых раундов: {{ no_close_rounds_count }}<br>
+    Общая сумма по незакрытым раундам: {{ no_close_rounds_amount }}</b>
+
+  <table class="table table-striped">
+    <thead>
+      <tr align="center">
+        <th scope="col" width="300">
+          <button class="srtBtn" onclick="sort(0)">Дата</button>
+        </th>
+        <th scope="col">
+          <button class="srtBtn" onclick="sort(1)">Количество незакрытых раундов</button>
+        </th>
+        <th scope="col">
+          <button class="srtBtn" onclick="sortN(2)">Сумма по незакрытым раундам BYN</button>
+        </th>
+    </thead>
+    <tbody>
+      {% for report in no_close_rounds_by_day %}
+      <tr>
+        {% for x in report %}
+        <td class="table_date" align="center">{{ x }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Function sort
+  function sort(K) {
+    let table = document.getElementsByTagName("table")[0];
+    let sortedRows = Array.from(table.rows)
+      .slice(1)
+      .sort((rowA, rowB) =>
+        rowA.cells[K].innerHTML < rowB.cells[K].innerHTML ? -1 : 1
+      );
+    table.tBodies[0].append(...sortedRows)
+  }
+
+  function sortN(K) {
+    let table = document.getElementsByTagName("table")[0];
+    let sortedRows = Array.from(table.rows)
+      .slice(1)
+      .sort((rowA, rowB) =>
+        parseInt(rowA.cells[K].innerHTML, 10) <
+        parseInt(rowB.cells[K].innerHTML, 10)
+          ? -1
+          : 1
+      );
+    table.tBodies[0].append(...sortedRows);
+  }
+
+  
+</script>
+
+{% else %}
+
+  {% include 'main/includes/non_authorised.html' %}
+  {% endif %}
+
+{%endblock %}

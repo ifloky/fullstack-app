@@ -44,4 +44,5 @@ urlpatterns = [
     path('add_game_disable/', views.AddGameDisableView.as_view(), name='add_game_disable'),
     path('missing_games/', views.MissingGamesListView.as_view(), name='missing_games'),
     path('rounds_rep/', views.no_close_rounds_rep, name='rounds_rep'),
+    path('rounds/', views.no_close_rounds_report, name='rounds'),
 ]

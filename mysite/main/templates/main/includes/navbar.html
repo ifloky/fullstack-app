@@ -113,9 +113,9 @@
                   <a class="nav-link" href="/add_crm_data">Внести данные из CRM</a>
                 </li>
 
-<!--                <li class="nav-item">-->
-<!--                  <a class="nav-link" href="/cc_report">Отдел поддержки</a>-->
-<!--                </li>-->
+                <li class="nav-item">
+                  <a class="nav-link" href="/cc_report">Отдел поддержки</a>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="/cc_report"><b>New!</b> Отдел поддержки</a>
@@ -197,19 +197,15 @@
               <a class="nav-link" href="/appeal_rep">Отчет по обращениям</a>
             </li>
 
-<!--            <li class="nav-item">-->
-<!--              <a class="nav-link" href="/cc_report">Отдел поддержки</a>-->
-<!--            </li>-->
-
             <li class="nav-item">
               <a class="nav-link" href="/cc_report"><b>New!</b> Отдел поддержки</a>
             </li>
             {% endif %}
 
             {% if user in heads %}
-<!--            <li class="nav-item">-->
-<!--              <a class="nav-link" href="/rocket">RocketChat</a>-->
-<!--            </li>-->
+            <li class="nav-item">
+              <a class="nav-link" href="/rocket">RocketChat</a>
+            </li>
 
             <li class="nav-item">
               <a class="nav-link" href="/risks_rep">Отдел рисков</a>
@@ -221,6 +217,10 @@
 
             <li class="nav-item">
               <a class="nav-link" href="/rounds_rep">Незакрытые раунды</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/rounds">Незакрытые раунды отчет</a>
             </li>
 
             {% endif %}
@@ -274,6 +274,10 @@
                   <a class="nav-link" href="/rounds_rep">Незакрытые раунды</a>
                 </li>
 
+                <li class="nav-item">
+                  <a class="nav-link" href="/rounds">Незакрытые раунды отчет</a>
+                </li>
+
             {% endif %}
 
             {% if user in game_control %}
@@ -292,6 +296,14 @@
 
                 <li class="nav-item">
                   <a class="nav-link" href="/missing_games">Потеряшки</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/rounds_rep">Незакрытые раунды</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/rounds">Незакрытые раунды отчет</a>
                 </li>
 
             {% endif %}
