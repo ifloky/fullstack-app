@@ -54,7 +54,7 @@
 
         <script>
             window.addEventListener('load', function () {
-                let activeLink = document.querySelector('a[href*="' + window.location.pathname.toString().slice(1, -1) + '"]');
+                let activeLink = document.querySelector('a[href$='+ window.location.pathname.slice(1, -1).toString() + ']');
                 activeLink.style.background = 'rgb(40, 167, 69)';
             });
         </script>
