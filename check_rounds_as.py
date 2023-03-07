@@ -15,6 +15,7 @@ async def db_connect():
         database=credentials.db_name,
         user=credentials.db_username,
         password=credentials.db_password,
+        connect_timeout=3
     )
     cursor = conn.cursor()
     return cursor
@@ -88,16 +89,12 @@ async def main():
 
     rounds_id = await get_rounds_id_from_db()
     count = 1
-    tasks = []
     for round_id in rounds_id:
         transaction_id = round_id[0]
         response_data = await get_round_data_from_skks(skks_host, transaction_id)
-        task = asyncio.create_task(update_round_data_to_db(db_name, transaction_id, response_data[0], response_data[1]))
-        tasks.append(task)
+        await update_round_data_to_db(db_name, transaction_id, response_data[0], response_data[1])
         print(count, transaction_id, '-', response_data)
         count = count + 1
-
-    await asyncio.gather(*tasks, return_exceptions=True)
 
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
@@ -108,4 +105,5 @@ async def main():
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())

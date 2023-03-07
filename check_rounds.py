@@ -2,26 +2,28 @@ import psycopg2
 import requests
 import credentials
 import time
+import asyncio
 
 from datetime import datetime, timedelta
 from memory_profiler import memory_usage
 
 
-def db_connect():
+async def db_connect():
     """ Эта функция подключения к базе данных """
     conn = psycopg2.connect(
         host=credentials.db_host,
         database=credentials.db_name,
         user=credentials.db_username,
         password=credentials.db_password,
+        connect_timeout=3
     )
     cursor = conn.cursor()
     return cursor
 
 
-def get_rounds_id_from_db():
+async def get_rounds_id_from_db():
     """ Эта функция получает данные из базы данных """
-    cursor = db_connect()
+    cursor = await db_connect()
     cursor.execute("""
                     SELECT *
                     FROM public.main_nocloserounds
@@ -32,7 +34,7 @@ def get_rounds_id_from_db():
     return rounds_id
 
 
-def get_round_data_from_skks(skks_host, transaction_id):
+async def get_round_data_from_skks(skks_host, transaction_id):
     """ Эта функция получает данные из SKKS """
     headers = {
         'Content-Type': 'application/json; charset=utf-8',
@@ -65,9 +67,9 @@ def get_round_data_from_skks(skks_host, transaction_id):
         return cmd, amount
 
 
-def update_round_data_to_db(db_name, round_id, cmd, amount):
+async def update_round_data_to_db(db_name, round_id, cmd, amount):
     """ Эта функция обновляет данные в базе данных """
-    cursor = db_connect()
+    cursor = await db_connect()
     cursor.execute(f"""
                     UPDATE {db_name}
                     SET cmd = {cmd}, amount = {amount}
@@ -77,7 +79,7 @@ def update_round_data_to_db(db_name, round_id, cmd, amount):
     cursor.close()
 
 
-def main():
+async def main():
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     start_job_time = time.perf_counter()
     print(f"Start script at {current_date}")
@@ -85,12 +87,12 @@ def main():
     skks_host = f'{credentials.skks_host}/Transaction/Read'
     db_name = 'public.main_nocloserounds'
 
-    rounds_id = get_rounds_id_from_db()
+    rounds_id = await get_rounds_id_from_db()
     count = 1
     for round_id in rounds_id:
         transaction_id = round_id[0]
-        response_data = get_round_data_from_skks(skks_host, transaction_id)
-        update_round_data_to_db(db_name, transaction_id, response_data[0], response_data[1])
+        response_data = await get_round_data_from_skks(skks_host, transaction_id)
+        await update_round_data_to_db(db_name, transaction_id, response_data[0], response_data[1])
         print(count, transaction_id, '-', response_data)
         count = count + 1
 
@@ -103,4 +105,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
