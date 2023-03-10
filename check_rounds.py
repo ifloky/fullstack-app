@@ -27,7 +27,7 @@ async def get_rounds_id_from_db():
     cursor.execute("""
                     SELECT *
                     FROM public.main_nocloserounds
-                    WHERE game_id != 2
+                    WHERE game_id != 2 AND cmd is null
                     ORDER BY round_id ASC
                     """)
     rounds_id = cursor.fetchall()
