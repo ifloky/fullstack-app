@@ -1,4 +1,6 @@
-{% extends 'main/header.html' %} {% block content %}
+{% extends 'main/header.html' %}
+
+{% block content %}
 
 <style xmlns="http://www.w3.org/1999/html">
   form {
@@ -114,6 +116,20 @@
     font-weight: 600;
     background: transparent;
   }
+
+  table {
+      counter-reset: rowNumber;
+  }
+
+  table .table_date {
+      counter-increment: rowNumber;
+  }
+
+  table .table_date th:first-child::before {
+      content: counter(rowNumber);
+      min-width: 1em;
+      margin-right: 1.5em;
+  }
 </style>
 
 {% if user.is_authenticated %}
@@ -131,6 +147,7 @@
   <table class="table table-striped">
     <thead>
       <tr align="center">
+        <th scope="col">№№</th>
         <th scope="col" width="300">
           <button class="srtBtn" onclick="sort(0)">Название игры</button>
         </th>
@@ -138,21 +155,19 @@
           <button class="srtBtn" onclick="sort(1)">Провайдер</button>
         </th>
         <th scope="col">
-          <button class="srtBtn" onclick="sortN(2)">СККС ID</button>
+          <button class="srtBtn" onclick="sortN(2)">Количество не закрытых раундов</button>
         </th>
         <th scope="col">
-          <button class="srtBtn" onclick="sortN(3)">
-            Количество не закрытых раундов
-          </button>
+          <button class="srtBtn" onclick="sortN(3)">Сумма по закрытым раундам</button>
         </th>
-        <th scope="col">Дата</th>
       </tr>
     </thead>
     <tbody>
       {% for report in no_close_rounds %}
-      <tr>
+      <tr class="table_date">
+        <th style="padding-left:2.5%"></th>
         {% for x in report %}
-        <td class="table_date" align="center">{{ x }}</td>
+        <th align="center">{{ x }}</th>
         {% endfor %}
       </tr>
       {% endfor %}

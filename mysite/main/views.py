@@ -1828,14 +1828,16 @@ def get_no_close_rounds_by_():
 
     no_close_rounds = []
 
-    sql_query = (f'''
-                    SELECT public.main_gamelistfromskks.game_name, public.main_gamelistfromskks.game_provider, 
-                    public.no_close_rounds.game_id, public.no_close_rounds.count_game_id, public.no_close_rounds.date 
-                        FROM public.main_gamelistfromskks
-                        JOIN public.no_close_rounds 
-                        ON public.main_gamelistfromskks.game_id = public.no_close_rounds.game_id
-                        ORDER BY date DESC
-                ''')
+    sql_query = (f"""
+                 SELECT main_gamelistfromskks.game_name,
+                    main_gamelistfromskks.game_provider,
+                    count(main_nocloserounds.cmd) AS cmd_count,
+                    sum(main_nocloserounds.amount / 100) AS amount_sum
+                   FROM main_nocloserounds
+                     JOIN main_gamelistfromskks ON main_nocloserounds.game_id = main_gamelistfromskks.game_id
+                  GROUP BY main_gamelistfromskks.game_name, main_gamelistfromskks.game_provider
+                  ORDER BY (count(main_nocloserounds.cmd)) DESC;
+                """)
 
     try:
         connection = psycopg2.connect(database=credentials.db_name,

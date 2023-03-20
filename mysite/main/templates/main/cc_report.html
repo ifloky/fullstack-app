@@ -117,71 +117,71 @@
 
         </canvas>
     </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
-        <script>
-        let ctx = document.getElementById("chart").getContext("2d");
-
-            let chart = new Chart(ctx, {
-              type: "bar",
-              data: {
-                 labels: [{% for report in calls_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
-                    datasets: [
-                    {
-                      label: "Отвеченые звонки",
-                      backgroundColor: "#79AEC8",
-                      borderColor: "#417690",
-                      data: [{% for report in calls_report %}{{ report.answered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                    },
-                    {
-                      label: "Неотвеченые звонки",
-                      backgroundColor: "#FA8072",
-                      borderColor: "#417690",
-                      data: [{% for report in calls_report %}{{ report.unanswered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                    },
-                    {
-                      label: "Количество верификаций",
-                      backgroundColor: "#3CB371",
-                      borderColor: "#417690",
-                      data: [{% for report in calls_report %}{{ report.verifications }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                    },
-                    {
-                      label: "Количество депозитов",
-                      backgroundColor: "#FFD700",
-                      borderColor: "#417690",
-                      data: [{% for report in calls_report %}{{ report.deposit_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                    },
-                ]
-              },
-              options: {
-                title: {
-                    display: true
-                }
-               }
-            });
-        </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
 <script>
-        let ctx_dep = document.getElementById("chart_dep").getContext("2d");
+let ctx = document.getElementById("chart").getContext("2d");
 
-            let chart_dep = new Chart(ctx_dep, {
-              type: "bar",
-              data: {
-                 labels: [{% for report in calls_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
-                    datasets: [
-                    {
-                      label: "Сумма депозитов",
-                      backgroundColor: "#DA70D6",
-                      borderColor: "#417690",
-                      data: [{% for report in calls_report %}{{ report.deposit_sum }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                    }
-                ]
-              },
-              options: {
-                title: {
-                    display: true
+    let chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+         labels: [{% for report in calls_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [
+            {
+              label: "Отвеченые звонки",
+              backgroundColor: "#79AEC8",
+              borderColor: "#417690",
+              data: [{% for report in calls_report %}{{ report.answered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+            },
+            {
+              label: "Неотвеченые звонки",
+              backgroundColor: "#FA8072",
+              borderColor: "#417690",
+              data: [{% for report in calls_report %}{{ report.unanswered_calls }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+            },
+            {
+              label: "Количество верификаций",
+              backgroundColor: "#3CB371",
+              borderColor: "#417690",
+              data: [{% for report in calls_report %}{{ report.verifications }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+            },
+            {
+              label: "Количество депозитов",
+              backgroundColor: "#FFD700",
+              borderColor: "#417690",
+              data: [{% for report in calls_report %}{{ report.deposit_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+            },
+        ]
+      },
+      options: {
+        title: {
+            display: true
+        }
+       }
+    });
+</script>
+<script>
+    let ctx_dep = document.getElementById("chart_dep").getContext("2d");
+
+        let chart_dep = new Chart(ctx_dep, {
+          type: "bar",
+          data: {
+             labels: [{% for report in calls_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                datasets: [
+                {
+                  label: "Сумма депозитов",
+                  backgroundColor: "#DA70D6",
+                  borderColor: "#417690",
+                  data: [{% for report in calls_report %}{{ report.deposit_sum }}{% if not forloop.last %}, {% endif %}{% endfor %}]
                 }
-               }
-            });
-        </script>
+            ]
+          },
+          options: {
+            title: {
+                display: true
+            }
+           }
+        });
+</script>
 
     <div style="padding-left:10%;margin-top:30px;width:98%;">
         <header>
@@ -238,47 +238,47 @@
         </canvas>
 
     </div>
-    <script>
-    let ctx2 = document.getElementById("appeal_chart").getContext("2d");
+<script>
+let ctx2 = document.getElementById("appeal_chart").getContext("2d");
 
-        let appeal_chart = new Chart(ctx2, {
-          type: "bar",
-          data: {
-             labels: [{% for report in appeal_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
-                datasets: [
-                {
-                  label: "Входящие вызовы",
-                  backgroundColor: "#79AEC8",
-                  borderColor: "#417690",
-                  data: [{% for report in appeal_report %}{{ report.appeal_incoming_calls_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                },
-                {
-                  label: "Исходящие вызовы",
-                  backgroundColor: "#FA8072",
-                  borderColor: "#417690",
-                  data: [{% for report in appeal_report %}{{ report.appeal_outgoing_calls_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                },
-                {
-                  label: "Чаты",
-                  backgroundColor: "#3CB371",
-                  borderColor: "#417690",
-                  data: [{% for report in appeal_report %}{{ report.appeal_chats_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                },
-                {
-                  label: "Почта",
-                  backgroundColor: "#FFD700",
-                  borderColor: "#417690",
-                  data: [{% for report in appeal_report %}{{ report.appeal_mail_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
-                }
-            ]
-          },
-          options: {
-            title: {
-                display: true
+    let appeal_chart = new Chart(ctx2, {
+      type: "bar",
+      data: {
+         labels: [{% for report in appeal_report %}'{{ report.user_name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [
+            {
+              label: "Входящие вызовы",
+              backgroundColor: "#79AEC8",
+              borderColor: "#417690",
+              data: [{% for report in appeal_report %}{{ report.appeal_incoming_calls_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+            },
+            {
+              label: "Исходящие вызовы",
+              backgroundColor: "#FA8072",
+              borderColor: "#417690",
+              data: [{% for report in appeal_report %}{{ report.appeal_outgoing_calls_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+            },
+            {
+              label: "Чаты",
+              backgroundColor: "#3CB371",
+              borderColor: "#417690",
+              data: [{% for report in appeal_report %}{{ report.appeal_chats_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+            },
+            {
+              label: "Почта",
+              backgroundColor: "#FFD700",
+              borderColor: "#417690",
+              data: [{% for report in appeal_report %}{{ report.appeal_mail_count }}{% if not forloop.last %}, {% endif %}{% endfor %}]
             }
-           }
-        });
-    </script>
+        ]
+      },
+      options: {
+        title: {
+            display: true
+        }
+       }
+    });
+</script>
 
 <script>
   $(document).keydown(function (e) {
@@ -287,6 +287,7 @@
       }
     });
 </script>
+
   {% else %}
 
         {% include 'main/includes/non_authorised.html' %}
