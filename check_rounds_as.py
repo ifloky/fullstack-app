@@ -27,7 +27,7 @@ async def get_rounds_id_from_db():
     cursor.execute("""
                     SELECT *
                     FROM public.main_nocloserounds
-                    WHERE game_id != 2
+                    -- WHERE game_id != 2 AND cmd is null
                     ORDER BY round_id ASC
                     """)
     rounds_id = cursor.fetchall()
@@ -58,11 +58,13 @@ async def get_round_data_from_skks(skks_host, transaction_id):
     status = response.json()['_status_']
 
     if status != 0:
-        cmd = 0
-        amount = 0
+        cmd = 'Раунд не найден'
+        amount = ''
         return cmd, amount
     else:
         cmd = response.json()['cmd']
+        if cmd == 6:
+            cmd = "Выиграшная ставка"
         amount = response.json()['amount']
         return cmd, amount
 
@@ -84,16 +86,23 @@ async def main():
     start_job_time = time.perf_counter()
     print(f"Start script at {current_date}")
 
-    skks_host = f'{credentials.skks_host}/Transaction/Read'
+    # skks_host = f'{credentials.skks_host}/Transaction/Read'
+    skks_host = f'{credentials.skks_test_host}/Transaction/Read'
     db_name = 'public.main_nocloserounds'
 
-    rounds_id = await get_rounds_id_from_db()
+    # rounds_id = await get_rounds_id_from_db()
+    rounds_id = [(116383500752,), (116383797839,), (116383984010,), (116383954558,), (116383978489,), (116383948297,), (116383973040,),
+                 (116382948129,), (116382928739,), (116382532792,), (116382718187,), (116382710910,), (116382703530,), (116382115521,),
+                 (116382136807,), (116382129460,), (116382038443,), (116382101788,), (116382074123,), (116382067455,), (116382094552,),
+                 (116381804736,), (116382059695,), (116381898981,), (116381841829,), (116381834855,), (116380856639,), (116380760644,),
+                 (116380753451,), (116380492875,), (116380520863,), (116380514702,), (116380544630,), (116380502503,), (116380538811,),
+                 (116380431335,), (116379964460,), (116379941415,), (116379769448,)]
     count = 1
     for round_id in rounds_id:
         transaction_id = round_id[0]
         response_data = await get_round_data_from_skks(skks_host, transaction_id)
-        await update_round_data_to_db(db_name, transaction_id, response_data[0], response_data[1])
-        print(count, transaction_id, '-', response_data)
+        # await update_round_data_to_db(db_name, transaction_id, response_data[0], response_data[1])
+        print(count, transaction_id, '-', response_data[0], int(response_data[1] or 0) / 100, 'BYN')
         count = count + 1
 
     stop_job_time = time.perf_counter()
@@ -105,5 +114,4 @@ async def main():
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    asyncio.run(main())
