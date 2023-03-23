@@ -63,8 +63,6 @@ async def get_round_data_from_skks(skks_host, transaction_id):
         return cmd, amount
     else:
         cmd = response.json()['cmd']
-        if cmd == 6:
-            cmd = "Выиграшная ставка"
         amount = response.json()['amount']
         return cmd, amount
 
