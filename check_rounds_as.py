@@ -58,13 +58,11 @@ async def get_round_data_from_skks(skks_host, transaction_id):
     status = response.json()['_status_']
 
     if status != 0:
-        cmd = 'Раунд не найден'
-        amount = ''
+        cmd = '0'
+        amount = '0'
         return cmd, amount
     else:
         cmd = response.json()['cmd']
-        if cmd == 6:
-            cmd = "Выиграшная ставка"
         amount = response.json()['amount']
         return cmd, amount
 
@@ -102,7 +100,10 @@ async def main():
         transaction_id = round_id[0]
         response_data = await get_round_data_from_skks(skks_host, transaction_id)
         # await update_round_data_to_db(db_name, transaction_id, response_data[0], response_data[1])
-        print(count, transaction_id, '-', response_data[0], int(response_data[1] or 0) / 100, 'BYN')
+        round_type = response_data[1]
+        if round_type == 6:
+            round_type = "Выиграшная ставка"
+        print(count, transaction_id, '-', response_data[0], round_type or 0 / 100, 'BYN')
         count = count + 1
 
     stop_job_time = time.perf_counter()
