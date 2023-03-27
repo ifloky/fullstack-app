@@ -36,35 +36,41 @@ async def get_rounds_id_from_db():
 
 async def get_round_data_from_skks(skks_host, transaction_id):
     """ Эта функция получает данные из SKKS """
-    headers = {
-        'Content-Type': 'application/json; charset=utf-8',
-        'User-Agent': 'PostmanRuntime/7.29.2',
-        'Accept': '*/*',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-    }
-
-    body = {
-        "_cmd_": "Transaction/Read",
-        "tr_id": transaction_id
-    }
-
-    response = requests.post(
-        url=skks_host,
-        headers=headers,
-        json=body,
-    )
-
-    status = response.json()['_status_']
-
-    if status != 0:
-        cmd = 'Раунд не найден'
-        amount = ''
-        return cmd, amount
+    is_host_available = requests.get(skks_host).status_code == 200
+    if not is_host_available:
+        await asyncio.sleep(5)
+        print('Host not available')
+        await get_round_data_from_skks(skks_host, transaction_id)
     else:
-        cmd = response.json()['cmd']
-        amount = response.json()['amount']
-        return cmd, amount
+        headers = {
+            'Content-Type': 'application/json; charset=utf-8',
+            'User-Agent': 'PostmanRuntime/7.29.2',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+        }
+
+        body = {
+            "_cmd_": "Transaction/Read",
+            "tr_id": transaction_id
+        }
+
+        response = requests.post(
+            url=skks_host,
+            headers=headers,
+            json=body,
+        )
+
+        status = response.json()['_status_']
+
+        if status != 0:
+            cmd = 'Раунд не найден'
+            amount = ''
+            return cmd, amount
+        else:
+            cmd = response.json()['cmd']
+            amount = response.json()['amount']
+            return cmd, amount
 
 
 async def update_round_data_to_db(db_name, round_id, cmd, amount):
