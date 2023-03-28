@@ -34,7 +34,7 @@ async def get_rounds_id_from_db():
     return rounds_id
 
 
-async def get_round_data_from_skks(skks_host, transaction_id, skks_check):
+async def get_round_data_from_skks(skks_host, transaction_id):
     """ Эта функция получает данные из SKKS """
     headers = {
         'Content-Type': 'application/json; charset=utf-8',
@@ -43,44 +43,28 @@ async def get_round_data_from_skks(skks_host, transaction_id, skks_check):
         'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
     }
+
     body = {
-        "_cmd_": "System/Info"
+        "_cmd_": "Transaction/Read",
+        "tr_id": transaction_id
     }
-    is_host_available = requests.get(url=skks_check, headers=headers, json=body,).status_code == 200
-    if not is_host_available:
-        await asyncio.sleep(5)
-        print('Host not available')
-        await get_round_data_from_skks(skks_host, transaction_id, skks_check)
+
+    response = requests.post(
+        url=skks_host,
+        headers=headers,
+        json=body,
+    )
+
+    status = response.json()['_status_']
+
+    if status != 0:
+        cmd = 'Раунд не найден'
+        amount = ''
+        return cmd, amount
     else:
-        headers = {
-            'Content-Type': 'application/json; charset=utf-8',
-            'User-Agent': 'PostmanRuntime/7.29.2',
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
-        }
-
-        body = {
-            "_cmd_": "Transaction/Read",
-            "tr_id": transaction_id
-        }
-
-        response = requests.post(
-            url=skks_host,
-            headers=headers,
-            json=body,
-        )
-
-        status = response.json()['_status_']
-
-        if status != 0:
-            cmd = 'Раунд не найден'
-            amount = ''
-            return cmd, amount
-        else:
-            cmd = response.json()['cmd']
-            amount = response.json()['amount']
-            return cmd, amount
+        cmd = response.json()['cmd']
+        amount = response.json()['amount']
+        return cmd, amount
 
 
 async def update_round_data_to_db(db_name, round_id, cmd, amount):
@@ -101,14 +85,13 @@ async def main():
     print(f"Start script at {current_date}")
 
     skks_host = f'{credentials.skks_host}/Transaction/Read'
-    skks_check = 'https://gcb-skks.grandcasino.by/System/Info'
     db_name = 'public.main_nocloserounds'
 
     rounds_id = await get_rounds_id_from_db()
     count = 1
     for round_id in rounds_id:
         transaction_id = round_id[0]
-        response_data = await get_round_data_from_skks(skks_host, transaction_id, skks_check)
+        response_data = await get_round_data_from_skks(skks_host, transaction_id)
         await update_round_data_to_db(db_name, transaction_id, response_data[0], response_data[1])
         print(count, transaction_id, '-', response_data[0], int(response_data[1] or 0) / 100, 'BYN')
         count = count + 1
