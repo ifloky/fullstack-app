@@ -55,6 +55,7 @@ async def get_round_data_from_skks_with_timeout(skks_host, transaction_id):
                 json=body,
             )
         except TimeoutError:
+            print('Упс что-то пошло не так!')
             continue
 
         status = response.json()['_status_']
