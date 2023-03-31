@@ -47,30 +47,26 @@ async def get_round_data_from_skks_with_timeout(skks_host, transaction_id):
         "_cmd_": "Transaction/Read",
         "tr_id": transaction_id
     }
-    try:
-        response = requests.post(
-            url=skks_host,
-            headers=headers,
-            json=body,
-        )
-    except TimeoutError:
-        print('Ошибка подключения к серверу СККС')
-        response = requests.post(
-            url=skks_host,
-            headers=headers,
-            json=body,
-        )
+    while True:
+        try:
+            response = requests.post(
+                url=skks_host,
+                headers=headers,
+                json=body,
+            )
+        except TimeoutError:
+            continue
 
-    status = response.json()['_status_']
+        status = response.json()['_status_']
 
-    if status != 0:
-        cmd = 'Раунд не найден'
-        amount = ''
-        return cmd, amount
-    else:
-        cmd = response.json()['cmd']
-        amount = response.json()['amount']
-        return cmd, amount
+        if status != 0:
+            cmd = 'Раунд не найден'
+            amount = ''
+            return cmd, amount
+        else:
+            cmd = response.json()['cmd']
+            amount = response.json()['amount']
+            return cmd, amount
 
 
 async def update_round_data_to_db(db_name, round_id, cmd, amount):
