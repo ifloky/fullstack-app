@@ -1,11 +1,10 @@
 import psycopg2
 import requests
-from urllib3.exceptions import ConnectTimeoutError
-
 import credentials
 import time
 import asyncio
 
+from urllib3.exceptions import ConnectTimeoutError
 from datetime import datetime, timedelta
 from memory_profiler import memory_usage
 
@@ -17,7 +16,7 @@ async def db_connect():
         database=credentials.db_name,
         user=credentials.db_username,
         password=credentials.db_password,
-        connect_timeout=3
+        connect_timeout=1
     )
     cursor = conn.cursor()
     return cursor
