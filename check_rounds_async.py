@@ -119,7 +119,7 @@ async def main():
     rounds_id = await get_rounds_id_from_db()
 
     # Определяем максимальное количество одновременных запросов
-    max_concurrent_requests = 200
+    max_concurrent_requests = 300
     sem = asyncio.Semaphore(max_concurrent_requests)
 
     tasks = []

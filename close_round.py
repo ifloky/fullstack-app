@@ -47,9 +47,9 @@ def main():
 
     # account_id = 1268338164  # Atrides
     account_id = 603031708  # ПУПКИНА ОЛЬГА АНДРЕЕВНА, BLR, КН2461094
-    round_id = 118009153291  # Берем из раунда ставки
-    transaction_id = 118011662387  # Берем из раунда выигрыша
-    amount = 0
+    round_id = 118132174769  # Берем из раунда ставки
+    transaction_id = 118132175023  # Берем из раунда выигрыша
+    amount = 120
     actual_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
     if amount == 0:
