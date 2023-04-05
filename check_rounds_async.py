@@ -16,7 +16,7 @@ async def db_connect():
         database=credentials.db_name,
         user=credentials.db_username,
         password=credentials.db_password,
-        connect_timeout=3
+        connect_timeout=1
     )
     cursor = conn.cursor()
     return cursor
