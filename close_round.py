@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from memory_profiler import memory_usage
 
 
-def close_round_data_from_skks(skks_host, round_id, transaction_id, amount, actual_time):
+def close_round_data_from_skks(skks_host, account_id, round_id, transaction_id, amount, actual_time):
     """ Эта функция получает данные из SKKS """
     headers = {
         'Content-Type': 'application/json; charset=utf-8',
@@ -19,7 +19,7 @@ def close_round_data_from_skks(skks_host, round_id, transaction_id, amount, actu
     body = {
         "_cmd_": "Transaction/Win",
         "actual_time": actual_time,
-        "account_id": 603031708,
+        "account_id": account_id,
         "round_id": round_id,
         "tr_id": transaction_id,
         "amount": amount,
@@ -45,12 +45,17 @@ def main():
 
     skks_host = f'{credentials.skks_test_host}/Transaction/Win'
 
-    round_id = 116609748131  # Берем из раунда ставки
-    transaction_id = 116609748132  # Берем из раунда выигрыша
+    # account_id = 1268338164  # Atrides
+    account_id = 603031708  # ПУПКИНА ОЛЬГА АНДРЕЕВНА, BLR, КН2461094
+    round_id = 118009153291  # Берем из раунда ставки
+    transaction_id = 118011662387  # Берем из раунда выигрыша
     amount = 0
     actual_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
-    close_round_data_from_skks(skks_host, round_id, transaction_id, amount, actual_time)
+    if amount == 0:
+        transaction_id = round_id + 1  # Для нулевых раундов берем ID из раунда выигрыша и увеличиваем на единицу
+
+    close_round_data_from_skks(skks_host, account_id, round_id, transaction_id, amount, actual_time)
 
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
