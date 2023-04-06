@@ -1,10 +1,10 @@
+import json
+import aiohttp
 import psycopg2
-import requests
 import credentials
 import time
 import asyncio
 
-from urllib3.exceptions import ConnectTimeoutError
 from datetime import datetime, timedelta
 from memory_profiler import memory_usage
 
@@ -50,42 +50,29 @@ async def get_round_data_from_skks(skks_host, transaction_id):
         "tr_id": transaction_id
     }
 
-    try:
-        response = requests.post(
-            url=skks_host,
-            headers=headers,
-            json=body,
-        )
+    while True:
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(skks_host, headers=headers, json=body) as response:
+                    response_data = await response.read()
+                    response_json = json.loads(response_data.decode('utf-8'))
 
-        status = response.json()['_status_']
+                    status = response_json['_status_']
 
-        if status != 0:
-            cmd = 'Раунд не найден'
-            amount = ''
-            return cmd, amount
-        else:
-            cmd = response.json()['cmd']
-            amount = response.json()['amount']
-            return cmd, amount
-    except (ConnectionError, ConnectTimeoutError) as e:
-        print(e)
-        await asyncio.sleep(5)
-        response = requests.post(
-            url=skks_host,
-            headers=headers,
-            json=body,
-        )
+                    if status != 0:
+                        cmd = 'Раунд не найден'
+                        amount = ''
+                        return cmd, amount
+                    else:
+                        cmd = response_json['cmd']
+                        amount = response_json['amount']
+                        return cmd, amount
+        except (aiohttp.ClientConnectionError, asyncio.TimeoutError) as e:
+            print(e)
+            await asyncio.sleep(5)
+            continue
 
-        status = response.json()['_status_']
-
-        if status != 0:
-            cmd = 'Раунд не найден'
-            amount = ''
-            return cmd, amount
-        else:
-            cmd = response.json()['cmd']
-            amount = response.json()['amount']
-            return cmd, amount
+        break
 
 
 async def update_round_data_to_db(db_name, round_id, cmd, amount):
