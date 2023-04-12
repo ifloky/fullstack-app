@@ -2028,11 +2028,9 @@ class CloseHoldRoundView(View):
         transaction_id = request.POST.get('transaction_id')
         amount = request.POST.get('amount')
 
-        skks_host = 'http://10.100.252.248:8180/Transaction/Win'
+        host = f'{credentials.skks_test_host}/Transaction/Win'
 
         actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
-
-        print(account_id, round_id, transaction_id, amount, actual_time, skks_host)
 
         headers = {
             'Content-Type': 'application/json; charset=utf-8',
@@ -2055,7 +2053,7 @@ class CloseHoldRoundView(View):
         }
 
         response = requests.post(
-            url=skks_host,
+            url=host,
             headers=headers,
             json=body,
         )
