@@ -2008,6 +2008,7 @@ class CloseHoldRoundView(View):
     form_class = CloseHoldRoundForm
     template_name = 'main/hold_round.html'
     success_url = reverse_lazy('main:hold_round')
+    status_out = None
 
     def get(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
@@ -2058,16 +2059,24 @@ class CloseHoldRoundView(View):
             headers=headers,
             json=body,
         )
-        print(response.text)
 
         status = response.json()['_status_']
-        print(status)
+
+        if status == 0:
+            status_out = 'Операция выполненна успешно'
+        elif status == 485:
+            status_out = 'Раунд уже закрыт'
+        elif status == 403:
+            status_out = 'Некорректный УИ транзакции'
+        else:
+            status_out = status
 
         data = {
             'site_adm': site_adm_users,
             'response': response.json(),
             'superuser': User.objects.filter(is_superuser=True),
             'form': self.form_class,
+            'status': status_out
         }
 
         return render(request, self.template_name, data)

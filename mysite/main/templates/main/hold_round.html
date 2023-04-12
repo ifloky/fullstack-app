@@ -124,7 +124,14 @@
             {{ form.as_p }}<p class="flex-wrap">
             <button class="btn btn-success" type="submit">Сохранить</button>
         </form>
+
+        {% if status is not None %}
+        <b>Статус операции: {{ status }}</b><br>
+        {% endif %}
     </div>
+
+
+
 
   {% else %}
 
