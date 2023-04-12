@@ -2068,6 +2068,8 @@ class CloseHoldRoundView(View):
             status_out = 'Раунд уже закрыт'
         elif status == 403:
             status_out = 'Некорректный УИ транзакции'
+        elif status == 455:
+            status_out = 'Раунд не найден'
         else:
             status_out = status
 
