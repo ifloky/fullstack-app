@@ -28,7 +28,7 @@ from django.urls.base import reverse_lazy
 
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm, GameListFromSiteForm
-from .forms import CRMCheckForm, GameDisableListForm
+from .forms import CRMCheckForm, GameDisableListForm, CloseHoldRoundForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
 from .models import GameListFromSite, GameDisableList
@@ -1967,7 +1967,6 @@ def get_no_close_rounds_count():
 
 
 def no_close_rounds_rep(request):
-
     site_adm_users = User.objects.filter(groups__name='site_adm')
     heads = User.objects.filter(groups__name='heads')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
@@ -1985,7 +1984,6 @@ def no_close_rounds_rep(request):
 
 
 def no_close_rounds_report(request):
-
     site_adm_users = User.objects.filter(groups__name='site_adm')
     heads = User.objects.filter(groups__name='heads')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
@@ -2004,3 +2002,72 @@ def no_close_rounds_report(request):
     }
 
     return render(request, "main/rounds.html", data)
+
+
+class CloseHoldRoundView(View):
+    form_class = CloseHoldRoundForm
+    template_name = 'main/hold_round.html'
+    success_url = reverse_lazy('main:hold_round')
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+
+        data = {
+            'site_adm': site_adm_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+        }
+        return render(request, self.template_name, data)
+
+    def post(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+
+        account_id = request.POST.get('account_id')
+        round_id = request.POST.get('round_id')
+        transaction_id = request.POST.get('transaction_id')
+        amount = request.POST.get('amount')
+
+        skks_host = 'http://10.100.252.248:8180/Transaction/Win'
+
+        actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+        print(account_id, round_id, transaction_id, amount, actual_time, skks_host)
+
+        headers = {
+            'Content-Type': 'application/json; charset=utf-8',
+            'User-Agent': 'PostmanRuntime/7.29.2',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+        }
+
+        body = {
+            "_cmd_": "Transaction/Win",
+            "actual_time": actual_time,
+            "account_id": int(account_id),
+            "round_id": int(round_id),
+            "tr_id": int(transaction_id),
+            "amount": int(amount),
+            "tr_domain": 1,
+            "currency_id": 1,
+
+        }
+
+        response = requests.post(
+            url=skks_host,
+            headers=headers,
+            json=body,
+        )
+        print(response.text)
+
+        status = response.json()['_status_']
+        print(status)
+
+        data = {
+            'site_adm': site_adm_users,
+            'response': response.json(),
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+        }
+
+        return render(request, self.template_name, data)

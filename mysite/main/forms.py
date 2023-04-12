@@ -495,3 +495,34 @@ class GameDisableListForm(ModelForm):
             'game_disable_date': 'Дата отключения',
             'user_name': 'Пользователь',
         }
+
+
+class CloseHoldRoundForm(forms.Form):
+    accounts_chooses = [603031708, 1268338164]
+
+    accounts_list = [(account, account) for account in accounts_chooses]
+
+    account_id = forms.ChoiceField(choices=accounts_list, required=True)
+    round_id = forms.CharField(max_length=12, required=True)
+    transaction_id = forms.CharField(max_length=12, required=True)
+    amount = forms.CharField(max_length=10, required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(CloseHoldRoundForm, self).__init__(*args, **kwargs)
+        self.fields['account_id'].widget.attrs.update({'class': 'form-control', 'id': 'account_id'})
+        self.fields['round_id'].widget.attrs.update({'class': 'form-control', 'id': 'round_id'})
+        self.fields['transaction_id'].widget.attrs.update({'class': 'form-control', 'id': 'transaction_id'})
+        self.fields['amount'].widget.attrs.update({'class': 'form-control', 'id': 'amount'})
+
+    def clean(self):
+        cleaned_data = super(CloseHoldRoundForm, self).clean()
+        account_id = cleaned_data.get('account_id')
+        round_id = cleaned_data.get('round_id')
+        transaction_id = cleaned_data.get('transaction_id')
+        amount = cleaned_data.get('amount')
+
+        if account_id and round_id and transaction_id and amount:
+            if not account_id.isdigit() or not round_id.isdigit() or not transaction_id.isdigit() or not amount.isdigit():
+                raise forms.ValidationError('Поля должны содержать только цифры')
+
+        return cleaned_data

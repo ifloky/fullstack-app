@@ -45,4 +45,6 @@ urlpatterns = [
     path('missing_games/', views.MissingGamesListView.as_view(), name='missing_games'),
     path('rounds_rep/', views.no_close_rounds_rep, name='rounds_rep'),
     path('rounds/', views.no_close_rounds_report, name='rounds'),
+    path('hold_round/', views.CloseHoldRoundView.as_view(), name='hold_round'),
+
 ]

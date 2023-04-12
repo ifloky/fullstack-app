@@ -33,7 +33,7 @@ def close_round_data_from_skks(skks_host, account_id, round_id, transaction_id, 
         headers=headers,
         json=body,
     )
-
+    print(response.text)
     status = response.json()['_status_']
     print(status)
 
@@ -47,9 +47,9 @@ def main():
 
     # account_id = 1268338164  # Atrides
     account_id = 603031708  # ПУПКИНА ОЛЬГА АНДРЕЕВНА, BLR, КН2461094
-    round_id = 118132174769  # Берем из раунда ставки
-    transaction_id = 118132175023  # Берем из раунда выигрыша
-    amount = 120
+    round_id = 119082783540  # Берем из раунда ставки
+    transaction_id = 119082783760  # Берем из раунда выигрыша
+    amount = 15
     actual_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
     if amount == 0:

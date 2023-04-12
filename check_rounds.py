@@ -67,6 +67,7 @@ async def get_round_data_from_skks(skks_host, transaction_id):
             cmd = response.json()['cmd']
             amount = response.json()['amount']
             return cmd, amount
+
     except (ConnectionError, ConnectTimeoutError) as e:
         print(e)
         await asyncio.sleep(5)
