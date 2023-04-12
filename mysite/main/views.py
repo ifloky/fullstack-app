@@ -2060,23 +2060,49 @@ class CloseHoldRoundView(View):
 
         status = response.json()['_status_']
 
-        if status == 0:
-            status_out = 'Операция выполненна успешно'
-        elif status == 485:
-            status_out = 'Раунд уже закрыт'
-        elif status == 403:
-            status_out = 'Некорректный УИ транзакции'
-        elif status == 455:
-            status_out = 'Раунд не найден'
-        else:
-            status_out = status
+        desc_status = get_description_of_error_code(status)
 
         data = {
             'site_adm': site_adm_users,
             'response': response.json(),
             'superuser': User.objects.filter(is_superuser=True),
             'form': self.form_class,
-            'status': status_out
+            'status': desc_status
         }
 
         return render(request, self.template_name, data)
+
+
+def get_description_of_error_code(error_code):
+    cursor, connection = None, None
+
+    description = []
+
+    sql_query = (f'''
+                SELECT error_description_ru
+                    FROM public.main_skkserrors
+                    WHERE error_code = {error_code}
+                ''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        description = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return description[0][0]
