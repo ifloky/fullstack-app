@@ -2102,7 +2102,8 @@ class CloseHoldRoundView(View):
             'response': response.json(),
             'superuser': User.objects.filter(is_superuser=True),
             'form': self.form_class,
-            'status': desc_status
+            'status': desc_status,
+            'code': status,
         }
 
         return render(request, self.template_name, data)
