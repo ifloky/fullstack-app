@@ -5,6 +5,7 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
+    gap: 5vw;
   }
 
   .flex-wrap {
@@ -41,7 +42,7 @@
   }
 
   button {
-    min-width: 120px;
+    min-width: 160px;
     max-width: 200px;
     padding: 6px 30px;
     margin: 8px 0;
@@ -124,7 +125,20 @@
   }
 
   .hold__status {
-    
+    padding: 5px 10px;
+    margin-left: 40px; 
+    margin-top: 0px; 
+    width: 94%; 
+    height: 50px;
+    display: flex; 
+    align-items: center; 
+    border: 1px solid #ced4da; 
+    border-radius: 10px
+  }
+
+  input,select {
+    min-width: 160px;
+    margin: 10px 0;
   }
 </style>
 
@@ -132,29 +146,18 @@
 
     <div style="padding: 40px 0px; padding-left: 160px; margin-top: 30px; width: 100%; display: flex; flex-direction: column;">
         <form class='hold__form' action="" method="post">
-            {% csrf_token %}<p class="flex-wrap">
-            {{ form.as_p }}<p class="flex-wrap" style="margin: 0">
+            <p class="flex-wrap">
+            {{ form.as_p }}
             <button class="btn btn-success" type="submit">Сохранить</button>
+            <p class="flex-wrap" style="margin: 0"></p>
+            {% csrf_token %}
         </form>
 
         {% if status is not None %}
-        <b class='hold__status' style="padding: 5px 10px;margin-left: 40px; margin-top: 20px; width: 200px; height: 50px;display: flex; align-items: center; border: 1px solid #ced4da; border-radius: 10px">Статус операции: <span id="status" style="margin-left: 10px">{{ status }}</status></b><br>
+        <b class='hold__status'>Статус операции: {{ status }}</b><br>
         {% endif %}
     </div>
-  <script>
-    window.addEventListener("load", () => {
-      let sts = document.querySelector('#status').innerHTML;
-      if (Number(sts) === 0 || sts == null) {
-        document.querySelector('.hold__status').style.borderColor = '#ced4da'
-      } else if (Number(sts) > 1 && Number(sts) < 300) {
-        document.querySelector('.hold__status').style.borderColor = 'green'
-      } else if (Number(sts) > 299 && Number(sts) < 399) {
-        document.querySelector('.hold__status').style.borderColor = 'orange'
-      } else {
-        document.querySelector('.hold__status').style.borderColor = 'red'
-      }
-    });
-  </script>
+
 
 
 
