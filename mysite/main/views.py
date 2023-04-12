@@ -2020,6 +2020,41 @@ class CloseHoldRoundView(View):
         }
         return render(request, self.template_name, data)
 
+    @staticmethod
+    def get_description_of_error_code(error_code):
+        cursor, connection = None, None
+
+        description = []
+
+        sql_query = (f'''
+                    SELECT error_description_ru
+                        FROM public.main_skkserrors
+                        WHERE error_code = {error_code}
+                    ''')
+
+        try:
+            connection = psycopg2.connect(database=credentials.db_name,
+                                          user=credentials.db_username,
+                                          password=credentials.db_password,
+                                          host=credentials.db_host,
+                                          port=credentials.db_port,
+                                          )
+
+            cursor = connection.cursor()
+            cursor.execute(sql_query)
+
+            description = cursor.fetchall()
+
+        except (Exception, psycopg2.Error) as error:
+            print("Error while connecting to PostgresSQL", error)
+
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+
+        return description[0][0]
+
     def post(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
 
@@ -2060,7 +2095,7 @@ class CloseHoldRoundView(View):
 
         status = response.json()['_status_']
 
-        desc_status = get_description_of_error_code(status)
+        desc_status = self.get_description_of_error_code(status)
 
         data = {
             'site_adm': site_adm_users,
@@ -2071,38 +2106,3 @@ class CloseHoldRoundView(View):
         }
 
         return render(request, self.template_name, data)
-
-
-def get_description_of_error_code(error_code):
-    cursor, connection = None, None
-
-    description = []
-
-    sql_query = (f'''
-                SELECT error_description_ru
-                    FROM public.main_skkserrors
-                    WHERE error_code = {error_code}
-                ''')
-
-    try:
-        connection = psycopg2.connect(database=credentials.db_name,
-                                      user=credentials.db_username,
-                                      password=credentials.db_password,
-                                      host=credentials.db_host,
-                                      port=credentials.db_port,
-                                      )
-
-        cursor = connection.cursor()
-        cursor.execute(sql_query)
-
-        description = cursor.fetchall()
-
-    except (Exception, psycopg2.Error) as error:
-        print("Error while connecting to PostgresSQL", error)
-
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
-
-    return description[0][0]
