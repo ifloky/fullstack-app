@@ -136,6 +136,28 @@
     border-radius: 10px
   }
 
+  .hold__code {
+    padding: 5px 10px;
+    margin-left: 40px;
+    margin-top: 0px;
+    width: 94%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ced4da;
+    border-radius: 10px
+  }
+
+  .description {
+    padding: 5px 10px;
+    margin-left: 40px;
+    margin-top: 0px;
+    width: 94%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+  }
+
   input,select {
     min-width: 160px;
     margin: 10px 0;
@@ -154,11 +176,18 @@
         </form>
 
         {% if status is not None %}
-        <b class='hold__status'>Код ответа: {{ code }}</b><br>
+        <b class='hold__code'>Код ответа: {{ code }}</b><br>
         <b class='hold__status'>Статус операции: {{ status }}</b><br>
         {% endif %}
     </div>
 
+    <div style="padding: 0px 0px; padding-left: 200px; margin-top: 0px; width: 100%; display: flex; flex-direction: column;">
+        <b class="description">
+            Round id: - Берем из ставки<br>
+            Transaction id:: - Берем из выигрыша<br>
+            Amount: - В копейках, если выигрыш больше 1р то это 100 копеек
+        </b>
+    </div>
 
 
 
