@@ -2186,8 +2186,8 @@ class TransactionCancelView(View):
         body = {
             "_cmd_": "Transaction/Cancel",
             "actual_time": actual_time,  # тут должна быть текущая дата
-            "tr_id": tr_id,  # тут надо менять каждый раз номер транзакции
-            "canceled_tr_id": transaction_id
+            "tr_id": int(tr_id),  # тут надо менять каждый раз номер транзакции
+            "canceled_tr_id": int(transaction_id),
         }
 
         response = requests.post(
