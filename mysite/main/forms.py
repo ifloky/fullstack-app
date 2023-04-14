@@ -526,3 +526,21 @@ class CloseHoldRoundForm(forms.Form):
                 raise forms.ValidationError('Поля должны содержать только цифры')
 
         return cleaned_data
+
+
+class TransactionCancelForm(forms.Form):
+    transaction_id = forms.CharField(max_length=12, required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(TransactionCancelForm, self).__init__(*args, **kwargs)
+        self.fields['transaction_id'].widget.attrs.update({'class': 'form-control', 'id': 'transaction_id'})
+
+    def clean(self):
+        cleaned_data = super(TransactionCancelForm, self).clean()
+        transaction_id = cleaned_data.get('transaction_id')
+
+        if transaction_id:
+            if not transaction_id.isdigit():
+                raise forms.ValidationError('Поля должны содержать только цифры')
+
+        return cleaned_data

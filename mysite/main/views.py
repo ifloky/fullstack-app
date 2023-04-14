@@ -1,3 +1,4 @@
+import random
 import credentials
 import requests
 import datetime
@@ -28,7 +29,7 @@ from django.urls.base import reverse_lazy
 
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm, GameListFromSiteForm
-from .forms import CRMCheckForm, GameDisableListForm, CloseHoldRoundForm
+from .forms import CRMCheckForm, GameDisableListForm, CloseHoldRoundForm, TransactionCancelForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
 from .models import GameListFromSite, GameDisableList
@@ -2104,6 +2105,110 @@ class CloseHoldRoundView(View):
             'form': self.form_class,
             'status': desc_status,
             'code': status,
+        }
+
+        return render(request, self.template_name, data)
+
+
+class TransactionCancelView(View):
+    form_class = TransactionCancelForm
+    template_name = 'main/transaction_cancel.html'
+    success_url = reverse_lazy('main:transaction_cancel')
+    status_out = None
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+        data = {
+            'site_adm': site_adm_users,
+            'risk_heads': risk_heads_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+        }
+        return render(request, self.template_name, data)
+
+    @staticmethod
+    def get_description_of_error_code(error_code):
+        cursor, connection = None, None
+
+        description = []
+
+        sql_query = (f'''
+                    SELECT error_description_ru
+                        FROM public.main_skkserrors
+                        WHERE error_code = {error_code}
+                    ''')
+
+        try:
+            connection = psycopg2.connect(database=credentials.db_name,
+                                          user=credentials.db_username,
+                                          password=credentials.db_password,
+                                          host=credentials.db_host,
+                                          port=credentials.db_port,
+                                          )
+
+            cursor = connection.cursor()
+            cursor.execute(sql_query)
+
+            description = cursor.fetchall()
+
+        except (Exception, psycopg2.Error) as error:
+            print("Error while connecting to PostgresSQL", error)
+
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+
+        return description[0][0]
+
+    def post(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+        transaction_id = request.POST.get('transaction_id')
+
+        host = f'{credentials.skks_host}/Transaction/Cancel'
+
+        actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+        tr_id = random.randrange(10000000, 99999999)
+
+        headers = {
+            'Content-Type': 'application/json; charset=utf-8',
+            'User-Agent': 'PostmanRuntime/7.29.2',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+        }
+
+        body = {
+            "_cmd_": "Transaction/Cancel",
+            "actual_time": actual_time,  # тут должна быть текущая дата
+            "tr_id": tr_id,  # тут надо менять каждый раз номер транзакции
+            "canceled_tr_id": transaction_id
+        }
+
+        response = requests.post(
+            url=host,
+            headers=headers,
+            json=body,
+        )
+
+        status = response.json()['_status_']
+
+        desc_status = self.get_description_of_error_code(status)
+
+        data = {
+            'site_adm': site_adm_users,
+            'risk_heads': risk_heads_users,
+            'response': response.json(),
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+            'status': desc_status,
+            'code': status,
+            'tr_id': tr_id,
         }
 
         return render(request, self.template_name, data)
