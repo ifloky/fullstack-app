@@ -72,8 +72,6 @@ async def get_round_data_from_skks(skks_host, transaction_id):
             await asyncio.sleep(5)
             continue
 
-        break
-
 
 async def update_round_data_to_db(db_name, round_id, cmd, amount):
     """ Эта функция обновляет данные в базе данных """

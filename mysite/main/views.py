@@ -29,7 +29,7 @@ from django.urls.base import reverse_lazy
 
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm, GameListFromSiteForm
-from .forms import CRMCheckForm, GameDisableListForm, CloseHoldRoundForm, TransactionCancelForm
+from .forms import CRMCheckForm, GameDisableListForm, CloseHoldRoundForm, TransactionCancelForm, CreatePayoutRequestForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
 from .models import GameListFromSite, GameDisableList
@@ -2211,4 +2211,22 @@ class TransactionCancelView(View):
             'tr_id': tr_id,
         }
 
+        return render(request, self.template_name, data)
+
+
+class CreatePayoutRequestView(View):
+    form_class = CreatePayoutRequestForm
+    template_name = 'main/create_payout_request.html'
+    success_url = reverse_lazy('main:create_payout_request')
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+        data = {
+            'site_adm': site_adm_users,
+            'risk_heads': risk_heads_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+        }
         return render(request, self.template_name, data)

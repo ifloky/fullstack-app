@@ -47,5 +47,6 @@ urlpatterns = [
     path('rounds/', views.no_close_rounds_report, name='rounds'),
     path('hold_round/', views.CloseHoldRoundView.as_view(), name='hold_round'),
     path('transaction_cancel/', views.TransactionCancelView.as_view(), name='transaction_cancel'),
+    path('create_payout_request/', views.CreatePayoutRequestView.as_view(), name='create_payout_request'),
 
 ]

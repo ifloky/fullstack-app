@@ -522,7 +522,8 @@ class CloseHoldRoundForm(forms.Form):
         amount = cleaned_data.get('amount')
 
         if account_id and round_id and transaction_id and amount:
-            if not account_id.isdigit() or not round_id.isdigit() or not transaction_id.isdigit() or not amount.isdigit():
+            if not account_id.isdigit() or not round_id.isdigit() \
+                    or not transaction_id.isdigit() or not amount.isdigit():
                 raise forms.ValidationError('Поля должны содержать только цифры')
 
         return cleaned_data
@@ -541,6 +542,75 @@ class TransactionCancelForm(forms.Form):
 
         if transaction_id:
             if not transaction_id.isdigit():
+                raise forms.ValidationError('Поля должны содержать только цифры')
+
+        return cleaned_data
+
+
+class CreatePayoutRequestForm(forms.Form):
+    money_type_chooses = [('1', 'Наличные деньги'), ('2', 'Безналичные деньги'), ('3', 'Электронные деньги')]
+    terminal_id_chooses = [('1', 'ВВОД bePaid'), ('2', 'ВЫВОД bePaid'), ('3', 'ВВОД  iPay'), ('7', 'ВЫВОД ОПЛАТИ')]
+    document_type_chooses = [('1', 'Паспорт'),
+                             ('2', 'Вид на жительство'),
+                             ('3', 'Удостоверение беженца'),
+                             ('7', 'Идентификационная карта гражданина РБ'),
+                             ('8', 'Биометрический вид на жительство в РБ иностранного гражданина'),
+                             ('9', 'Биометрический вид на жительство в РБ лица без гражданства')]
+
+    # payout_request_id = forms.IntegerField(required=True) Генерируется автоматически
+    account_id = forms.CharField(max_length=12, required=True, label='Номер счета')
+    terminal_id = forms.ChoiceField(choices=terminal_id_chooses, required=True, label='ID Терминал')
+    money_type = forms.ChoiceField(choices=money_type_chooses, required=True, label='Тип денег')
+    amount = forms.CharField(max_length=6, required=True, label='Сумма, в копейках')
+    document_country = forms.CharField(max_length=3, required=True, label='Страна документа')
+    document_type = forms.ChoiceField(choices=document_type_chooses, required=True, label='Тип документа')
+    document_number = forms.CharField(max_length=20, required=True, label='Номер документа')
+    personal_number = forms.CharField(max_length=20, required=False, label='Личный номер')
+    last_name = forms.CharField(max_length=50, required=True, label='Фамилия')
+    first_name = forms.CharField(max_length=50, required=True, label='Имя')
+    middle_name = forms.CharField(max_length=50, required=True, label='Отчество')
+    document_issue_agency = forms.CharField(max_length=150, required=True, label='Кем выдан документ')
+    document_issue_date = forms.DateField(required=True, label='Дата выдачи документа')
+
+    def __init__(self, *args, **kwargs):
+        super(CreatePayoutRequestForm, self).__init__(*args, **kwargs)
+        # self.fields['payout_request_id'].widget.attrs.update({'class': 'form-control', 'id': 'payout_request_id'})
+        self.fields['account_id'].widget.attrs.update({'class': 'form-control', 'id': 'account_id'})
+        self.fields['terminal_id'].widget.attrs.update({'class': 'form-control', 'id': 'terminal_id'})
+        self.fields['money_type'].widget.attrs.update({'class': 'form-control', 'id': 'money_type'})
+        self.fields['amount'].widget.attrs.update({'class': 'form-control', 'id': 'amount'})
+        self.fields['document_country'].widget.attrs.update({'class': 'form-control', 'id': 'document_country'})
+        self.fields['document_type'].widget.attrs.update({'class': 'form-control', 'id': 'document_type'})
+        self.fields['document_number'].widget.attrs.update({'class': 'form-control', 'id': 'document_number'})
+        self.fields['personal_number'].widget.attrs.update({'class': 'form-control', 'id': 'personal_number'})
+        self.fields['last_name'].widget.attrs.update({'class': 'form-control', 'id': 'last_name'})
+        self.fields['first_name'].widget.attrs.update({'class': 'form-control', 'id': 'first_name'})
+        self.fields['middle_name'].widget.attrs.update({'class': 'form-control', 'id': 'middle_name'})
+        self.fields['document_issue_agency'].widget.attrs.update(
+            {'class': 'form-control', 'id': 'document_issue_agency'})
+        self.fields['document_issue_date'].widget.attrs.update({'class': 'form-control', 'id': 'document_issue_date'})
+
+    def clean(self):
+        cleaned_data = super(CreatePayoutRequestForm, self).clean()
+        payout_request_id = cleaned_data.get('payout_request_id')
+        account_id = cleaned_data.get('account_id')
+        money_type = cleaned_data.get('money_type')
+        amount = cleaned_data.get('amount')
+        document_country = cleaned_data.get('document_country')
+        document_type = cleaned_data.get('document_type')
+        document_number = cleaned_data.get('document_number')
+        personal_number = cleaned_data.get('personal_number')
+        last_name = cleaned_data.get('last_name')
+        first_name = cleaned_data.get('first_name')
+        middle_name = cleaned_data.get('middle_name')
+        document_issue_agency = cleaned_data.get('document_issue_agency')
+        document_issue_date = cleaned_data.get('document_issue_date')
+
+        if payout_request_id and account_id and money_type and amount and document_country and document_type \
+                and document_number and personal_number and last_name and first_name and middle_name \
+                and document_issue_agency and document_issue_date:
+            if not payout_request_id.isdigit() or not account_id.isdigit() or not money_type.isdigit() \
+                    or not amount.isdigit() or not document_type.isdigit():
                 raise forms.ValidationError('Поля должны содержать только цифры')
 
         return cleaned_data
