@@ -558,7 +558,7 @@ class CreatePayoutRequestForm(forms.Form):
                              ('9', 'Биометрический вид на жительство в РБ лица без гражданства')]
 
     # payout_request_id = forms.IntegerField(required=True) Генерируется автоматически
-    account_id = forms.CharField(max_length=12, required=True, label='Номер счета')
+    account_id = forms.CharField(max_length=12, required=True, label='ID Игрока')
     terminal_id = forms.ChoiceField(choices=terminal_id_chooses, required=True, label='ID Терминал')
     money_type = forms.ChoiceField(choices=money_type_chooses, required=True, label='Тип денег')
     amount = forms.CharField(max_length=6, required=True, label='Сумма, в копейках')
@@ -578,8 +578,11 @@ class CreatePayoutRequestForm(forms.Form):
         self.fields['account_id'].widget.attrs.update({'class': 'form-control', 'id': 'account_id'})
         self.fields['terminal_id'].widget.attrs.update({'class': 'form-control', 'id': 'terminal_id'})
         self.fields['money_type'].widget.attrs.update({'class': 'form-control', 'id': 'money_type'})
-        self.fields['amount'].widget.attrs.update({'class': 'form-control', 'id': 'amount'})
-        self.fields['document_country'].widget.attrs.update({'class': 'form-control', 'id': 'document_country'})
+        self.fields['amount'].widget.attrs.update({'class': 'form-control', 'id': 'amount',
+                                                   'placeholder': 'Сумма в копейках'})
+        self.fields['document_country'].widget.attrs.update({'class': 'form-control', 'id': 'document_country',
+                                                             'placeholder': 'В формате ISO 3166-1 alpha-3. '
+                                                                            'Например "BLR", "RUS", "UKR", "CHN"'})
         self.fields['document_type'].widget.attrs.update({'class': 'form-control', 'id': 'document_type'})
         self.fields['document_number'].widget.attrs.update({'class': 'form-control', 'id': 'document_number'})
         self.fields['personal_number'].widget.attrs.update({'class': 'form-control', 'id': 'personal_number'})
@@ -588,7 +591,8 @@ class CreatePayoutRequestForm(forms.Form):
         self.fields['middle_name'].widget.attrs.update({'class': 'form-control', 'id': 'middle_name'})
         self.fields['document_issue_agency'].widget.attrs.update(
             {'class': 'form-control', 'id': 'document_issue_agency'})
-        self.fields['document_issue_date'].widget.attrs.update({'class': 'form-control', 'id': 'document_issue_date'})
+        self.fields['document_issue_date'].widget.attrs.update({'class': 'form-control', 'id': 'document_issue_date',
+                                                                'placeholder': 'В формате YYYY-MM-DD'})
 
     def clean(self):
         cleaned_data = super(CreatePayoutRequestForm, self).clean()
