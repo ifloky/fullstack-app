@@ -549,7 +549,7 @@ class TransactionCancelForm(forms.Form):
 
 class CreatePayoutRequestForm(forms.Form):
     money_type_chooses = [('1', 'Наличные деньги'), ('2', 'Безналичные деньги'), ('3', 'Электронные деньги')]
-    terminal_id_chooses = [('1', 'ВВОД bePaid'), ('2', 'ВЫВОД bePaid'), ('3', 'ВВОД  iPay'), ('10', 'ВЫВОД ОПЛАТИ')]
+    terminal_id_chooses = [('1', 'ВВОД bePaid'), ('2', 'ВЫВОД bePaid'), ('3', 'ВВОД  iPay'), ('7', 'ВЫВОД ОПЛАТИ')]
     document_type_chooses = [('1', 'Паспорт'),
                              ('2', 'Вид на жительство'),
                              ('3', 'Удостоверение беженца'),
@@ -557,10 +557,9 @@ class CreatePayoutRequestForm(forms.Form):
                              ('8', 'Биометрический вид на жительство в РБ иностранного гражданина'),
                              ('9', 'Биометрический вид на жительство в РБ лица без гражданства')]
 
-    # payout_request_id = forms.IntegerField(required=True) Генерируется автоматически
     account_id = forms.CharField(max_length=12, required=True, label='ID Игрока')
     terminal_id = forms.ChoiceField(choices=terminal_id_chooses, required=True, label='ID Терминал')
-    money_type = forms.ChoiceField(choices=money_type_chooses, required=True, label='Тип денег')
+    money_type = forms.ChoiceField(choices=money_type_chooses, required=True, label='Тип денег', initial=2)
     amount = forms.CharField(max_length=6, required=True, label='Сумма, в копейках')
     document_country = forms.CharField(max_length=3, required=True, label='Страна документа')
     document_type = forms.ChoiceField(choices=document_type_chooses, required=True, label='Тип документа')
@@ -574,7 +573,6 @@ class CreatePayoutRequestForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(CreatePayoutRequestForm, self).__init__(*args, **kwargs)
-        # self.fields['payout_request_id'].widget.attrs.update({'class': 'form-control', 'id': 'payout_request_id'})
         self.fields['account_id'].widget.attrs.update({'class': 'form-control', 'id': 'account_id'})
         self.fields['terminal_id'].widget.attrs.update({'class': 'form-control', 'id': 'terminal_id'})
         self.fields['money_type'].widget.attrs.update({'class': 'form-control', 'id': 'money_type'})
@@ -616,6 +614,44 @@ class CreatePayoutRequestForm(forms.Form):
                 and document_issue_agency and document_issue_date:
             if not payout_request_id.isdigit() or not account_id.isdigit() or not money_type.isdigit() \
                     or not amount.isdigit() or not document_type.isdigit():
+                raise forms.ValidationError('Поля должны содержать только цифры')
+
+        return cleaned_data
+
+
+class CreateTransactionPlayerInForm(forms.Form):
+    money_type_chooses = [('1', 'Наличные деньги'), ('2', 'Безналичные деньги'), ('3', 'Электронные деньги')]
+    terminal_id_chooses = [('1', 'ВВОД bePaid'), ('2', 'ВЫВОД bePaid'), ('3', 'ВВОД  iPay'), ('7', 'ВЫВОД ОПЛАТИ')]
+
+    account_id = forms.CharField(max_length=12, required=True, label='ID Игрока')
+    terminal_id = forms.ChoiceField(choices=terminal_id_chooses, required=True, label='ID Терминал')
+    money_type = forms.ChoiceField(choices=money_type_chooses, required=True, label='Тип денег', initial=2)
+    amount = forms.CharField(max_length=6, required=True, label='Сумма, в копейках')
+    trans_desc = forms.CharField(max_length=255, required=True, label='Описание транзакции')
+
+    def __init__(self, *args, **kwargs):
+        super(CreateTransactionPlayerInForm, self).__init__(*args, **kwargs)
+        self.fields['account_id'].widget.attrs.update({'class': 'form-control', 'id': 'account_id'})
+        self.fields['terminal_id'].widget.attrs.update({'class': 'form-control', 'id': 'terminal_id'})
+        self.fields['money_type'].widget.attrs.update({'class': 'form-control', 'id': 'money_type'})
+        self.fields['amount'].widget.attrs.update({'class': 'form-control', 'id': 'amount',
+                                                   'placeholder': 'Сумма в копейках'})
+        self.fields['trans_desc'].widget.attrs.update({'class': 'form-control', 'id': 'trans_desc',
+                                                       'placeholder': 'Дата операции: 15.04.2023 5:27:25, '
+                                                                      'техническая ошибка программы, '
+                                                                      'в СККС не отражена банковская транзакция'})
+
+    def clean(self):
+        cleaned_data = super(CreateTransactionPlayerInForm, self).clean()
+        account_id = cleaned_data.get('account_id')
+        terminal_id = cleaned_data.get('terminal_id')
+        money_type = cleaned_data.get('money_type')
+        amount = cleaned_data.get('amount')
+        trans_desc = cleaned_data.get('trans_desc')
+
+        if account_id and terminal_id and money_type and amount and trans_desc:
+            if not account_id.isdigit() or not terminal_id.isdigit() or not money_type.isdigit() \
+                    or not amount.isdigit():
                 raise forms.ValidationError('Поля должны содержать только цифры')
 
         return cleaned_data

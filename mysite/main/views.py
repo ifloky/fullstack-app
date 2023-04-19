@@ -30,6 +30,7 @@ from django.urls.base import reverse_lazy
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm, GameListFromSiteForm
 from .forms import CRMCheckForm, GameDisableListForm, CloseHoldRoundForm, TransactionCancelForm, CreatePayoutRequestForm
+from .forms import CreateTransactionPlayerInForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
 from .models import GameListFromSite, GameDisableList
@@ -2344,6 +2345,92 @@ class CreatePayoutRequestView(View):
             'payout_request_id': payout_request_id,
             'transaction_player_out_status': transaction_player_out_status,
             'transaction_player_out_desc_status': transaction_player_out_desc_status,
+            'tr_id': tr_id,
+            'form': self.form_class,
+        }
+
+        return render(request, self.template_name, data)
+
+
+class CreateTransactionPlayerInView(View):
+    form_class = CreateTransactionPlayerInForm
+    template_name = 'main/create_player_in.html'
+    success_url = reverse_lazy('main:create_player_in')
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+        data = {
+            'site_adm': site_adm_users,
+            'risk_heads': risk_heads_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+        }
+
+        return render(request, self.template_name, data)
+
+    @staticmethod
+    def create_transaction_player_in(tr_domain, tr_id, terminal_id, account_id, money_type, amount, trans_desc):
+        host = f'{credentials.skks_test_host}/Transaction/PlayerIn'
+
+        actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+        headers = {
+            'Content-Type': 'application/json; charset=utf-8',
+            'User-Agent': 'PostmanRuntime/7.29.2',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+        }
+
+        body = {
+            "_cmd_": "Transaction/PlayerIn",
+            "actual_time": actual_time,
+            "tr_domain": tr_domain,
+            "tr_id": tr_id,
+            "terminal_id": terminal_id,
+            "account_id": account_id,
+            "money_type": money_type,
+            "amount": amount,
+            "trans_desc": trans_desc,
+        }
+
+        response = requests.post(
+            url=host,
+            headers=headers,
+            json=body,
+        )
+
+        print('\n', 'create transaction player in')
+        print(host)
+        print(response.json())
+        return response.json()
+
+    def post(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+        tr_domain = 1
+        tr_id = random.randrange(100000000, 999999999)
+        terminal_id = int(request.POST.get('terminal_id'))
+        account_id = int(request.POST.get('account_id'))
+        money_type = int(request.POST.get('money_type'))
+        amount = int(request.POST.get('amount'))
+        trans_desc = request.POST.get('trans_desc')
+
+        transaction_player_in = self.create_transaction_player_in(tr_domain, tr_id, terminal_id, account_id,
+                                                                  money_type, amount, trans_desc)
+
+        transaction_player_in_status = transaction_player_in['_status_']
+        transaction_player_in_desc_status = get_description_of_error_code(transaction_player_in_status)
+
+        data = {
+            'site_adm': site_adm_users,
+            'risk_heads': risk_heads_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'transaction_player_in_status': transaction_player_in_status,
+            'transaction_player_in_desc_status': transaction_player_in_desc_status,
             'tr_id': tr_id,
             'form': self.form_class,
         }
