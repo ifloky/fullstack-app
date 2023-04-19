@@ -2237,9 +2237,7 @@ class CreatePayoutRequestView(View):
             headers=headers,
             json=body,
         )
-        print('\n', 'create payout request')
-        print(host)
-        print(response.json())
+
         return response.json()
 
     @staticmethod
@@ -2288,9 +2286,6 @@ class CreatePayoutRequestView(View):
             json=body,
         )
 
-        print('\n', 'create transaction player out')
-        print(host)
-        print(response.json())
         return response.json()
 
     def post(self, request):
@@ -2402,9 +2397,6 @@ class CreateTransactionPlayerInView(View):
             json=body,
         )
 
-        print('\n', 'create transaction player in')
-        print(host)
-        print(response.json())
         return response.json()
 
     def post(self, request):
