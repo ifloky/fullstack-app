@@ -655,3 +655,43 @@ class CreateTransactionPlayerInForm(forms.Form):
                 raise forms.ValidationError('Поля должны содержать только цифры')
 
         return cleaned_data
+
+
+class AddGameToSKKSHostForm(forms.Form):
+    game_type_chooses = [('1', 'Букмекерская игра'), ('2', 'Букмекерская онлайн-игра'), ('3', 'Игра тотализатора'),
+                         ('4', 'Онлайн-игра тотализатора'), ('5', 'Игра на игровых автоматах в лайврежиме'),
+                         ('6', 'Слот-игра'), ('7', 'Онлайн-игра в карты'), ('8', 'Игра в карты в лайв-режиме'),
+                         ('9', 'Игра в кости в лайв-режиме'), ('10', 'Игра бинго'),
+                         ('11', 'Цилиндрическая игра (рулетка) в лайврежиме'), ('12', 'Букмекерская онлайн TV-игра')]
+
+    get_game_provider_name = GameListFromSkksTest.objects.values_list('game_provider', flat=True)\
+        .distinct().order_by('game_provider')
+    game_provider_name_chooses = [(i, i) for i in get_game_provider_name]
+
+    game_type = forms.ChoiceField(choices=game_type_chooses, required=True, label='Тип игры', initial=6)
+    game_provider = forms.ChoiceField(choices=game_provider_name_chooses, required=True, label='Провайдер игры')
+    game_version = forms.CharField(max_length=3, required=True, label='Версия игры')
+    game_names = forms.CharField(widget=forms.Textarea, required=True, label='Название игры')
+
+    def __init__(self, *args, **kwargs):
+        super(AddGameToSKKSHostForm, self).__init__(*args, **kwargs)
+        self.fields['game_type'].widget.attrs.update({'class': 'form-control', 'id': 'game_type'})
+        self.fields['game_provider'].widget.attrs.update({'class': 'form-control', 'id': 'game_provider'})
+        self.fields['game_version'].widget.attrs.update({'class': 'form-control', 'id': 'game_version',
+                                                         'placeholder': 'Версия игры'})
+        self.fields['game_names'].widget.attrs.update({'class': 'form-control', 'id': 'game_names',
+                                                       'placeholder': 'Название игры, '
+                                                                      'каждое с новой строки'})
+
+    def clean(self):
+        cleaned_data = super(AddGameToSKKSHostForm, self).clean()
+        game_type = cleaned_data.get('game_type')
+        game_provider = cleaned_data.get('game_provider')
+        game_version = cleaned_data.get('game_version')
+        game_names = cleaned_data.get('game_names')
+
+        if game_type and game_provider and game_version and game_names:
+            if not game_type.isdigit() or not game_version.isdigit():
+                raise forms.ValidationError('Поля должны содержать только цифры')
+
+        return cleaned_data

@@ -1,0 +1,267 @@
+{% extends 'main/header.html' %} {% block content %}
+
+<style xmlns="http://www.w3.org/1999/html">
+  form {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  form p {
+    margin-bottom: 0;
+  }
+
+  form p label {
+    position: relative;
+    top: 10px;
+    left: 5px;
+    width: 620px;
+  }
+
+  .flex-wrap {
+    display: flex;
+    border-radius: 10px;
+  }
+
+  .flex-wrap label {
+    width: 400px;
+    margin-right: auto;
+  }
+
+  .flex-wrap button {
+    width: 450px;
+    margin-right: auto;
+  }
+
+  .flex-wrap input {
+    width: calc(100% - 50px);
+  }
+
+  .flex-wrap select {
+    width: calc(100% - 250px);
+  }
+
+  input {
+    width: 20px;
+    padding: 8px 20px;
+    margin: 8px 0;
+    margin-right: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+    height: 60px;
+    border-radius: 10px;
+  }
+
+  button {
+    min-width: 160px;
+    max-width: 200px;
+    padding: 6px 30px;
+    margin: 8px 0;
+  }
+
+  th {
+    vertical-align: middle !important;
+    text-align: center;
+  }
+
+  td {
+    vertical-align: middle !important;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  label.filter {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 0 30px;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  label.filter:hover {
+    background: #d9d9d9;
+  }
+
+  select {
+    height: 30px;
+    border-radius: 10px !important;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+  select:hover {
+    background: #d9d9d9;
+  }
+
+  button {
+    height: 60px;
+    border-radius: 10px !important;
+  }
+
+  button:hover {
+    background: #d9d9d9;
+  }
+
+  table {
+    counter-reset: rowNumber;
+  }
+
+  table .table_date {
+    counter-increment: rowNumber;
+  }
+
+  table .table_date th:first-child::before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 1.5em;
+  }
+
+  .form-control {
+    height: 30px;
+    width: 620px;
+    border-radius: 10px !important;
+    margin-right: 100px;
+    cursor: pointer;
+  }
+
+  .hold__status {
+    padding: 5px 10px;
+    margin-left: 40px;
+    margin-top: 0px;
+    width: 94%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ced4da;
+    border-radius: 10px
+  }
+
+  .hold__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    align-items: start;
+    width: 620px;
+  }
+
+  .hold__code {
+    padding: 5px 10px;
+    margin-left: 40px;
+    margin-top: 0px;
+    width: 94%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ced4da;
+    border-radius: 10px
+  }
+
+  .description {
+    padding: 5px 10px;
+    margin-left: 40px;
+    margin-top: 0px;
+    width: 94%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+  }
+
+  input,
+  select {
+    min-width: 160px;
+    margin: 10px 0;
+  }
+
+  form p {
+    height: 70px
+  }
+
+  form .btn-success {
+    margin-top: 40px;
+    min-width: 620px;
+    max-height: 40px;
+  }
+
+  label[for="document_type"]:after,
+  label[for="money_type"]:after,
+  label[for="terminal_id"]:after {
+    content: '》';
+    position: absolute;
+    left: 94%;
+    top: 160%;
+    width: 25px;
+    height: 25px;
+    font-weight: 900;
+    transform: rotate(90deg);
+  }
+
+  .hold__answer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 35px;
+  }
+
+  .hold__answer span {
+    font-weight: 500;
+    color: #919191;
+    margin-right:10px;
+  }
+
+  .hold__answer b {
+    margin-bottom: 10px;
+  }
+
+  #game_names {
+    height: 600px;
+  }
+  form button[type="submit"] {
+    margin-top: 575px; /* Добавляем отступ сверху для разделения кнопки и текстового блока */
+  }
+
+  label {
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  textarea {
+    height: 200px;
+    margin-top: 10px;
+  }
+
+
+</style>
+
+{% if user.is_authenticated %}
+
+<div style="padding: 30px 0px; padding-left: 200px; margin-top: 20px; width: 100%; display: flex;">
+  <form class='hold__form' action="" method="post">
+    {{ form.as_p }}
+    <button class="btn btn-success" type="submit">Отправить заявку</button>
+    <p class="flex-wrap" style="margin: 0"></p>
+    {% csrf_token %}
+  </form>
+
+    {% if transaction_player_in_status is not None %}
+    <div class="hold__answer">
+    <b class='hold__code'><span>Код ответа транзакции зачисления: </span>{{ transaction_player_in_status }}</b>
+    <b class='hold__status'><span>Статус операции: </span>{{ transaction_player_in_desc_status }}</b>
+    <b class='hold__status'><span>ID транзакции зачисления: </span>{{ tr_id }}</b><br>
+      </div>
+   {% endif %}
+
+</div>
+
+{% else %}
+
+{% include 'main/includes/non_authorised.html' %}
+
+{% endif %}
+
+{% endblock %}

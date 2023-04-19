@@ -49,4 +49,5 @@ urlpatterns = [
     path('transaction_cancel/', views.TransactionCancelView.as_view(), name='transaction_cancel'),
     path('create_payout_request/', views.CreatePayoutRequestView.as_view(), name='create_payout_request'),
     path('create_player_in/', views.CreateTransactionPlayerInView.as_view(), name='create_player_in'),
+    path('add_game/', views.AddGameToSKKSHostView.as_view(), name='add_game'),
 ]

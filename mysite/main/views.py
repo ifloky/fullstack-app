@@ -30,7 +30,7 @@ from django.urls.base import reverse_lazy
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm, GameListFromSiteForm
 from .forms import CRMCheckForm, GameDisableListForm, CloseHoldRoundForm, TransactionCancelForm, CreatePayoutRequestForm
-from .forms import CreateTransactionPlayerInForm
+from .forms import CreateTransactionPlayerInForm, AddGameToSKKSHostForm
 
 from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
 from .models import GameListFromSite, GameDisableList
@@ -876,7 +876,6 @@ class UpdateCRMView(UpdateView):
 
 class AddDataFromTextView(View):
     """ This class view add new data from text area """
-    # model = AddDataFromText
     form_class = AddDataFromTextForm
     template_name = 'main/add_data.html'
     success_url = reverse_lazy('main:calls_rep')
@@ -2429,6 +2428,75 @@ class CreateTransactionPlayerInView(View):
             'transaction_player_in_status': transaction_player_in_status,
             'transaction_player_in_desc_status': transaction_player_in_desc_status,
             'tr_id': tr_id,
+            'form': self.form_class,
+        }
+
+        return render(request, self.template_name, data)
+
+
+class AddGameToSKKSHostView(View):
+    form_class = AddGameToSKKSHostForm
+    template_name = 'main/add_game.html'
+    success_url = reverse_lazy('main:add_game_host')
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+        data = {
+            'site_adm': site_adm_users,
+            'risk_heads': risk_heads_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'form': self.form_class,
+        }
+
+        return render(request, self.template_name, data)
+
+    @staticmethod
+    def add_game_to_host(game_type, vendor_name, name, version):
+        host = f'{credentials.skks_test_host}/Lab/CreateGame'
+
+        headers = {
+            'Content-Type': 'application/json; charset=utf-8',
+            'User-Agent': 'PostmanRuntime/7.29.2',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+        }
+
+        body = {
+            "_cmd_": "Lab/CreateGame",
+            "game_type": game_type,
+            "vendor_name": vendor_name,
+            "name": name,
+            "version": version,
+        }
+
+        response = requests.post(
+            url=host,
+            headers=headers,
+            json=body,
+        )
+        print(host, body)
+        return response.json()
+
+    def post(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+        game_type = int(request.POST.get('game_type'))
+        vendor_name = request.POST.get('game_provider')
+        name = request.POST.get('game_names')
+        version = request.POST.get('game_version')
+
+        game_list = name.split('\r\n')
+        for game in game_list:
+            self.add_game_to_host(game_type, vendor_name, game, version)
+
+        data = {
+            'site_adm': site_adm_users,
+            'risk_heads': risk_heads_users,
+            'superuser': User.objects.filter(is_superuser=True),
             'form': self.form_class,
         }
 
