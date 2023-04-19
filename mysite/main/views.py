@@ -2005,6 +2005,41 @@ def no_close_rounds_report(request):
     return render(request, "main/rounds.html", data)
 
 
+def get_description_of_error_code(error_code):
+    cursor, connection = None, None
+
+    description = []
+
+    sql_query = (f'''
+                SELECT error_description_ru
+                    FROM public.main_skkserrors
+                    WHERE error_code = {error_code}
+                ''')
+
+    try:
+        connection = psycopg2.connect(database=credentials.db_name,
+                                      user=credentials.db_username,
+                                      password=credentials.db_password,
+                                      host=credentials.db_host,
+                                      port=credentials.db_port,
+                                      )
+
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+
+        description = cursor.fetchall()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+    return description[0][0]
+
+
 class CloseHoldRoundView(View):
     form_class = CloseHoldRoundForm
     template_name = 'main/hold_round.html'
@@ -2020,41 +2055,6 @@ class CloseHoldRoundView(View):
             'form': self.form_class,
         }
         return render(request, self.template_name, data)
-
-    @staticmethod
-    def get_description_of_error_code(error_code):
-        cursor, connection = None, None
-
-        description = []
-
-        sql_query = (f'''
-                    SELECT error_description_ru
-                        FROM public.main_skkserrors
-                        WHERE error_code = {error_code}
-                    ''')
-
-        try:
-            connection = psycopg2.connect(database=credentials.db_name,
-                                          user=credentials.db_username,
-                                          password=credentials.db_password,
-                                          host=credentials.db_host,
-                                          port=credentials.db_port,
-                                          )
-
-            cursor = connection.cursor()
-            cursor.execute(sql_query)
-
-            description = cursor.fetchall()
-
-        except (Exception, psycopg2.Error) as error:
-            print("Error while connecting to PostgresSQL", error)
-
-        finally:
-            if connection:
-                cursor.close()
-                connection.close()
-
-        return description[0][0]
 
     def post(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
@@ -2096,7 +2096,7 @@ class CloseHoldRoundView(View):
 
         status = response.json()['_status_']
 
-        desc_status = self.get_description_of_error_code(status)
+        desc_status = get_description_of_error_code(status)
 
         data = {
             'site_adm': site_adm_users,
@@ -2127,41 +2127,6 @@ class TransactionCancelView(View):
             'form': self.form_class,
         }
         return render(request, self.template_name, data)
-
-    @staticmethod
-    def get_description_of_error_code(error_code):
-        cursor, connection = None, None
-
-        description = []
-
-        sql_query = (f'''
-                    SELECT error_description_ru
-                        FROM public.main_skkserrors
-                        WHERE error_code = {error_code}
-                    ''')
-
-        try:
-            connection = psycopg2.connect(database=credentials.db_name,
-                                          user=credentials.db_username,
-                                          password=credentials.db_password,
-                                          host=credentials.db_host,
-                                          port=credentials.db_port,
-                                          )
-
-            cursor = connection.cursor()
-            cursor.execute(sql_query)
-
-            description = cursor.fetchall()
-
-        except (Exception, psycopg2.Error) as error:
-            print("Error while connecting to PostgresSQL", error)
-
-        finally:
-            if connection:
-                cursor.close()
-                connection.close()
-
-        return description[0][0]
 
     def post(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
@@ -2198,7 +2163,7 @@ class TransactionCancelView(View):
 
         status = response.json()['_status_']
 
-        desc_status = self.get_description_of_error_code(status)
+        desc_status = get_description_of_error_code(status)
 
         data = {
             'site_adm': site_adm_users,
@@ -2229,4 +2194,158 @@ class CreatePayoutRequestView(View):
             'superuser': User.objects.filter(is_superuser=True),
             'form': self.form_class,
         }
+        return render(request, self.template_name, data)
+
+    @staticmethod
+    def create_payout_request(payout_request_id, account_id, money_type, amount, document_country, document_type,
+                              document_number, personal_number, last_name, first_name, middle_name,
+                              document_issue_agency, document_issue_date):
+        host = f'{credentials.skks_test_host}/PayoutRequest/Create'
+
+        actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+        headers = {
+            'Content-Type': 'application/json; charset=utf-8',
+            'User-Agent': 'PostmanRuntime/7.29.2',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+        }
+
+        body = {
+            "_cmd_": "PayoutRequest/Create",
+            "actual_time": actual_time,
+            "payout_request_id": payout_request_id,
+            "account_id": account_id,
+            "money_type": money_type,
+            "amount": amount,
+            "obligation": False,
+            "document_country": document_country,
+            "document_type": document_type,
+            "document_number": document_number,
+            "personal_number": personal_number,
+            "last_name": last_name,
+            "first_name": first_name,
+            "middle_name": middle_name,
+            "document_issue_agency": document_issue_agency,
+            "document_issue_date": document_issue_date,
+        }
+
+        response = requests.post(
+            url=host,
+            headers=headers,
+            json=body,
+        )
+        print('\n', 'create payout request')
+        print(host)
+        print(response.json())
+        return response.json()
+
+    @staticmethod
+    def create_transaction_player_out(tr_domain, tr_id, terminal_id, account_id, money_type,
+                                      amount, payout_request_id, payout_transfer_number,
+                                      document_country, document_type, document_number,
+                                      personal_number, last_name, first_name, middle_name,
+                                      document_issue_agency, document_issue_date):
+        host = f'{credentials.skks_test_host}/Transaction/PlayerOut'
+
+        actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+        headers = {
+            'Content-Type': 'application/json; charset=utf-8',
+            'User-Agent': 'PostmanRuntime/7.29.2',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+        }
+
+        body = {
+            "_cmd_": "Transaction/PlayerOut",
+            "actual_time": actual_time,
+            "tr_domain": tr_domain,
+            "tr_id": tr_id,
+            "terminal_id": terminal_id,
+            "account_id": account_id,
+            "money_type": money_type,
+            "amount": amount,
+            "payout_request_id": payout_request_id,
+            "payout_transfer_number": payout_transfer_number,
+            "document_country": document_country,
+            "document_type": document_type,
+            "document_number": document_number,
+            "personal_number": personal_number,
+            "last_name": last_name,
+            "first_name": first_name,
+            "middle_name": middle_name,
+            "document_issue_agency": document_issue_agency,
+            "document_issue_date": document_issue_date
+        }
+
+        response = requests.post(
+            url=host,
+            headers=headers,
+            json=body,
+        )
+
+        print('\n', 'create transaction player out')
+        print(host)
+        print(response.json())
+        return response.json()
+
+    def post(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        risk_heads_users = User.objects.filter(groups__name='risk_heads')
+
+        tr_domain = 1
+        tr_id = random.randrange(100000000, 999999999)
+        terminal_id = int(request.POST.get('terminal_id'))
+
+        account_id = int(request.POST.get('account_id'))
+        money_type = int(request.POST.get('money_type'))
+        amount = int(request.POST.get('amount'))
+
+        payout_request_id = random.randrange(100000000, 999999999)
+        payout_transfer_number = str(payout_request_id)
+
+        document_country = str(request.POST.get('document_country')).upper()
+        document_type = int(request.POST.get('document_type'))
+        document_number = str(request.POST.get('document_number'))
+        personal_number = str(request.POST.get('personal_number'))
+        last_name = str(request.POST.get('last_name')).upper()
+        first_name = str(request.POST.get('first_name')).upper()
+        middle_name = str(request.POST.get('middle_name')).upper()
+        document_issue_agency = str(request.POST.get('document_issue_agency')).upper()
+        document_issue_date = str(request.POST.get('document_issue_date') + 'T00:00:00')
+
+        payout_request_create = self.create_payout_request(payout_request_id, account_id, money_type, amount,
+                                                           document_country, document_type, document_number,
+                                                           personal_number, last_name, first_name, middle_name,
+                                                           document_issue_agency, document_issue_date)
+
+        transaction_player_out = self.create_transaction_player_out(tr_domain, tr_id, terminal_id, account_id,
+                                                                    money_type, amount, payout_request_id,
+                                                                    payout_transfer_number, document_country,
+                                                                    document_type, document_number, personal_number,
+                                                                    last_name, first_name, middle_name,
+                                                                    document_issue_agency, document_issue_date)
+
+        payout_status = payout_request_create['_status_']
+        payout_desc_status = get_description_of_error_code(payout_status)
+
+        transaction_player_out_status = transaction_player_out['_status_']
+        transaction_player_out_desc_status = get_description_of_error_code(transaction_player_out_status)
+
+        data = {
+            'site_adm': site_adm_users,
+            'risk_heads': risk_heads_users,
+            'superuser': User.objects.filter(is_superuser=True),
+            'payout_status': payout_status,
+            'payout_desc_status': payout_desc_status,
+            'payout_request_id': payout_request_id,
+            'transaction_player_out_status': transaction_player_out_status,
+            'transaction_player_out_desc_status': transaction_player_out_desc_status,
+            'tr_id': tr_id,
+            'form': self.form_class,
+        }
+
         return render(request, self.template_name, data)
