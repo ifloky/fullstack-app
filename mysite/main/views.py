@@ -2374,7 +2374,7 @@ class CreatePayoutRequestView(View):
 
         payout_request_read = self.payout_request_read(payout_request_id)
 
-        payout_request_read_status = payout_request_read['payout_request']['status']
+        payout_request_read_status = payout_request_read['_status_']
         payout_request_read_desc_status = get_description_of_error_code(payout_request_read_status)
 
         # payout_status = payout_request_create['payout_request']['status']
