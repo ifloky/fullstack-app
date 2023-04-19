@@ -592,7 +592,8 @@ class CreatePayoutRequestForm(forms.Form):
         self.fields['document_issue_agency'].widget.attrs.update(
             {'class': 'form-control', 'id': 'document_issue_agency'})
         self.fields['document_issue_date'].widget.attrs.update({'class': 'form-control', 'id': 'document_issue_date',
-                                                                'placeholder': 'В формате YYYY-MM-DD'})
+                                                                'placeholder': 'В формате YYYY-MM-DD. '
+                                                                               'Например 2020-01-01'})
 
     def clean(self):
         cleaned_data = super(CreatePayoutRequestForm, self).clean()
