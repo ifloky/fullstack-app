@@ -2389,7 +2389,9 @@ class CreatePayoutRequestView(View):
             'superuser': User.objects.filter(is_superuser=True),
             # 'payout_desc_status': payout_desc_status,
             # 'transaction_player_out_desc_status': transaction_player_out_desc_status,
+            'payout_request_read_status': payout_request_read_status,
             'payout_request_read_desc_status': payout_request_read_desc_status,
+            'payout_request_id': payout_request_id,
             'form': self.form_class,
         }
 
