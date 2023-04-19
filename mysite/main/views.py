@@ -2201,7 +2201,8 @@ class CreatePayoutRequestView(View):
     def create_payout_request(payout_request_id, account_id, money_type, amount, document_country, document_type,
                               document_number, personal_number, last_name, first_name, middle_name,
                               document_issue_agency, document_issue_date):
-        host = f'{credentials.skks_test_host}/PayoutRequest/Create'
+
+        host = f'{credentials.skks_host}/PayoutRequest/Create'
 
         actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
@@ -2246,7 +2247,11 @@ class CreatePayoutRequestView(View):
                                       document_country, document_type, document_number,
                                       personal_number, last_name, first_name, middle_name,
                                       document_issue_agency, document_issue_date):
-        host = f'{credentials.skks_test_host}/Transaction/PlayerOut'
+
+        # if personal_number is None:
+        #     personal_number = " "
+
+        host = f'{credentials.skks_host}/Transaction/PlayerOut'
 
         actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
@@ -2367,7 +2372,7 @@ class CreateTransactionPlayerInView(View):
 
     @staticmethod
     def create_transaction_player_in(tr_domain, tr_id, terminal_id, account_id, money_type, amount, trans_desc):
-        host = f'{credentials.skks_test_host}/Transaction/PlayerIn'
+        host = f'{credentials.skks_host}/Transaction/PlayerIn'
 
         actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
