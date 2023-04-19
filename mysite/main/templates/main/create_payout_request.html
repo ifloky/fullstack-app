@@ -227,8 +227,9 @@
     {% csrf_token %}
   </form>
 
-  <div class="hold__answer">
+ 
     {% if payout_status is not None %}
+    <div class="hold__answer">
     <b class='hold__code'><span>Код ответа запроса на создание выплаты:</span> {{ payout_status }}</b>
     <b class='hold__status'><span>Статус операции:</span> {{ payout_desc_status }}</b>
     <b class='hold__status'><span>ID запроса на создание выплаты: </span>{{ payout_request_id }}</b><br>
@@ -238,21 +239,9 @@
     <b class='hold__code'><span>Код ответа транзакции выплаты:</span> {{ transaction_player_out_status }}</b>
     <b class='hold__status'><span>Статус операции: </span>{{ transaction_player_out_desc_status }}</b>
     <b class='hold__status'><span>ID транзакции выплаты:</span> {{ tr_id }}</b><br>
+      </div>
     {% endif %}
-  </div>
-</div>
 
-{% else %}
-
-{% include 'main/includes/non_authorised.html' %}
-
-{% if status is not None %}
-<div class="hold__answer">
-  <b class='hold__code'><span>Код ответа:</span> {{ code }}</b><br>
-  <b class='hold__status'><span>Статус операции:</span> {{ status }}</b><br>
-  <b class='hold__status'><span>ID транзакции закрытия:</span> {{ tr_id }}</b><br>
-</div>
-{% endif %}
 </div>
 
 {% else %}
