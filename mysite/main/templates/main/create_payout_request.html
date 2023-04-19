@@ -7,12 +7,12 @@
     justify-content: space-around;
   }
 
-  form p{
+  form p {
     margin-bottom: 0;
   }
 
-  form p label{
-    position:relative;
+  form p label {
+    position: relative;
     top: 10px;
     left: 5px;
     width: 620px;
@@ -22,17 +22,21 @@
     display: flex;
     border-radius: 10px;
   }
+
   .flex-wrap label {
     width: 400px;
     margin-right: auto;
   }
+
   .flex-wrap button {
     width: 450px;
     margin-right: auto;
   }
+
   .flex-wrap input {
     width: calc(100% - 50px);
   }
+
   .flex-wrap select {
     width: calc(100% - 250px);
   }
@@ -129,13 +133,13 @@
 
   .hold__status {
     padding: 5px 10px;
-    margin-left: 40px; 
-    margin-top: 0px; 
-    width: 94%; 
+    margin-left: 40px;
+    margin-top: 0px;
+    width: 94%;
     height: 50px;
     display: flex;
-    align-items: center; 
-    border: 1px solid #ced4da; 
+    align-items: center;
+    border: 1px solid #ced4da;
     border-radius: 10px
   }
 
@@ -144,6 +148,7 @@
     flex-direction: column;
     gap: 1px;
     align-items: start;
+    width: 620px;
   }
 
   .hold__code {
@@ -168,12 +173,13 @@
     align-items: center;
   }
 
-  input,select {
+  input,
+  select {
     min-width: 160px;
     margin: 10px 0;
   }
 
-  form p{
+  form p {
     height: 70px
   }
 
@@ -184,7 +190,7 @@
   }
 
   label[for="document_type"]:after,
-  label[for="money_type"]:after, 
+  label[for="money_type"]:after,
   label[for="terminal_id"]:after {
     content: '》';
     position: absolute;
@@ -196,29 +202,44 @@
     transform: rotate(90deg);
   }
 
+  .hold__answer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hold__answer span {
+    font-weight: 500;
+    color: #919191;
+  }
+
+  .hold__answer b {
+    margin-bottom: 10px;
+  }
 </style>
 
 {% if user.is_authenticated %}
 
-    <div style="padding: 30px 0px; padding-left: 200px; margin-top: 20px; width: 100%; display: flex; flex-direction: column;">
-        <form class='hold__form' action="" method="post">
-            {{ form.as_p }}
-            <button class="btn btn-success" type="submit">Отправить заявку</button>
-            <p class="flex-wrap" style="margin: 0"></p>
-            {% csrf_token %}
-        </form>
+<div style="padding: 30px 0px; padding-left: 200px; margin-top: 20px; width: 100%; display: flex;">
+  <form class='hold__form' action="" method="post">
+    {{ form.as_p }}
+    <button class="btn btn-success" type="submit">Отправить заявку</button>
+    <p class="flex-wrap" style="margin: 0"></p>
+    {% csrf_token %}
+  </form>
 
-        {% if status is not None %}
-        <b class='hold__code'>Код ответа: {{ code }}</b><br>
-        <b class='hold__status'>Статус операции: {{ status }}</b><br>
-        <b class='hold__status'>ID транзакции закрытия: {{ tr_id }}</b><br>
-        {% endif %}
-    </div>
-
-  {% else %}
-
-        {% include 'main/includes/non_authorised.html' %}
-
+  {% if status is not None %}
+  <div class="hold__answer">
+    <b class='hold__code'><span>Код ответа:</span> {{ code }}</b><br>
+    <b class='hold__status'><span>Статус операции:</span> {{ status }}</b><br>
+    <b class='hold__status'><span>ID транзакции закрытия:</span> {{ tr_id }}</b><br>
+  </div>
   {% endif %}
+</div>
 
-  {% endblock %}
+{% else %}
+
+{% include 'main/includes/non_authorised.html' %}
+
+{% endif %}
+
+{% endblock %}
