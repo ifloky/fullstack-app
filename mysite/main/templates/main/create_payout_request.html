@@ -94,6 +94,7 @@
     border-radius: 10px !important;
     margin-right: 10px;
     cursor: pointer;
+    appearance: auto !important;
   }
 
   select:hover {
@@ -189,7 +190,7 @@
     max-height: 40px;
   }
 
-  label[for="document_type"]:after,
+  {% comment %}label[for="document_type"]:after,
   label[for="money_type"]:after,
   label[for="terminal_id"]:after {
     content: '>';
@@ -202,7 +203,7 @@
     font-weight: 900;
     transform: rotate(90deg);
     cursor:pointer;
-  }
+  }{% endcomment %}
 
   .hold__answer {
     display: flex;
