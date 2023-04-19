@@ -549,7 +549,7 @@ class TransactionCancelForm(forms.Form):
 
 class CreatePayoutRequestForm(forms.Form):
     money_type_chooses = [('1', 'Наличные деньги'), ('2', 'Безналичные деньги'), ('3', 'Электронные деньги')]
-    terminal_id_chooses = [('1', 'ВВОД bePaid'), ('2', 'ВЫВОД bePaid'), ('3', 'ВВОД  iPay'), ('7', 'ВЫВОД ОПЛАТИ')]
+    terminal_id_chooses = [('1', 'ВВОД bePaid'), ('2', 'ВЫВОД bePaid'), ('3', 'ВВОД  iPay'), ('10', 'ВЫВОД ОПЛАТИ')]
     document_type_chooses = [('1', 'Паспорт'),
                              ('2', 'Вид на жительство'),
                              ('3', 'Удостоверение беженца'),

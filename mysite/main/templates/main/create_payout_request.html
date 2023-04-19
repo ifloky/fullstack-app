@@ -208,10 +208,16 @@
             {% csrf_token %}
         </form>
 
-        {% if payout_request_read_status is not None %}
-        <b class='hold__code'>Код ответа: {{ payout_request_read_status }}</b><p>
-        <b class='hold__status'>Статус операции: {{ payout_request_read_desc_status }}</b><p>
-        <b class='hold__status'>ID транзакции закрытия: {{ payout_request_id }}</b>
+        {% if payout_status is not None %}
+        <b class='hold__code'>Код ответа запроса на создание выплаты: {{ payout_status }}</b>
+        <b class='hold__status'>Статус операции: {{ payout_desc_status }}</b>
+        <b class='hold__status'>ID запроса на создание выплаты: {{ payout_request_id }}</b><br>
+        {% endif %}
+
+        {% if transaction_player_out_status is not None %}
+        <b class='hold__code'>Код ответа транзакции выплаты: {{ transaction_player_out_status }}</b>
+        <b class='hold__status'>Статус операции: {{ transaction_player_out_desc_status }}</b>
+        <b class='hold__status'>ID транзакции выплаты: {{ tr_id }}</b><br>
         {% endif %}
     </div>
 

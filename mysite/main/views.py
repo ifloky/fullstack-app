@@ -2200,7 +2200,7 @@ class CreatePayoutRequestView(View):
     def create_payout_request(payout_request_id, account_id, money_type, amount, document_country, document_type,
                               document_number, personal_number, last_name, first_name, middle_name,
                               document_issue_agency, document_issue_date):
-        host = f'{credentials.skks_host}/PayoutRequest/Create'
+        host = f'{credentials.skks_test_host}/PayoutRequest/Create'
 
         actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
@@ -2216,10 +2216,10 @@ class CreatePayoutRequestView(View):
             "_cmd_": "PayoutRequest/Create",
             "actual_time": actual_time,
             "payout_request_id": payout_request_id,
-            "account_id": account_id,
+            "account_id": int(account_id),
             "money_type": money_type,
             "amount": amount,
-            "obligation": 'false',
+            "obligation": False,
             "document_country": document_country,
             "document_type": document_type,
             "document_number": document_number,
@@ -2236,6 +2236,8 @@ class CreatePayoutRequestView(View):
             headers=headers,
             json=body,
         )
+        print('\n', 'create payout request')
+        print(host)
         print(response.json())
         return response.json()
 
@@ -2252,7 +2254,7 @@ class CreatePayoutRequestView(View):
                                       document_country, document_type, document_number,
                                       personal_number, last_name, first_name, middle_name,
                                       document_issue_agency, document_issue_date):
-        host = f'{credentials.skks_host}/Transaction/PlayerOut'
+        host = f'{credentials.skks_test_host}/Transaction/PlayerOut'
 
         actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
@@ -2292,6 +2294,8 @@ class CreatePayoutRequestView(View):
             json=body,
         )
 
+        print('\n', 'create transaction player out')
+        print(host)
         print(response.json())
         return response.json()
 
@@ -2304,7 +2308,7 @@ class CreatePayoutRequestView(View):
 
     @staticmethod
     def payout_request_read(payout_request_id):
-        host = f'{credentials.skks_host}/PayoutRequest/Read'
+        host = f'{credentials.skks_test_host}/PayoutRequest/Read'
 
         headers = {
             'Content-Type': 'application/json; charset=utf-8',
@@ -2338,15 +2342,15 @@ class CreatePayoutRequestView(View):
         risk_heads_users = User.objects.filter(groups__name='risk_heads')
 
         tr_domain = 1
-        tr_id = random.randrange(1000000000, 9999999999)
+        tr_id = random.randrange(100000000, 999999999)
         terminal_id = int(request.POST.get('terminal_id'))
 
         account_id = int(request.POST.get('account_id'))
         money_type = int(request.POST.get('money_type'))
         amount = int(request.POST.get('amount'))
 
-        # payout_request_id = random.randrange(1000000000, 9999999999)
-        # payout_transfer_number = str(payout_request_id)
+        payout_request_id = random.randrange(100000000, 999999999)
+        payout_transfer_number = str(payout_request_id)
 
         document_country = str(request.POST.get('document_country')).upper()
         document_type = int(request.POST.get('document_type'))
@@ -2358,40 +2362,45 @@ class CreatePayoutRequestView(View):
         document_issue_agency = str(request.POST.get('document_issue_agency')).upper()
         document_issue_date = str(request.POST.get('document_issue_date') + 'T00:00:00')
 
-        # payout_request_create = self.create_payout_request(payout_request_id, account_id, money_type, amount,
-        #                                                    document_country, document_type, document_number,
-        #                                                    personal_number, last_name, first_name, middle_name,
-        #                                                    document_issue_agency, document_issue_date)
-        #
-        # transaction_player_out = self.create_transaction_player_out(tr_domain, tr_id, terminal_id, account_id,
-        #                                                             money_type, amount, payout_request_id,
-        #                                                             payout_transfer_number, document_country,
-        #                                                             document_type, document_number, personal_number,
-        #                                                             last_name, first_name, middle_name,
-        #                                                             document_issue_agency, document_issue_date)
+        payout_request_create = self.create_payout_request(payout_request_id, account_id, money_type, amount,
+                                                           document_country, document_type, document_number,
+                                                           personal_number, last_name, first_name, middle_name,
+                                                           document_issue_agency, document_issue_date)
 
-        payout_request_id = 4294957504
+        transaction_player_out = self.create_transaction_player_out(tr_domain, tr_id, terminal_id, account_id,
+                                                                    money_type, amount, payout_request_id,
+                                                                    payout_transfer_number, document_country,
+                                                                    document_type, document_number, personal_number,
+                                                                    last_name, first_name, middle_name,
+                                                                    document_issue_agency, document_issue_date)
 
-        payout_request_read = self.payout_request_read(payout_request_id)
+        # payout_request_read = self.payout_request_read(payout_request_id)
 
-        payout_request_read_status = payout_request_read['_status_']
-        payout_request_read_desc_status = get_description_of_error_code(payout_request_read_status)
+        payout_status = payout_request_create['_status_']
+        payout_desc_status = get_description_of_error_code(payout_status)
 
-        # payout_status = payout_request_create['payout_request']['status']
-        # payout_desc_status = get_description_of_error_code(payout_status)
-        #
-        # transaction_player_out_status = transaction_player_out['transaction']['status']
-        # transaction_player_out_desc_status = get_description_of_error_code(transaction_player_out_status)
+        transaction_player_out_status = transaction_player_out['_status_']
+        transaction_player_out_desc_status = get_description_of_error_code(transaction_player_out_status)
+
+        # payout_request_read_status = payout_request_read['_status_']
+        # payout_request_read_desc_status = get_description_of_error_code(payout_request_read_status)
 
         data = {
             'site_adm': site_adm_users,
             'risk_heads': risk_heads_users,
             'superuser': User.objects.filter(is_superuser=True),
-            # 'payout_desc_status': payout_desc_status,
-            # 'transaction_player_out_desc_status': transaction_player_out_desc_status,
-            'payout_request_read_status': payout_request_read_status,
-            'payout_request_read_desc_status': payout_request_read_desc_status,
+
+            'payout_status': payout_status,
+            'payout_desc_status': payout_desc_status,
             'payout_request_id': payout_request_id,
+
+            'transaction_player_out_status': transaction_player_out_status,
+            'transaction_player_out_desc_status': transaction_player_out_desc_status,
+            'tr_id': tr_id,
+
+            # 'payout_request_read_status': payout_request_read_status,
+            # 'payout_request_read_desc_status': payout_request_read_desc_status,
+            # 'payout_request_id': payout_request_id,
             'form': self.form_class,
         }
 
