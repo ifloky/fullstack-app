@@ -2216,7 +2216,7 @@ class CreatePayoutRequestView(View):
             "_cmd_": "PayoutRequest/Create",
             "actual_time": actual_time,
             "payout_request_id": payout_request_id,
-            "account_id": int(account_id),
+            "account_id": account_id,
             "money_type": money_type,
             "amount": amount,
             "obligation": False,
@@ -2240,13 +2240,6 @@ class CreatePayoutRequestView(View):
         print(host)
         print(response.json())
         return response.json()
-
-        # data = {host, actual_time, payout_request_id, account_id, money_type, amount, document_country, document_type,
-        #         document_number, personal_number, last_name, first_name, middle_name, document_issue_agency,
-        #         document_issue_date}
-        #
-        # print('\n', data, '\n')
-        # return data
 
     @staticmethod
     def create_transaction_player_out(tr_domain, tr_id, terminal_id, account_id, money_type,
@@ -2299,44 +2292,6 @@ class CreatePayoutRequestView(View):
         print(response.json())
         return response.json()
 
-        # data = {host, actual_time, tr_domain, tr_id, terminal_id, account_id, money_type, amount, payout_request_id,
-        #         payout_transfer_number, document_country, document_type, document_number, personal_number, last_name,
-        #         first_name, middle_name, document_issue_agency, document_issue_date}
-        #
-        # print(data, '\n')
-        # return data
-
-    @staticmethod
-    def payout_request_read(payout_request_id):
-        host = f'{credentials.skks_test_host}/PayoutRequest/Read'
-
-        headers = {
-            'Content-Type': 'application/json; charset=utf-8',
-            'User-Agent': 'PostmanRuntime/7.29.2',
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
-        }
-
-        body = {
-            "_cmd_": "PayoutRequest/Read",
-            "payout_request_id": payout_request_id,
-        }
-
-        response = requests.post(
-            url=host,
-            headers=headers,
-            json=body,
-        )
-
-        print(response.json())
-        return response.json()
-
-        # data = {host, actual_time, payout_request_id}
-        #
-        # print(data, '\n')
-        # return data
-
     def post(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
         risk_heads_users = User.objects.filter(groups__name='risk_heads')
@@ -2374,33 +2329,22 @@ class CreatePayoutRequestView(View):
                                                                     last_name, first_name, middle_name,
                                                                     document_issue_agency, document_issue_date)
 
-        # payout_request_read = self.payout_request_read(payout_request_id)
-
         payout_status = payout_request_create['_status_']
         payout_desc_status = get_description_of_error_code(payout_status)
 
         transaction_player_out_status = transaction_player_out['_status_']
         transaction_player_out_desc_status = get_description_of_error_code(transaction_player_out_status)
 
-        # payout_request_read_status = payout_request_read['_status_']
-        # payout_request_read_desc_status = get_description_of_error_code(payout_request_read_status)
-
         data = {
             'site_adm': site_adm_users,
             'risk_heads': risk_heads_users,
             'superuser': User.objects.filter(is_superuser=True),
-
             'payout_status': payout_status,
             'payout_desc_status': payout_desc_status,
             'payout_request_id': payout_request_id,
-
             'transaction_player_out_status': transaction_player_out_status,
             'transaction_player_out_desc_status': transaction_player_out_desc_status,
             'tr_id': tr_id,
-
-            # 'payout_request_read_status': payout_request_read_status,
-            # 'payout_request_read_desc_status': payout_request_read_desc_status,
-            # 'payout_request_id': payout_request_id,
             'form': self.form_class,
         }
 
