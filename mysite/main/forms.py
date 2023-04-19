@@ -549,7 +549,7 @@ class TransactionCancelForm(forms.Form):
 
 class CreatePayoutRequestForm(forms.Form):
     money_type_chooses = [('1', 'Наличные деньги'), ('2', 'Безналичные деньги'), ('3', 'Электронные деньги')]
-    terminal_id_chooses = [('1', 'ВВОД bePaid'), ('2', 'ВЫВОД bePaid'), ('3', 'ВВОД  iPay'), ('7', 'ВЫВОД ОПЛАТИ')]
+    terminal_id_chooses = [('2', 'ВЫВОД bePaid'), ('7', 'ВЫВОД ОПЛАТИ')]
     document_type_chooses = [('1', 'Паспорт'),
                              ('2', 'Вид на жительство'),
                              ('3', 'Удостоверение беженца'),
@@ -621,7 +621,7 @@ class CreatePayoutRequestForm(forms.Form):
 
 class CreateTransactionPlayerInForm(forms.Form):
     money_type_chooses = [('1', 'Наличные деньги'), ('2', 'Безналичные деньги'), ('3', 'Электронные деньги')]
-    terminal_id_chooses = [('1', 'ВВОД bePaid'), ('2', 'ВЫВОД bePaid'), ('3', 'ВВОД  iPay'), ('7', 'ВЫВОД ОПЛАТИ')]
+    terminal_id_chooses = [('1', 'ВВОД bePaid'), ('3', 'ВВОД  iPay')]
 
     account_id = forms.CharField(max_length=12, required=True, label='ID Игрока')
     terminal_id = forms.ChoiceField(choices=terminal_id_chooses, required=True, label='ID Терминал')
