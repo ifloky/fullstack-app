@@ -2200,7 +2200,6 @@ class CreatePayoutRequestView(View):
     def create_payout_request(payout_request_id, account_id, money_type, amount, document_country, document_type,
                               document_number, personal_number, last_name, first_name, middle_name,
                               document_issue_agency, document_issue_date):
-
         host = f'{credentials.skks_host}/PayoutRequest/Create'
 
         actual_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
@@ -2246,7 +2245,6 @@ class CreatePayoutRequestView(View):
                                       document_country, document_type, document_number,
                                       personal_number, last_name, first_name, middle_name,
                                       document_issue_agency, document_issue_date):
-
         # if personal_number is None:
         #     personal_number = " "
 
@@ -2477,6 +2475,7 @@ class AddGameToSKKSHostView(View):
             headers=headers,
             json=body,
         )
+
         print(host, body)
         return response.json()
 
@@ -2489,15 +2488,22 @@ class AddGameToSKKSHostView(View):
         name = request.POST.get('game_names')
         version = request.POST.get('game_version')
 
+        added_games_list = []
+
         game_list = name.split('\r\n')
         for game in game_list:
-            self.add_game_to_host(game_type, vendor_name, game, version)
+            added_game = self.add_game_to_host(game_type, vendor_name, game, version)
+            game_id = added_game['game_id']
+            game_name = game
+
+            added_games_list.append({game_id, game_name})
 
         data = {
             'site_adm': site_adm_users,
             'risk_heads': risk_heads_users,
             'superuser': User.objects.filter(is_superuser=True),
             'form': self.form_class,
+            'added_games_list': added_games_list,
         }
 
         return render(request, self.template_name, data)

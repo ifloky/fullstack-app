@@ -248,12 +248,14 @@
     {% csrf_token %}
   </form>
 
-    {% if transaction_player_in_status is not None %}
+    {% if added_games_list is not None %}
+
     <div class="hold__answer">
-    <b class='hold__code'><span>Код ответа транзакции зачисления: </span>{{ transaction_player_in_status }}</b>
-    <b class='hold__status'><span>Статус операции: </span>{{ transaction_player_in_desc_status }}</b>
-    <b class='hold__status'><span>ID транзакции зачисления: </span>{{ tr_id }}</b><br>
-      </div>
+      {% for x in added_games_list %}
+        <b class='hold__code'>{{ x }}</b>
+      {% endfor %}
+    </div>
+
    {% endif %}
 
 </div>
