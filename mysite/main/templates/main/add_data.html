@@ -33,4 +33,20 @@
 
   {% endif %}
 
+  <script>
+  //Добавление переноса строки
+
+  const myTextArea = document.getElementById("text");
+  myTextArea.addEventListener("keydown", function(e) {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      const start = this.selectionStart;
+      const end = this.selectionEnd;
+      const value = this.value;
+      this.value = value.substring(0, start) + "\n" + value.substring(end);
+      this.selectionStart = this.selectionEnd = start + 1;
+    }
+  });
+</script>
+
   {% endblock %}
