@@ -2476,6 +2476,9 @@ class AddGameToSKKSHostView(View):
             json=body,
         )
 
+        # response_json = {"game_id": 54669, "_status_": 0, "_cmd_": "Lab/CreateGame"}
+        # return response_json
+
         print(host, body)
         return response.json()
 
@@ -2493,10 +2496,12 @@ class AddGameToSKKSHostView(View):
         game_list = name.split('\r\n')
         for game in game_list:
             added_game = self.add_game_to_host(game_type, vendor_name, game, version)
-            game_id = added_game['game_id']
-            game_name = game
+            game_id, game_name = added_game['game_id'], game
 
-            added_games_list.append({game_id, game_name})
+            added_games_list.append({
+                'game_id': game_id,
+                'game_name': game,
+            })
 
         data = {
             'site_adm': site_adm_users,
