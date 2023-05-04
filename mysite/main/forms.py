@@ -664,18 +664,8 @@ class AddGameToSKKSHostForm(forms.Form):
                          ('9', 'Игра в кости в лайв-режиме'), ('10', 'Игра бинго'),
                          ('11', 'Цилиндрическая игра (рулетка) в лайврежиме'), ('12', 'Букмекерская онлайн TV-игра')]
 
-    @staticmethod
-    def get_game_provider_name():
-        get_game_provider_name = GameListFromSkksTest.objects.values_list('game_provider', flat=True)\
-            .distinct().order_by('game_provider')
-        game_provider_name_chooses = [(i, i) for i in get_game_provider_name]
-        return game_provider_name_chooses
-
-    get_game_provider_name = get_game_provider_name()
-    game_provider_name_chooses = [(i, i) for i in get_game_provider_name]
-
     game_type = forms.ChoiceField(choices=game_type_chooses, required=True, label='Тип игры', initial=6)
-    game_provider = forms.ChoiceField(choices=game_provider_name_chooses, required=True, label='Провайдер игры')
+    game_provider = forms.ChoiceField(required=True, label='Провайдер игры')
     game_version = forms.CharField(max_length=3, required=True, label='Версия игры')
     game_names = forms.CharField(widget=forms.Textarea, required=True, label='Название игры')
 
@@ -688,6 +678,14 @@ class AddGameToSKKSHostForm(forms.Form):
         self.fields['game_names'].widget.attrs.update({'class': 'form-control', 'id': 'game_names',
                                                        'placeholder': 'Название игры, '
                                                                       'каждое с новой строки'})
+
+        self.fields['game_provider'].choices = self.get_game_provider()
+
+    @staticmethod
+    def get_game_provider():
+        providers_name = [(i['game_provider'], i['game_provider'])
+                          for i in GameListFromSkksTest.objects.values('game_provider').distinct().order_by('game_provider')]
+        return providers_name
 
     def clean(self):
         cleaned_data = super(AddGameToSKKSHostForm, self).clean()
