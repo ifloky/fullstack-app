@@ -664,8 +664,14 @@ class AddGameToSKKSHostForm(forms.Form):
                          ('9', 'Игра в кости в лайв-режиме'), ('10', 'Игра бинго'),
                          ('11', 'Цилиндрическая игра (рулетка) в лайврежиме'), ('12', 'Букмекерская онлайн TV-игра')]
 
-    get_game_provider_name = GameListFromSkksTest.objects.values_list('game_provider', flat=True)\
-        .distinct().order_by('game_provider')
+    @staticmethod
+    def get_game_provider_name():
+        get_game_provider_name = GameListFromSkksTest.objects.values_list('game_provider', flat=True)\
+            .distinct().order_by('game_provider')
+        game_provider_name_chooses = [(i, i) for i in get_game_provider_name]
+        return game_provider_name_chooses
+
+    get_game_provider_name = get_game_provider_name()
     game_provider_name_chooses = [(i, i) for i in get_game_provider_name]
 
     game_type = forms.ChoiceField(choices=game_type_chooses, required=True, label='Тип игры', initial=6)
