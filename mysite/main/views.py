@@ -333,7 +333,7 @@ def password_reset_request(request):
                     email_template_name = "main/password/password_reset_email.txt"
                     c = {
                         "email": user.email,
-                        'domain': '127.0.0.1:8000',
+                        'domain': '192.168.1.44:8000',
                         'site_name': 'Website',
                         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                         'token': default_token_generator.make_token(user),
@@ -341,7 +341,7 @@ def password_reset_request(request):
                     }
                     email = render_to_string(email_template_name, c)
                     try:
-                        send_mail(subject, email, 'admin@example.com', [user.email], fail_silently=False)
+                        send_mail(subject, email, 'it@grandcasino.by', [user.email], fail_silently=False)
                     except BadHeaderError:
 
                         return HttpResponse('Invalid header found.')
@@ -912,7 +912,7 @@ class AddDataFromTextView(View):
             data = list(filter(None, data))  # remove empty spaces
 
             for i in data:
-                if i != ['\t\r']:
+                if '\t\r' in i and any(char.isdigit() for char in i):
                     client_data = i  # get client data
                     client_data = [i.split('\t') for i in client_data]  # split client data by tabulation
                     client_data = [i for i in client_data if i != ['']]  # remove empty list
