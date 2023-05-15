@@ -151,8 +151,8 @@ def main():
     count = 1
     count_all = len(check_id)
 
-    # clients_id = check_id
-    clients_id = [302727179, 318942405]
+    clients_id = check_id
+    # clients_id = [302727179, 318942405]
     # Получаем данные для каждого client_id
     for client_id in clients_id:
         try:
