@@ -6,9 +6,10 @@ requests
 credentials
 python-dateutil
 mysql-connector-python
-openpyxl==3.1.1
+openpyxl
 pandas
 polars
 aiohttp
 aiopg
 urllib3
+xmltodict
