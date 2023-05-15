@@ -139,8 +139,8 @@ def main():
     count = 1
     count_all = len(check_id)
 
-    # clients_id = check_id
-    clients_id = [309923352,291298827,277689892,310196004]
+    clients_id = check_id
+    # clients_id = [309923352,291298827,277689892,310196004]
 
     # Получаем данные для каждого client_id
     for client_id in clients_id:
