@@ -57,6 +57,7 @@ def get_data(url, params):
 
     # Декодируем байты в строку
     response_str = response_bytes.decode('utf-8')
+    # print(response_str)
 
     # Преобразуем XML в словарь
     response_dict = xmltodict.parse(response_str)
@@ -66,8 +67,10 @@ def get_data(url, params):
     address = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Address']
 
     client_create_date = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Created']['d3p1:DateTime']
-    client_verification_date = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:ClientVerificationDate'][
-        'd3p1:DateTime']
+    try:
+        client_verification_date = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:ClientVerificationDate']['d3p1:DateTime']
+    except KeyError:
+        client_verification_date = "Клиент не верифицирован"
 
     first_name = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:FirstName']
     middle_name = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:MiddleName']
@@ -128,6 +131,8 @@ def main():
     count_all = len(check_id)
 
     clients_id = check_id
+
+    # Получаем данные для каждого client_id
     for client_id in clients_id:
         try:
             print(f"{count}/{count_all} Get data for client_id: {client_id}")
@@ -137,8 +142,7 @@ def main():
             count += 1
             sleep(8)
         except KeyError as e:
-            print(f"{count}/{count_all} Get data for client_id: {client_id}")
-            print(f"KeyError: {e}")
+            print(f"{count}/{count_all} Get data for client_id: {client_id} KeyError: {e}")
             count += 1
             sleep(8)
             continue
