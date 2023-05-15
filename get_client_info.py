@@ -1,9 +1,9 @@
 import csv
-import datetime
+import time
 import xmltodict
 import requests
 
-from time import sleep
+from datetime import timedelta, datetime
 from temp import check_id
 
 
@@ -142,8 +142,9 @@ def get_data(url, params):
 
 def main():
     """ Главная функция. Main function. """
-    current_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"Start script at {current_date}")
+    start_job_time = time.perf_counter()
     url = "https://backofficewebadmin.betconstruct.com/api/ru/Client/GetClientById?"
 
     clients_data = []
@@ -153,6 +154,7 @@ def main():
 
     clients_id = check_id
     # clients_id = [302727179, 318942405]
+
     # Получаем данные для каждого client_id
     for client_id in clients_id:
         try:
@@ -161,14 +163,14 @@ def main():
             client_info = get_data(url, params)
             clients_data.append(client_info)
             count += 1
-            sleep(8)
+            time.sleep(8)
         except KeyError as e:
             print(f"{count}/{count_all} Get data for client_id: {client_id} KeyError: {e}")
             count += 1
-            sleep(8)
+            time.sleep(8)
             continue
 
-    print(f"Get data for {len(clients_data)} clients")
+
 
     # Записываем данные в CSV файл
     # Write data to CSV file
@@ -182,6 +184,14 @@ def main():
         writer.writeheader()
         for client in clients_data:
             writer.writerow(client)
+
+    stop_job_time = time.perf_counter()
+    working_time = stop_job_time - start_job_time
+
+    print('Задание выполнено в:', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print(f"Get data for {len(clients_data)} clients")
+    print("Затрачено времени:", str(timedelta(seconds=working_time)))
+
 
 
 if __name__ == "__main__":
