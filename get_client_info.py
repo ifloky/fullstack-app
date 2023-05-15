@@ -109,8 +109,11 @@ def get_data(url, params):
     client_id = str(client_id).replace("{'@i:nil': 'true'}", 'Нет данных')
     last_ip = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:LastLoginIp']
     last_ip = str(last_ip).replace("{'@i:nil': 'true'}", 'Нет данных')
-    last_login_time = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:LastLoginTime']['d3p1:DateTime']
-    last_login_time = str(last_login_time).replace("{'@i:nil': 'true'}", 'Нет данных')
+    try:
+        last_login_time = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:LastLoginTime']['d3p1:DateTime']
+        last_login_time = str(last_login_time).replace("{'@i:nil': 'true'}", 'Нет данных')
+    except KeyError:
+        last_login_time = "Клиент не авторизовался"
     is_locked = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:IsLocked']
     is_locked = str(is_locked).replace("{'@i:nil': 'true'}", 'Нет данных')
 
@@ -152,8 +155,8 @@ def main():
     count = 1
     count_all = len(check_id)
 
-    clients_id = check_id
-    # clients_id = [302727179, 318942405]
+    # clients_id = check_id
+    clients_id = [309923352,291298827,277689892,310196004]
 
     # Получаем данные для каждого client_id
     for client_id in clients_id:
