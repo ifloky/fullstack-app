@@ -64,60 +64,42 @@ def get_data(url, params):
 
     parsed_data = response_dict
 
-    address = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Address']
-    address = str(address).replace("{'@i:nil': 'true'}", 'Нет данных')
-
-    client_create_date = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Created']['d3p1:DateTime']
-    client_create_date = str(client_create_date).replace("{'@i:nil': 'true'}", 'Нет данных')
+    address =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Address']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    try:
+        client_create_date =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Created']['d3p1:DateTime']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    except KeyError:
+        client_create_date = "Нет данных"
 
     try:
-        client_verification_date = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:ClientVerificationDate']['d3p1:DateTime']
-        client_verification_date = str(client_verification_date).replace("{'@i:nil': 'true'}", 'Нет данных')
+        client_verification_date =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:ClientVerificationDate']['d3p1:DateTime']).replace("{'@i:nil': 'true'}", 'Нет данных')
     except KeyError:
         client_verification_date = "Клиент не верифицирован"
 
-    first_name = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:FirstName']
-    first_name = str(first_name).replace("{'@i:nil': 'true'}", 'Нет данных')
-    middle_name = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:MiddleName']
-    middle_name = str(middle_name).replace("{'@i:nil': 'true'}", 'Нет данных')
-    last_name = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:LastName']
-    last_name = str(last_name).replace("{'@i:nil': 'true'}", 'Нет данных')
+    first_name = str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:FirstName']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    middle_name =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:MiddleName']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    last_name =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:LastName']).replace("{'@i:nil': 'true'}", 'Нет данных')
 
-    birth_city = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:BirthCity']
-    birth_city = str(birth_city).replace("{'@i:nil': 'true'}", 'Нет данных')
-    birth_department = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:BirthDepartment']
-    birth_department = str(birth_department).replace("{'@i:nil': 'true'}", 'Нет данных')
-    birth_date = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:BirthDate']
-    birth_date = str(birth_date).replace("{'@i:nil': 'true'}", 'Нет данных')
+    birth_city =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:BirthCity']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    birth_department =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:BirthDepartment']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    birth_date =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:BirthDate']).replace("{'@i:nil': 'true'}", 'Нет данных')
 
-    doc_issue_date = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:DocIssueDate']
-    doc_issue_date = str(doc_issue_date).replace("{'@i:nil': 'true'}", 'Нет данных')
-    doc_issued_by = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:DocIssuedBy']
-    doc_issued_by = str(doc_issued_by).replace("{'@i:nil': 'true'}", 'Нет данных')
-    doc_number = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:DocNumber']
-    doc_number = str(doc_number).replace("{'@i:nil': 'true'}", 'Нет данных')
-    personal_id = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:PersonalId']
-    personal_id = str(personal_id).replace("{'@i:nil': 'true'}", 'Нет данных')
+    doc_issue_date =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:DocIssueDate']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    doc_issued_by =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:DocIssuedBy']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    doc_number =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:DocNumber']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    personal_id =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:PersonalId']).replace("{'@i:nil': 'true'}", 'Нет данных')
 
-    balance = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Balance']
-    balance = str(balance).replace("{'@i:nil': 'true'}", 'Нет данных')
-    email = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Email']
-    email = str(email).replace("{'@i:nil': 'true'}", 'Нет данных')
-    phone = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Phone']
-    phone = str(phone).replace("{'@i:nil': 'true'}", 'Нет данных')
-    client_id = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Id']
-    client_id = str(client_id).replace("{'@i:nil': 'true'}", 'Нет данных')
-    last_ip = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:LastLoginIp']
-    last_ip = str(last_ip).replace("{'@i:nil': 'true'}", 'Нет данных')
+    balance =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Balance']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    email =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Email']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    phone =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Phone']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    client_id =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Id']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    last_ip =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:LastLoginIp']).replace("{'@i:nil': 'true'}", 'Нет данных')
 
     try:
-        last_login_time = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:LastLoginTime']['d3p1:DateTime']
-        last_login_time = str(last_login_time).replace("{'@i:nil': 'true'}", 'Нет данных')
+        last_login_time =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:LastLoginTime']['d3p1:DateTime']).replace("{'@i:nil': 'true'}", 'Нет данных')
     except KeyError:
         last_login_time = "Клиент не авторизовался"
 
-    is_locked = parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:IsLocked']
-    is_locked = str(is_locked).replace("{'@i:nil': 'true'}", 'Нет данных')
+    is_locked =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:IsLocked']).replace("{'@i:nil': 'true'}", 'Нет данных')
 
     client_data = {
         "client_id": client_id,
@@ -157,8 +139,8 @@ def main():
     count = 1
     count_all = len(check_id)
 
-    clients_id = check_id
-    # clients_id = [309923352,291298827,277689892,310196004]
+    # clients_id = check_id
+    clients_id = [309923352,291298827,277689892,310196004]
 
     # Получаем данные для каждого client_id
     for client_id in clients_id:
