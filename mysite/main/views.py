@@ -912,8 +912,7 @@ class AddDataFromTextView(View):
             data = list(filter(None, data))  # remove empty spaces
 
             for i in data:
-                if i != ['\t\r']:
-                # if '\t\r' in i and any(char.isdigit() for char in i):
+                if i != ['\t\r'] and '\t\t\r' not in ''.join(i):
                     client_data = i  # get client data
                     client_data = [i.split('\t') for i in client_data]  # split client data by tabulation
                     client_data = [i for i in client_data if i != ['']]  # remove empty list

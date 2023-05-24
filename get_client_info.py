@@ -5,6 +5,7 @@ import requests
 
 from datetime import timedelta, datetime
 from temp import check_id
+from credentials import backoffice_authentication, backoffice_cookie
 
 
 def xml_to_dict(element):
@@ -24,10 +25,10 @@ def set_headers():
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,"
                   "application/signed-exchange;v=b3;q=0.9",
-        "Authentication": "c9b237cde4552ab509bad0d2687fa6ae22615139c8094c1f49db93c54b44fec6",
 
-        "Cookie":
-                "SERVERID=172.16.202.166; _ym_uid=1668417668495845880; _ym_d=1668417668; _hjSessionUser_2896749=eyJpZCI6IjhkMTEzMGJlLWRlODYtNTI5Ni1iZDJiLTc0ZTkyNTczNTFkYiIsImNyZWF0ZWQiOjE2Njg0MTc2NjkzNTksImV4aXN0aW5nIjpmYWxzZX0=; ajs_anonymous_id=d6494813-4d1a-4ddf-b25a-26718d5459dc; intercom-id-xocfnqo5=848a34aa-01ca-46a7-986c-007dbe18372b; _ga_XG5GYYCNNL=GS1.1.1683791605.2.1.1683791621.0.0.0; bo_logout_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IjU3ZGRhMzlhNjhjOWE1NWZiYWRjMmUwODJhMTVjZTlmIiwidHlwIjoiSldUIn0.eyJuYmYiOjE2ODQxMzU5MjMsImV4cCI6MTY4NDEzNjIyMywiaXNzIjoiaHR0cHM6Ly9hcGkuYWNjb3VudHMtYmMuY29tIiwiYXVkIjoiQmFja09mZmljZVNTTyIsIm5vbmNlIjoiaHR0cHM6Ly9iYWNrb2ZmaWNld2ViYWRtaW4uYmV0Y29uc3RydWN0LmNvbSIsImlhdCI6MTY4NDEzNTkyMywiYXRfaGFzaCI6IkRkU2d6N0lrd2l3SXdTUThLNnlEbmciLCJjX2hhc2giOiJJTHliREpPOWJURjY1cUZQVWozaTZBIiwic2lkIjoiZGQ2NWJhMWVlOGQ5MWQzYmUxYTNlNDY3NmQxZWFkYjAiLCJzdWIiOiI2MjQwYWY2Ni1jZDZhLTRjOTEtOWQzZS00NDg4ODdiYWFmNjkiLCJhdXRoX3RpbWUiOjE2ODQxMzU5MjIsImlkcCI6ImxvY2FsIiwiYW1yIjpbInB3ZCJdfQ.X1K44nR3X3_nXFcavkkh073DTHXW9qeIOtqEQ9InOnNnr9km-18NUexqR5ylWmLUYeiroRjtH75EnuFKKrSQhE9AQyZPWiqdrDNNQgHWQcZBDF3-m--6OV06mLRJ2qFD96sWvK1ABX2tEUKUoJKt9KL4vZkKX8_qgE67qGL0Wbec0xpOsofra-9S2H4v1bA3V42yfgfld22TlVpDXLiLXxt9o1jjL3HQ0S8gcskbgk5mhjDQtnWPMmIq2y3a_9yQ7GwDUuWXzO8xghhl3LBcY257yYCP4Fd-4sOWDX8UONhi797h6NQjV98t_lGD5Nk_T3KiXRt_4Zh1yGSG9KAzTw; sid=dd65ba1ee8d91d3be1a3e4676d1eadb0; _ga=GA1.2.1578264362.1667472391; _gid=GA1.2.1076294493.1684149166",
+        "Authentication": backoffice_authentication,
+
+        "Cookie": backoffice_cookie,
 
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/107.0.0.0 Safari/537.36 "
@@ -139,8 +140,8 @@ def main():
     count = 1
     count_all = len(check_id)
 
-    clients_id = check_id
-    # clients_id = [309923352,291298827,277689892,310196004]
+    # clients_id = check_id
+    clients_id = [309923352,291298827,277689892,310196004]
 
     # Получаем данные для каждого client_id
     for client_id in clients_id:
