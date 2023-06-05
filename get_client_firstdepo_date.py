@@ -94,7 +94,7 @@ def get_data(url, params):
         "client_id": client_id,
         "client_first_deposit_date": client_first_deposit_date,
     }
-    print(client_id, client_first_deposit_date.split('T')[0])
+    print('', client_first_deposit_date.split('T')[0])
     return client_data
 
 
@@ -177,13 +177,13 @@ def main():
     # Получаем данные для каждого client_id
     for client_id in clients_id:
         try:
-            print(f"{count}/{count_all} Get data for client_id: {client_id}")
+            print(f"{count}/{count_all} Get data for client_id: {client_id}", end='')
             params = set_params(client_id)
             get_data(url, params)
             count += 1
             time.sleep(6)
         except KeyError as e:
-            print(f"{count}/{count_all} Get data for client_id: {client_id} KeyError: {e}")
+            print(f"{count}/{count_all} Get data for client_id: {client_id} KeyError: {e}", end='')
             count += 1
             time.sleep(6)
             continue
