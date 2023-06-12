@@ -82,19 +82,19 @@ def get_data(url, params):
 
     try:
         client_first_deposit_date =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:FirstDepositTime']['d3p1:DateTime']).replace("{'@i:nil': 'true'}", 'Нет данных')
-        print('Обновляется дата первого депозита клиента:',params['id'], client_first_deposit_date.split('T')[0])
+        print('', 'Обновляется дата первого депозита клиента:',params['id'], client_first_deposit_date.split('T')[0])
         update_first_deposit_date(client_first_deposit_date.split('T')[0], params['id'])
 
     except KeyError:
         client_first_deposit_date = "Клиент не сделал первый депозит"
-
+        print('', client_first_deposit_date)
     client_id =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Id']).replace("{'@i:nil': 'true'}", 'Нет данных')
 
     client_data = {
         "client_id": client_id,
         "client_first_deposit_date": client_first_deposit_date,
     }
-    print('', client_first_deposit_date.split('T')[0])
+    # print('', client_first_deposit_date.split('T')[0])
     return client_data
 
 

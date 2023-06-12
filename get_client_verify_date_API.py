@@ -71,7 +71,7 @@ def get_data(url, params):
 
     # Декодируем байты в строку
     response_str = response_bytes.decode('utf-8')
-    print(response_str)
+    # print(response_str)
 
     parsed_data = {}
     try:
@@ -82,11 +82,12 @@ def get_data(url, params):
 
     try:
         client_verification_date =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:ClientVerificationDate']['d3p1:DateTime']).replace("{'@i:nil': 'true'}", 'Нет данных')
-        print('Обновляется дата верификации клиента:',params['id'], client_verification_date.split('T')[0])
+        print('', 'Обновляется дата верификации клиента:',params['id'], client_verification_date.split('T')[0])
         update_verified_date(client_verification_date.split('T')[0], params['id'])
 
     except KeyError:
         client_verification_date = "Клиент не верифицирован"
+        print('', client_verification_date)
 
     client_id =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Id']).replace("{'@i:nil': 'true'}", 'Нет данных')
 
@@ -94,7 +95,7 @@ def get_data(url, params):
         "client_id": client_id,
         "client_verification_date": client_verification_date,
     }
-    print('', client_verification_date.split('T')[0])
+    # print('', client_verification_date.split('T')[0])
     return client_data
 
 
