@@ -51,8 +51,8 @@ def create_df(data_range):
     sql_query = (f'''
                 SELECT client_id, verification_date
                 FROM public.v_client_deposit
-                WHERE verification_date > '{data_range}'
-                ORDER BY verification_date DESC
+                WHERE transaction_date > '{data_range}'
+                ORDER BY transaction_date DESC
                 ''')
 
     try:
@@ -61,7 +61,7 @@ def create_df(data_range):
         cursor.execute(sql_query)
 
         data = cursor.fetchall()
-        df = pd.DataFrame(data, columns=['client_id', 'verification_date'])
+        df = pd.DataFrame(data, columns=['client_id', 'date'])
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgresSQL", error)
 
@@ -82,7 +82,7 @@ def load_client_id_from_db(date_range):
     sql_query = (f'''
                 SELECT client_id
                 FROM public.main_callscheck
-                WHERE verified_date is Null AND upload_date > '{date_range}'
+                WHERE verified_date IS NULL AND upload_date > '{date_range}'
                 ORDER BY upload_date DESC
                 ''')
 
@@ -96,7 +96,7 @@ def load_client_id_from_db(date_range):
         for client in client_list:
             clients.append(client[0])
 
-        print(f'Loading no verified clients from {date_range}:', len(clients), 'records.')
+        print(f'Loading no verify clients from {date_range}:', len(clients), 'records.')
 
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgresSQL", error)
@@ -109,20 +109,19 @@ def load_client_id_from_db(date_range):
     return clients
 
 
-def get_verified_date_in_df(df, client):
+def get_verify_date_in_df(df, client):
     try:
-        verified_date = df.loc[df['client_id'] == client, 'verification_date'].iloc[0]
-        return str(verified_date)
+        date = df.loc[df['client_id'] == client, 'date'].iloc[0]
+        return str(date)
     except IndexError:
-        return 'No verified'
+        return 'No Date'
 
 
-def update_call_date_in_db(client, db_name, verified_date,):
+def update_call_date_in_db(client, db_name, date):
     cursor, connection = None, None
-
     sql_query = (f'''
                 UPDATE {db_name}
-                SET verified_date = '{verified_date}'
+                SET verified_date = '{date}'
                 WHERE client_id = '{client}'
                 ''')
 
@@ -142,13 +141,13 @@ def update_call_date_in_db(client, db_name, verified_date,):
             connection.close()
 
 
-def check_deposit(client, df, db_name):
+def check_verify(client, df, db_name):
     for index, row in df.iterrows():
         if row['client_id'] == client:
-            verified_date = get_verified_date_in_df(df, client)
-            print(str(client) + ', ' + verified_date)
-            update_call_date_in_db(client, db_name, verified_date.split(',')[0])
-            return verified_date
+            verify_date = get_verify_date_in_df(df, client)
+            print(str(client) + ', ' + verify_date.split(' ')[0])
+            update_call_date_in_db(client, db_name, verify_date.split(' ')[0])
+            return verify_date
 
 
 def main():
@@ -166,7 +165,7 @@ def main():
     print('Clients loaded successfully...')
 
     for client in clients:
-        dep = check_deposit(client, df, db_name)
+        dep = check_verify(client, df, db_name)
         if dep is not None:
             data.append([client, dep])
         else:
@@ -177,7 +176,7 @@ def main():
 
     print('Задание выполнено в:', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print('Загружено из базы Верификаций:', len(df), 'записей')
-    print('Загружено из базы Обзвона не верифицированных клиентов:', len(clients), 'записей')
+    print('Загружено из базы Обзвона:', len(clients), 'записей')
     print("Проверено и сохранено:", len(data), "клиентов")
     print("Затрачено времени:", str(timedelta(seconds=working_time)))
     # measure memory after loading
