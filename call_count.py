@@ -116,7 +116,7 @@ def load_phone_number_from_db(db_name, date_range):
 
 def count_calls_in_df(df, phone_number):
     count = 0
-    for index, row in df.iterrows():
+    for index, row in df.iter_rows():
         if row == phone_number:
             count += 1
     # print(str(phone_number) + ', ' + str(count))
@@ -124,7 +124,7 @@ def count_calls_in_df(df, phone_number):
 
 
 def check_calls_count(phone_number, df, db_name):
-    for index, row in df.iterrows():
+    for index, row in df.iter_rows():
         if row == phone_number:
             count_calls = count_calls_in_df(df, phone_number)
             update_call_date_in_db(phone_number, db_name, count_calls)
