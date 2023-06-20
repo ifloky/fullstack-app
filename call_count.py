@@ -58,8 +58,8 @@ def create_df(call_date):
                 ''')
         cursor.execute(query)
         data = cursor.fetchall()
-        df = pl.DataFrame(data, columns=[c[0] for c in cursor.description])
-        # df = pl.DataFrame(data, schema=[c[0] for c in cursor.description])
+        # df = pl.DataFrame(data, columns=[c[0] for c in cursor.description])
+        df = pl.DataFrame(data, schema=[c[0] for c in cursor.description])
         cursor.close()
         connection.close()
     except Error as e:
@@ -167,23 +167,23 @@ def main():
     print('Date range:', date_range, 'to', datetime.now().strftime('%Y-%m-%d'))
     start_job_time = time.perf_counter()
     data = []
-    df = create_df(date_range)
+    data_frame = create_df(date_range)
     cc_phones = load_phone_number_from_db(cc_db, date_range)
     crm_phones = load_phone_number_from_db(crm_db, date_range)
 
     phone_numbers = cc_phones + crm_phones
 
     for cc_phone in cc_phones:
-        data.append(check_calls_count(cc_phone, df, cc_db))
+        data.append(check_calls_count(cc_phone, data_frame, cc_db))
 
     for crm_phone in crm_phones:
-        data.append(check_calls_count(crm_phone, df, crm_db))
+        data.append(check_calls_count(crm_phone, data_frame, crm_db))
 
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
 
     print('Задание выполнено в:', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    print('Загружено из базы АТС:', str(len(df)), 'записей')
+    print('Загружено из базы АТС:', str(len(data_frame)), 'записей')
     print('Загружено из базы Отчетов:', len(phone_numbers), 'записей')
     print("Проверено и сохранено:", len(data), "номеров")
     print("Затрачено времени:", str(timedelta(seconds=working_time)))
