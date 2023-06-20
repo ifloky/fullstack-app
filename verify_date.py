@@ -50,9 +50,9 @@ def create_df(data_range):
 
     sql_query = (f'''
                 SELECT client_id, verification_date
-                FROM public.v_client_deposit
-                WHERE transaction_date > '{data_range}'
-                ORDER BY transaction_date DESC
+                    FROM public.v_client_deposit
+                    WHERE verification_date > '{data_range}'
+                    ORDER BY transaction_date DESC
                 ''')
 
     try:
@@ -81,9 +81,9 @@ def load_client_id_from_db(date_range):
 
     sql_query = (f'''
                 SELECT client_id
-                FROM public.main_callscheck
-                WHERE verified_date IS NULL AND upload_date > '{date_range}'
-                ORDER BY upload_date DESC
+                    FROM public.main_callscheck
+                    WHERE verified_date IS NULL AND upload_date > '{date_range}'
+                    ORDER BY upload_date DESC
                 ''')
 
     try:
