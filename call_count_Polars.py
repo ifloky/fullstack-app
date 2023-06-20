@@ -160,7 +160,7 @@ def main():
     print(f"Start script at {current_date}")
     cc_db = 'public.main_callscheck'
     crm_db = 'public.main_crmcheck'
-    date_range = get_date_of_time_delta(14).strftime('%Y-%m-%d')
+    date_range = get_date_of_time_delta(32).strftime('%Y-%m-%d')
     print('Date range:', date_range, 'to', datetime.now().strftime('%Y-%m-%d'))
     start_job_time = time.perf_counter()
     data = []

@@ -58,7 +58,8 @@ def create_df(call_date):
                 ''')
         cursor.execute(query)
         data = cursor.fetchall()
-        df = pl.DataFrame(data, columns=[c[0] for c in cursor.description])
+        # df = pl.DataFrame(data, columns=[c[0] for c in cursor.description])
+        df = pl.DataFrame(data, schema=[c[0] for c in cursor.description])
         cursor.close()
         connection.close()
     except Error as e:
@@ -115,7 +116,7 @@ def load_phone_number_from_db(db_name, date_range):
 
 def count_calls_in_df(df, phone_number):
     count = 0
-    for index, row in df.iterrows():
+    for index, row in df.iter_rows():
         if row == phone_number:
             count += 1
     # print(str(phone_number) + ', ' + str(count))
@@ -123,7 +124,7 @@ def count_calls_in_df(df, phone_number):
 
 
 def check_calls_count(phone_number, df, db_name):
-    for index, row in df.iterrows():
+    for index, row in df.iter_rows():
         if row == phone_number:
             count_calls = count_calls_in_df(df, phone_number)
             update_call_date_in_db(phone_number, db_name, count_calls)
@@ -162,7 +163,7 @@ def main():
     print(f"Start script at {current_date}")
     cc_db = 'public.main_callscheck'
     crm_db = 'public.main_crmcheck'
-    date_range = get_date_of_time_delta(14).strftime('%Y-%m-%d')
+    date_range = get_date_of_time_delta(32).strftime('%Y-%m-%d')
     print('Date range:', date_range, 'to', datetime.now().strftime('%Y-%m-%d'))
     start_job_time = time.perf_counter()
     data = []

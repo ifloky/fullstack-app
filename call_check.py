@@ -162,7 +162,7 @@ def update_call_date_in_db(phone_number, call_date_time, db_name):
 
 
 def get_date_15_days_ago():
-    date_15_days_ago = datetime.now() - timedelta(days=15)
+    date_15_days_ago = datetime.now() - timedelta(days=32)
     return date_15_days_ago.strftime('%Y-%m-%d')
 
 
