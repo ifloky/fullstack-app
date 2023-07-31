@@ -9,7 +9,7 @@ from mysite import credentials
 
 
 def get_fd_postgres_connection():
-    """ This function create connection to Postgres DB """
+    """ This function creates a connection to Postgres DB """
     try:
         connection = psycopg2.connect(database=credentials.fd_db_name,
                                       user=credentials.fd_db_username,
@@ -23,7 +23,7 @@ def get_fd_postgres_connection():
 
 
 def get_postgres_connection():
-    """ This function create connection to Postgres DB """
+    """ This function creates a connection to Postgres DB """
     try:
         connection = psycopg2.connect(database=credentials.db_name,
                                       user=credentials.db_username,
@@ -42,7 +42,7 @@ def get_date_of_time_delta(delta):
 
 
 def create_df(data_range):
-    """ This function create dataframe from DB table """
+    """ This function creates a dataframe from DB table """
     print('Connecting to Verification database...')
     print('Creating DataFrame...')
     cursor, connection = None, None
@@ -51,8 +51,8 @@ def create_df(data_range):
     sql_query = (f'''
                 SELECT client_id, verification_date
                 FROM public.v_client_deposit
-                WHERE transaction_date > '{data_range}'
-                ORDER BY transaction_date DESC
+                WHERE verification_date > '{data_range}'
+                ORDER BY verification_date DESC
                 ''')
 
     try:
