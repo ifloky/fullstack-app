@@ -88,7 +88,12 @@
     table .table_date th:first-child::before {
         content: counter(rowNumber);
         min-width: 1em;
-        margin-right: 1.5em;
+        margin-right: 4.5em;
+    }
+
+    tr.table_date th:nth-child(1) {
+        display: flex;
+        justify-content: flex-start;
     }
     </style>
 
@@ -101,15 +106,15 @@
         <table class="table table-striped">
           <thead>
             <tr align="center">
-                <th scope="col" width="600">Название игры</th>
+                <th scope="col" width="400">Название игры</th>
                 <th scope="col" width="600">Провайдер</th>
                 <th scope="col">Статус игры</th>
             </tr>
           </thead>
           <tbody>
             {% for list in missing_games %}
-                <tr align="center">
-                    <th scope="col" width="600">{{ list.game_name }}</th>
+                <tr class="table_date" align="center">
+                    <th scope="col" width="400">{{ list.game_name }}</th>
                     <th scope="col" width="600">{{ list.game_provider }}</th>
                     <th scope="col">{{ list.game_status }}</th>
                 </tr>
