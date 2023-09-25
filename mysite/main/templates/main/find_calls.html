@@ -54,6 +54,13 @@
         text-align: center;
     }
 
+    p {
+        width: 80%;
+        margin-top: 2%;
+        margin-left:10%;
+        color: red;
+    }
+
   </style>
 
   {% if user.is_authenticated %}
@@ -74,7 +81,7 @@
     </div>
 
     {% if error_message %}
-      <p style="color: red;">{{ error_message }}</p>
+      <p>{{ error_message }}</p>
     {% endif %}
 
     {% if dataframe %}

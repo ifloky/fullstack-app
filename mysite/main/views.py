@@ -2564,6 +2564,12 @@ class FindCalls(View):
         if not cleaned_phone_number.startswith('+'):
             cleaned_phone_number = '+' + cleaned_phone_number
 
+        # Проверяем, что номер соответствует маске +375XXXXXXXXX
+        phone_pattern = re.compile(r'^\+375(25|29|33|44)\d{7}$')
+        if not phone_pattern.match(cleaned_phone_number):
+            error_message = 'Некорректный номер телефона. Пожалуйста, введите номер в формате +375XXXXXXXXX, где X - цифры.'
+            return render(request, self.template_name, {**data, 'error_message': error_message})
+
         # Используйте cleaned_phone_number вместо phone_number в дальнейшем коде
         phone_number = cleaned_phone_number
 
