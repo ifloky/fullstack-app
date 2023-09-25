@@ -27,6 +27,8 @@ from django.views.generic.list import ListView
 
 from django.urls.base import reverse_lazy
 
+from .find_call import create_df
+
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm, GameListFromSiteForm
 from .forms import CRMCheckForm, GameDisableListForm, CloseHoldRoundForm, TransactionCancelForm, CreatePayoutRequestForm
@@ -2512,3 +2514,59 @@ class AddGameToSKKSHostView(View):
         }
 
         return render(request, self.template_name, data)
+
+
+class FindCalls(View):
+    template_name = 'main/find_calls.html'  # Создайте шаблон HTML для отображения таблицы
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        game_control_users = User.objects.filter(groups__name='game_control')
+        support_heads = User.objects.filter(groups__name='support_heads')
+        heads = User.objects.filter(groups__name='heads')
+
+        data = {
+            'site_adm': site_adm_users,
+            'game_control': game_control_users,
+            'support_heads': support_heads,
+            'heads': heads,
+            'superuser': User.objects.filter(is_superuser=True),
+        }
+
+        return render(request, self.template_name, data)
+
+    def post(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        game_control_users = User.objects.filter(groups__name='game_control')
+        support_heads = User.objects.filter(groups__name='support_heads')
+        heads = User.objects.filter(groups__name='heads')
+
+        data = {
+            'site_adm': site_adm_users,
+            'game_control': game_control_users,
+            'support_heads': support_heads,
+            'heads': heads,
+            'superuser': User.objects.filter(is_superuser=True),
+        }
+
+        phone_number = request.POST.get('phone_number')  # Получаем номер телефона из запроса
+
+        call_date = (datetime.datetime.now() - datetime.timedelta(days=10)).strftime("%Y-%m-%d")  # Получаем дату начала периода
+
+        if phone_number:
+            # Вызываем функцию create_df с номером телефона и получаем датафрейм
+            df = create_df(call_date, phone_number)
+
+            # Если датафрейм создан успешно, передаем его в шаблон для отображения
+            if df is not None:
+                context = {'dataframe': df.to_html(classes='table table-bordered table-striped')}
+                return render(request, self.template_name, {**data, **context})
+            else:
+                # Обработка случая, если датафрейм не был создан
+                error_message = 'Не удалось создать датафрейм'
+                return render(request, self.template_name, {**data, 'error_message': error_message})
+        else:
+            # Обработка случая, если номер телефона не был передан
+            error_message = 'Введите номер телефона'
+            return render(request, self.template_name, {**data, 'error_message': error_message})
+

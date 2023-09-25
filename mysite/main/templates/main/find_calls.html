@@ -1,0 +1,99 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+  <style xmlns="http://www.w3.org/1999/html">
+  /* Анимация загрузки */
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 2s linear infinite;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    form {
+        width: 80%;
+        margin-top: 2%;
+    }
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
+
+    span {
+        width: 20px;
+        padding: 8px 20px;
+        margin: 8px 0;
+        margin-right: 20px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+        height: 60px;
+        border-radius: 10px;
+    }
+    .table {
+        width: 80%;
+        margin-top: 2%;
+        margin-left:10%;
+    }
+
+    .table td, .table th {
+        padding: 8px 20px;
+        box-sizing: border-box;
+        outline: none;
+        text-align: center;
+    }
+
+  </style>
+
+  {% if user.is_authenticated %}
+    <div style="padding: 5px; margin-top: 5%; margin-left: 10%">
+
+      <form method="post">
+        {% csrf_token %}
+        <label for="phone_number">Введите номер телефона:</label>
+        <input type="text" name="phone_number" id="phone_number" required>
+        <button type="submit">Поиск</button>
+      </form>
+
+      <div id="loading-message" style="display: none; color: blue;">
+        <br><br>Ждите, ваш запрос обрабатывается!
+        <div class="loader"></div> <!-- Анимация загрузки -->
+      </div>
+
+    </div>
+
+    {% if error_message %}
+      <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+    {% if dataframe %}
+      {{ dataframe|safe }}
+    {% endif %}
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const loadingMessage = document.getElementById('loading-message');
+
+        // Обработчик отправки формы
+        document.querySelector('form').addEventListener('submit', function () {
+          loadingMessage.style.display = 'block'; // Показываем сообщение ожидания
+        });
+      });
+    </script>
+
+  {% else %}
+    {% include 'main/includes/non_authorised.html' %}
+  {% endif %}
+
+{% endblock %}

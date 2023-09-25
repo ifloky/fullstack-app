@@ -34,6 +34,7 @@ urlpatterns = [
     path('appeal/', views.AppealReportView.as_view(), name='appeal'),
     path('appeal_rep/', views.AppealReportListView.as_view(), name='appeal_rep'),
     path('update_appeal/<int:pk>', views.UpdateAppealView.as_view(), name='update_appeal'),
+    path('find_calls/', views.FindCalls.as_view(), name='find_calls'),
 
     path('log_file/', views.view_log_file, name='log_file'),
 
