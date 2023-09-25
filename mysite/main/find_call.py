@@ -24,12 +24,6 @@ def create_df(call_date, phone_number):
     try:
         connection = get_mysql_connection()
         cursor = connection.cursor()
-        # query = (F'''
-        #         SELECT CallDateTime, Type, Operator, Client FROM asterisk.CallsCountAll
-        #         WHERE TYPE = 'Исходящий'
-        #         AND CallDate between '{call_date}' and '{current_date}'
-        #         AND Client = '{phone_number}'
-        #         ''')
         query = (F'''
                 SELECT CallDateTime, Type, Operator, Client FROM asterisk.CallsCountAll
                 WHERE CallDate between '{call_date}' and '{current_date}'

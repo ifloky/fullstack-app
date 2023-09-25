@@ -1,4 +1,6 @@
 import random
+import re
+
 import credentials
 import requests
 import datetime
@@ -2549,7 +2551,23 @@ class FindCalls(View):
             'superuser': User.objects.filter(is_superuser=True),
         }
 
-        phone_number = request.POST.get('phone_number')  # Получаем номер телефона из запроса
+        # Получаем номер телефона из запроса и убираем лишние символы, пробелы и табуляции
+        raw_phone_number = request.POST.get('phone_number', '')
+        cleaned_phone_number = re.sub(r'[^\d+]', '', raw_phone_number).strip()
+
+        # Проверяем, что номер телефона не пустой после очистки
+        if not cleaned_phone_number:
+            error_message = 'Введите номер телефона'
+            return render(request, self.template_name, {**data, 'error_message': error_message})
+
+        # Если номер не начинается с "+", добавляем его
+        if not cleaned_phone_number.startswith('+'):
+            cleaned_phone_number = '+' + cleaned_phone_number
+
+        # Используйте cleaned_phone_number вместо phone_number в дальнейшем коде
+        phone_number = cleaned_phone_number
+
+        print(phone_number)
 
         call_date = (datetime.datetime.now() - datetime.timedelta(days=10)).strftime("%Y-%m-%d")  # Получаем дату начала периода
 
