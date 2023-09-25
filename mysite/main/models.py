@@ -226,3 +226,19 @@ class SkksErrors(models.Model):
     class Meta:
         verbose_name = 'Ошибки СККС'
         verbose_name_plural = 'Ошибки СККС'
+
+
+class ClientsBirthday(models.Model):
+    """ Таблица с датами рождения и датой верификации клиентов """
+    objects = None
+
+    client_id = models.IntegerField(unique=True)
+    client_birthday = models.DateField(blank=True, null=True)
+    verified_date = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return self.client_id
+
+    class Meta:
+        verbose_name = 'Даты рождения клиентов'
+        verbose_name_plural = 'Даты рождения клиентов'
