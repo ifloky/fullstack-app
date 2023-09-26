@@ -171,7 +171,7 @@ def save_birth_date(client_id, birth_date, verification_date):
     cursor.close()
     connection.close()
 
-    print(f"Data for client_id: {client_id} saved to the database.")
+    # print(f"Data for client_id: {client_id} saved to the database.")
 
 
 def get_date_of_time_delta(delta):

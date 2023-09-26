@@ -1,0 +1,191 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+  <style xmlns="http://www.w3.org/1999/html">
+  /* Анимация загрузки */
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 2s linear infinite;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    form {
+        width: 80%;
+        margin-top: 2%;
+    }
+    .flex-wrap {display:flex;}
+    .flex-wrap label {width:400px;margin-right:auto;}
+    .flex-wrap button {width:450px;margin-right:auto;}
+    .flex-wrap input {width:calc(100% - 50px);}
+    .flex-wrap select {width:calc(100% - 250px);}
+
+    span {
+        width: 20px;
+        padding: 8px 20px;
+        margin: 8px 0;
+        margin-right: 20px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+        height: 60px;
+        border-radius: 10px;
+    }
+    .table {
+        width: 80%;
+        margin-top: 2%;
+        margin-left:10%;
+    }
+
+    .table td, .table th {
+        padding: 8px 20px;
+        box-sizing: border-box;
+        outline: none;
+        text-align: center;
+    }
+
+    p {
+        width: 80%;
+        margin-top: 2%;
+        margin-left:10%;
+        color: red;
+    }
+
+  </style>
+
+  {% if user.is_authenticated %}
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+      <h1>Ежемесячное распределение по возрасту</h1>
+    </div>
+
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+      <h2>Распределение по возрасту в численном выражении</h2>
+    </div>
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+      <table id="count" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Месяц</th>
+            <th>21-24</th>
+            <th>25-34</th>
+            <th>35-44</th>
+            <th>45-54</th>
+            <th>55-64</th>
+            <th>65+</th>
+            <th>Всего</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for row in monthly_counts.values %}
+                <tr>
+                    <td>{{ row.0 }}</td>
+                    <td>{{ row.1 }}</td>
+                    <td>{{ row.2 }}</td>
+                    <td>{{ row.3 }}</td>
+                    <td>{{ row.4 }}</td>
+                    <td>{{ row.5 }}</td>
+                    <td>{{ row.6 }}</td>
+                    <td>{{ row.7 }}</td>
+                    <td>{{ row.8 }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+      <h2>Распределение по возрасту в процентах</h2>
+    </div>
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+      <table id="percent" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Месяц</th>
+            <th>21-24</th>
+            <th>25-34</th>
+            <th>35-44</th>
+            <th>45-54</th>
+            <th>55-64</th>
+            <th>65+</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for row in monthly_percent.values %}
+                <tr>
+                    <td>{{ row.0 }}</td>
+                    <td>{{ row.1 }}</td>
+                    <td>{{ row.2 }}</td>
+                    <td>{{ row.3 }}</td>
+                    <td>{{ row.4 }}</td>
+                    <td>{{ row.5 }}</td>
+                    <td>{{ row.6 }}</td>
+                    <td>{{ row.7 }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%;display:flex">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <canvas id="ageDistributionChart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+      // Get the data for the chart from the HTML table with id "percent"
+      const table = document.getElementById('percent');
+      const months = [];
+      const ageGroups = ['21-24', '25-34', '35-44', '45-54', '55-64', '65+'];
+      const data = [];
+
+      // Loop through the table rows and extract the data
+      const tableRows = table.querySelectorAll('tbody tr');
+      tableRows.forEach((row) => {
+        const rowData = Array.from(row.querySelectorAll('td')).slice(1); // Exclude the first column (month)
+        const month = row.querySelector('td:first-child').textContent;
+        months.push(month);
+        data.push(rowData.map((cell) => parseFloat(cell.textContent)));
+      });
+
+      // Create the chart as a vertical bar chart
+      const ctx = document.getElementById('ageDistributionChart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'bar', // Vertical bar chart
+        data: {
+          labels: months,
+          datasets: ageGroups.map((group, index) => ({
+            label: group,
+            data: data.map((row) => row[index]),
+            backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.6)`, // Random color for each group
+            borderWidth: 1,
+          })),
+        },
+        options: {
+          scales: {
+            x: {
+              stacked: true,
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    </script>
+
+
+  {% else %}
+    {% include 'main/includes/non_authorised.html' %}
+  {% endif %}
+
+{% endblock %}

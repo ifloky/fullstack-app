@@ -6,30 +6,35 @@ import requests
 import datetime
 import psycopg2
 
+from django.views import View
+from django.views.generic.edit import UpdateView
+from django.views.generic.list import ListView
+
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
+
 from django.core.mail import send_mail, BadHeaderError
-from django.db.models import Sum
+
+from django.db.models import Sum, Count, Case, When, IntegerField, F, ExpressionWrapper, Value, DurationField
+from django.db.models.query_utils import Q
+from django.db.models.functions import ExtractYear, ExtractMonth, TruncMonth
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
-from django.db.models.query_utils import Q
+
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
-
-from dateutil.relativedelta import relativedelta
-from django.views import View
-
-from django.views.generic.edit import UpdateView
-from django.views.generic.list import ListView
-
 from django.urls.base import reverse_lazy
 
+from dateutil.relativedelta import relativedelta
+
 from .find_call import create_df
+from .monthly_age import create_df_count, create_df_percent
 
 from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
 from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm, GameListFromSiteForm
@@ -2519,7 +2524,7 @@ class AddGameToSKKSHostView(View):
 
 
 class FindCalls(View):
-    template_name = 'main/find_calls.html'  # Создайте шаблон HTML для отображения таблицы
+    template_name = 'main/find_calls.html'
 
     def get(self, request):
         site_adm_users = User.objects.filter(groups__name='site_adm')
@@ -2594,3 +2599,27 @@ class FindCalls(View):
             error_message = 'Введите номер телефона'
             return render(request, self.template_name, {**data, 'error_message': error_message})
 
+
+class MonthlyAgeView(View):
+    template_name = 'main/monthly_age.html'
+
+    def get(self, request):
+        site_adm_users = User.objects.filter(groups__name='site_adm')
+        game_control_users = User.objects.filter(groups__name='game_control')
+        support_heads = User.objects.filter(groups__name='support_heads')
+        heads = User.objects.filter(groups__name='heads')
+        monthly_percent = create_df_percent()
+        monthly_counts = create_df_count()
+
+
+        data = {
+            'site_adm': site_adm_users,
+            'game_control': game_control_users,
+            'support_heads': support_heads,
+            'heads': heads,
+            'superuser': User.objects.filter(is_superuser=True),
+            'monthly_percent': monthly_percent,
+            'monthly_counts': monthly_counts,
+        }
+
+        return render(request, self.template_name, data)
