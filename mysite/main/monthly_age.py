@@ -55,7 +55,7 @@ def create_df_count():
         connection.close()
     except Exception as e:
         print(e)
-    print(df)
+    # print(df)
     return df
 
 
@@ -106,7 +106,7 @@ def create_df_percent():
         connection.close()
     except Exception as e:
         print(e)
-    print(df)
+    # print(df)
     return df
 
 
