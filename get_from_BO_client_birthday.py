@@ -117,7 +117,7 @@ def get_data(url, params):
     return client_data
 
 
-def get_clients_id_from_db():
+def get_clients_id_from_bo_db():
     """ Получаем список client_id из базы данных.
      Getting a list of client_id from the database. """
 
@@ -130,21 +130,45 @@ def get_clients_id_from_db():
     # Check if the database 'mm_bot' exists
     cursor.execute(f'''
                     SELECT client_id, verification_date
-                        FROM public.v_client_deposit
-                        WHERE verification_date is not Null
-                        ORDER BY verification_date DESC
+                    FROM public.v_client_deposit
+                    WHERE verification_date IS NOT NULL
+                    ORDER BY verification_date DESC
                     ''')
 
-    # Fetch all rows from the result set
+    # Fetch all rows from the first result set
     data = cursor.fetchall()
 
-    # Close the cursor and connection to so the server can allocate
-    # bandwidth to other requests
+    # Close the cursor and connection
     cursor.close()
-    connection.close()
 
-    clients_id = [list(i)[0] for i in data]
-    return clients_id
+    # Create a connection object for the second query
+    connection2 = get_postgres_connection()
+
+    # Create a cursor object for the second query
+    cursor2 = connection2.cursor()
+
+    # Execute the second query to get client_id from 'main_clientsbirthday'
+    cursor2.execute('''
+                    SELECT client_id
+                    FROM public.main_clientsbirthday
+                    ORDER BY client_id DESC
+                    ''')
+
+    # Fetch all rows from the second result set
+    data2 = cursor2.fetchall()
+
+    # Close the cursor and connection for the second query
+    cursor2.close()
+    connection2.close()
+
+    # Extract client_id values from both result sets
+    clients_id1 = [row[0] for row in data]
+    clients_id2 = [row[0] for row in data2]
+
+    # Filter out client_id values from the first result set that are not in the second result set
+    filtered_clients_id = [client_id for client_id in clients_id1 if client_id not in clients_id2]
+
+    return filtered_clients_id
 
 
 def save_birth_date(client_id, birth_date, verification_date):
@@ -185,7 +209,7 @@ def main():
     start_job_time = time.perf_counter()
     url = "https://backofficewebadmin.betconstruct.com/api/ru/Client/GetClientById?"
 
-    clients_id = get_clients_id_from_db()
+    clients_id = get_clients_id_from_bo_db()
     # clients_id = [1406302873, ]
 
     count = 1
