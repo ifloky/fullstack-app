@@ -31,12 +31,17 @@ def create_df(call_date):
         connection = get_mysql_connection()
         cursor = connection.cursor()
         query = (F'''
-                SELECT CallDateTime, Type, Operator, Client FROM asterisk.CallsCountAll
-                WHERE TYPE = 'Исходящий' AND CallDate between '{call_date}' and '{current_date}'
+                SELECT CallDateTime, Type, Operator, Client 
+                FROM asterisk.CallsCountAll
+                WHERE TYPE = 'Исходящий' 
+                AND CallDate between '{call_date}' 
+                AND '{current_date}'
+                ORDER BY CallDateTime DESC
                 ''')
         cursor.execute(query)
         data = cursor.fetchall()
         df = pd.DataFrame(data, columns=[c[0] for c in cursor.description])
+        print(df)
         cursor.close()
         connection.close()
     except Error as e:
@@ -105,7 +110,7 @@ def load_phone_number_from_db(db_name):
 def count_calls_in_df(df, phone_number):
     count = 0
     for index, row in df.iterrows():
-        if row['client'] == phone_number:
+        if row['Client'] == phone_number:
             count += 1
     return count
 
@@ -117,11 +122,11 @@ def check_call(phone_number, df, db_name):
         database_name = 'CRM'
 
     for index, row in df.iterrows():
-        if row['client'] == phone_number:
-            check = row['client'], row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
+        if row['Client'] == phone_number:
+            check = row['Client'], row['CallDateTime'].strftime("%Y-%m-%d %H:%M:%S")
             call_date_time = row['CallDateTime'] - timedelta(hours=3)
             call_date_time = call_date_time.strftime("%Y-%m-%d %H:%M:%S")
-            client_number = row['client']
+            client_number = row['Client']
             check = str(check).replace('(', '').replace(')', '').replace("'", '')
             calls = count_calls_in_df(df, phone_number)
             update_call_date_in_db(client_number, call_date_time, db_name)
