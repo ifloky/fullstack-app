@@ -50,7 +50,7 @@ def create_df(call_date):
 
 
 def load_phone_number_from_db(db_name):
-    """ This function get data from callscheck db table and return it as list of dicts """
+    """ This function get data from callscheck db table and return it as a list of dicts """
     cursor, connection = None, None
 
     phones = []
