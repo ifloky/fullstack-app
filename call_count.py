@@ -11,7 +11,7 @@ from mysite import credentials
 
 
 def get_mysql_connection():
-    """ This function create connection to MySQL DB """
+    """ This function creates a connection to MySQL DB """
     try:
         connection = connect(host=cc_db_host,
                              port=cc_db_port,
@@ -24,7 +24,7 @@ def get_mysql_connection():
 
 
 def get_postgres_connection():
-    """ This function create connection to Postgres DB """
+    """ This function creates a connection to Postgres DB """
     try:
         connection = psycopg2.connect(database=credentials.db_name,
                                       user=credentials.db_username,
@@ -43,7 +43,7 @@ def get_date_of_time_delta(delta):
 
 
 def create_df(call_date):
-    """ This function create dataframe from DB table """
+    """ This function creates a dataframe from DB table """
     current_date = datetime.now().strftime("%Y-%m-%d")
     print('Connecting to MySQL database...')
     print('Creating DataFrame...')
@@ -68,7 +68,7 @@ def create_df(call_date):
 
 
 def load_phone_number_from_db(db_name, date_range):
-    """ This function get data from callscheck db table and return it as list of dicts """
+    """ This function get data from callscheck db table and return it as a list of dicts """
     print('Connecting to Postgres database...')
     cursor, connection = None, None
     current_date = datetime.now().strftime("%Y-%m-%d")
