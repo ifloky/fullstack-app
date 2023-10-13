@@ -1,4 +1,4 @@
-# pip install polars
+# pip install polars-lts-cpu
 
 import psycopg2
 import polars as pl
@@ -11,7 +11,7 @@ from mysite import credentials
 
 
 def get_mysql_connection():
-    """ This function create connection to MySQL DB """
+    """ This function creates a connection to MySQL DB """
     try:
         connection = connect(host=cc_db_host,
                              port=cc_db_port,
@@ -24,7 +24,7 @@ def get_mysql_connection():
 
 
 def get_postgres_connection():
-    """ This function create connection to Postgres DB """
+    """ This function creates a connection to Postgres DB """
     try:
         connection = psycopg2.connect(database=credentials.db_name,
                                       user=credentials.db_username,
@@ -43,7 +43,7 @@ def get_date_of_time_delta(delta):
 
 
 def create_df(call_date):
-    """ This function create dataframe from DB table """
+    """ This function creates a dataframe from DB table """
     current_date = datetime.now().strftime("%Y-%m-%d")
     print('Connecting to MySQL database...')
     print('Creating DataFrame...')
@@ -68,7 +68,7 @@ def create_df(call_date):
 
 
 def load_phone_number_from_db(db_name, date_range):
-    """ This function get data from callscheck db table and return it as list of dicts """
+    """ This function get data from callscheck db table and return it as a list of dicts """
     print('Connecting to Postgres database...')
     cursor, connection = None, None
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -123,14 +123,47 @@ def count_calls_in_df(df, phone_number):
     return count
 
 
-def check_calls_count(phone_number, df, db_name):
-    for index, row in df.iter_rows():
-        if row == phone_number:
-            count_calls = count_calls_in_df(df, phone_number)
-            update_call_date_in_db(phone_number, db_name, count_calls)
-            return count_calls
-    print(str(phone_number) + ', ' + 'No Calls')
-    return str(phone_number)+', ' + 'No Calls'
+# def check_calls_count(phone_number, df, db_name):
+#     for index, row in df.iter_rows():
+#         if row == phone_number:
+#             count_calls = count_calls_in_df(df, phone_number)
+#             update_call_date_in_db(phone_number, db_name, count_calls)
+#             return count_calls
+#     print(str(phone_number) + ', ' + 'No Calls')
+#     return str(phone_number)+', ' + 'No Calls'
+
+
+def check_calls_count(phone_numbers, df, db_name):
+    # Подготовьте список номеров для запроса
+    phone_numbers_str = "','".join(phone_numbers)
+
+    # Составьте SQL-запрос с пакетной обработкой номеров
+    sql_query = f'''
+        SELECT client_phone, COUNT(*) as calls_count
+        FROM {db_name}
+        WHERE client_phone IN ('{phone_numbers_str}')
+        GROUP BY client_phone
+    '''
+
+    cursor, connection = None, None
+    try:
+        connection = get_postgres_connection()
+        cursor = connection.cursor()
+        cursor.execute(sql_query)
+        results = cursor.fetchall()
+
+        # Обработайте результаты запроса
+        for row in results:
+            phone_number, calls_count = row
+            update_call_date_in_db(phone_number, db_name, calls_count)
+            # print(f"{phone_number}, {calls_count} Calls")
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while connecting to PostgresSQL", error)
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
 
 
 def update_call_date_in_db(phone_number, db_name, calls):
@@ -163,27 +196,28 @@ def main():
     print(f"Start script at {current_date}")
     cc_db = 'public.main_callscheck'
     crm_db = 'public.main_crmcheck'
-    date_range = get_date_of_time_delta(15).strftime('%Y-%m-%d')
+    date_range = get_date_of_time_delta(14).strftime('%Y-%m-%d')
     print('Date range:', date_range, 'to', datetime.now().strftime('%Y-%m-%d'))
     start_job_time = time.perf_counter()
     data = []
-    df = create_df(date_range)
+    data_frame = create_df(date_range)
     cc_phones = load_phone_number_from_db(cc_db, date_range)
     crm_phones = load_phone_number_from_db(crm_db, date_range)
 
     phone_numbers = cc_phones + crm_phones
+    check_calls_count(phone_numbers, data_frame, cc_db)
 
-    for cc_phone in cc_phones:
-        data.append(check_calls_count(cc_phone, df, cc_db))
-
-    for crm_phone in crm_phones:
-        data.append(check_calls_count(crm_phone, df, crm_db))
+    # for cc_phone in cc_phones:
+    #     data.append(check_calls_count(cc_phone, data_frame, cc_db))
+    #
+    # for crm_phone in crm_phones:
+    #     data.append(check_calls_count(crm_phone, data_frame, crm_db))
 
     stop_job_time = time.perf_counter()
     working_time = stop_job_time - start_job_time
 
     print('Задание выполнено в:', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    print('Загружено из базы АТС:', str(len(df)), 'записей')
+    print('Загружено из базы АТС:', str(len(data_frame)), 'записей')
     print('Загружено из базы Отчетов:', len(phone_numbers), 'записей')
     print("Проверено и сохранено:", len(data), "номеров")
     print("Затрачено времени:", str(timedelta(seconds=working_time)))

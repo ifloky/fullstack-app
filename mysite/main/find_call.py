@@ -4,6 +4,7 @@ from mysql.connector import Error, connect
 
 import pandas as pd
 
+
 def get_mysql_connection():
     print('Connecting to MySQL database...')
     try:
@@ -40,7 +41,7 @@ def create_df(call_date, phone_number):
 
 
 def main():
-    call_date = (datetime.now() - timedelta(days=10)).strftime("%Y-%m-%d")
+    call_date = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
     phone_number = '+375291926835'
     df = create_df(call_date, phone_number)
     print(df)

@@ -2572,7 +2572,8 @@ class FindCalls(View):
         # Проверяем, что номер соответствует маске +375XXXXXXXXX
         phone_pattern = re.compile(r'^\+375(25|29|33|44)\d{7}$')
         if not phone_pattern.match(cleaned_phone_number):
-            error_message = 'Некорректный номер телефона. Пожалуйста, введите номер в формате +375XXXXXXXXX, где X - цифры.'
+            error_message = ('Некорректный номер телефона. Пожалуйста, введите номер в формате +375XXXXXXXXX, '
+                             'где X - цифры.')
             return render(request, self.template_name, {**data, 'error_message': error_message})
 
         # Используйте cleaned_phone_number вместо phone_number в дальнейшем коде
@@ -2580,7 +2581,8 @@ class FindCalls(View):
 
         print(phone_number)
 
-        call_date = (datetime.datetime.now() - datetime.timedelta(days=10)).strftime("%Y-%m-%d")  # Получаем дату начала периода
+        # Получаем дату начала периода
+        call_date = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d")
 
         if phone_number:
             # Вызываем функцию create_df с номером телефона и получаем датафрейм
