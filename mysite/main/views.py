@@ -155,9 +155,10 @@ def rocket(request):
 
     if len(month_id) > 2:
         month_id = month_id[1:]
-
-    start_date = f'{year_id}-{month_id}-01T03:00:00.000Z'
-    end_date = f'{year_id}-{month_id}-31T20:59:59.999Z'
+    start_time = '01T03:00:00.000Z'
+    end_time = '31T20:59:59.999Z'
+    start_date = f'{year_id}-{month_id}-{start_time}'
+    end_date = f'{year_id}-{month_id}-{end_time}'
 
     message_count_s_and_r = message_count_from_s_and_r(start_date, end_date)
     message_count_crm = message_count_from_crm(start_date, end_date)
@@ -253,7 +254,8 @@ def info_by_ip(request):
     else:
         ip_address = ip_address.replace(' ', '')
         ip_address = ip_address.replace(',', '.')
-        url = f'http://ip-api.com/json/{ip_address}'
+        site = 'http://ip-api.com/json/'
+        url = f'{site}{ip_address}'
         ip_info = requests.get(url=url)
 
         if ip_info.json()['status'] == 'fail':
@@ -443,7 +445,7 @@ def add_day_report(request):
 
 
 def get_risks_report(start_date, end_date):
-    """ This function get data from risk_report db table and return it as list of dicts """
+    """ This function get data from risk_report db table and return it as a list of dicts """
     cursor, connection = None, None
 
     risks_report_list = []
@@ -479,7 +481,7 @@ def get_risks_report(start_date, end_date):
 
 
 def get_personal_risks_report(start_date, end_date):
-    """ This function get data from risk_report db table and return it as list of dicts """
+    """ This function get data from risk_report db table and return it as a list of dicts """
     cursor, connection = None, None
 
     report_list = []
@@ -523,7 +525,7 @@ def get_personal_risks_report(start_date, end_date):
 
 
 def calculate_risks_report(start_date, end_date):
-    """ This function calculate risks report data and return it as list of dicts """
+    """ This function calculates risk report data and returns it as a list of dicts """
     cursor, connection = None, None
 
     report_list = []
@@ -648,7 +650,7 @@ class ListRisksReport(ListView):
 
 
 class ListRisksReportDay(ListView):
-    """ This class view show list of risks report for day """
+    """ This class view show list of a risk report for day """
     model = RiskReportDay
     form_class = RiskReportDayForm
     template_name = 'main/list_risks_rep_day.html'
@@ -845,7 +847,7 @@ class CRMView(ListView):
 
 
 class UpdateCallView(UpdateView):
-    """ This class view add new call report """
+    """ This class view adds a new call report """
     model = CallsCheck
     form_class = CallsCheckForm
     template_name = 'main/update_calls.html'
@@ -864,7 +866,7 @@ class UpdateCallView(UpdateView):
 
 
 class UpdateCRMView(UpdateView):
-    """ This class view add new call report """
+    """ This class view adds a new call report """
     model = CRMCheck
     form_class = CRMCheckForm
     template_name = 'main/update_crm.html'
@@ -883,7 +885,7 @@ class UpdateCRMView(UpdateView):
 
 
 class AddDataFromTextView(View):
-    """ This class view add new data from text area """
+    """ This class view adds new data from the text area """
     form_class = AddDataFromTextForm
     template_name = 'main/add_data.html'
     success_url = reverse_lazy('main:calls_rep')
@@ -916,15 +918,15 @@ class AddDataFromTextView(View):
             data = form.cleaned_data.pop('text')
             data = data.split('\n')  # split data by tabulation
             data = [i.split(',') for i in data]  # split data by new line
-            data = [i for i in data if i != ['']]  # remove empty list
+            data = [i for i in data if i != ['']]  # remove an empty list
             data = list(filter(None, data))  # remove empty spaces
 
             for i in data:
                 if i != ['\t\r'] and '\t\t\r' not in ''.join(i):
                     client_data = i  # get client data
                     client_data = [i.split('\t') for i in client_data]  # split client data by tabulation
-                    client_data = [i for i in client_data if i != ['']]  # remove empty list
-                    client_id = client_data[0][0]  # get client id
+                    client_data = [i for i in client_data if i != ['']]  # remove an empty list
+                    client_id = client_data[0][0]  # get a client id
                     client_phone = '+' + client_data[0][1]  # get client phone
                     upload_date = datetime.datetime.now()  # get upload date
                     upload_date_short = upload_date.strftime('%m-%Y')  # get upload date short
@@ -949,7 +951,7 @@ class AddDataFromTextView(View):
 
 
 class AddDataFromCRMView(View):
-    """ This class view add new data from text area """
+    """ This class view adds new data from the text area """
     # model = AddDataFromText
     form_class = AddDataFromTextForm
     template_name = 'main/add_crm_data.html'
@@ -983,15 +985,15 @@ class AddDataFromCRMView(View):
             data = form.cleaned_data.pop('text')
             data = data.split('\n')  # split data by tabulation
             data = [i.split(',') for i in data]  # split data by new line
-            data = [i for i in data if i != ['']]  # remove empty list
+            data = [i for i in data if i != ['']]  # remove an empty list
             data = list(filter(None, data))  # remove empty spaces
 
             for i in data:
                 if i != ['\t\r']:
                     client_data = i  # get client data
                     client_data = [i.split('\t') for i in client_data]  # split client data by tabulation
-                    client_data = [i for i in client_data if i != ['']]  # remove empty list
-                    client_id = client_data[0][0]  # get client id
+                    client_data = [i for i in client_data if i != ['']]  # remove an empty list
+                    client_id = client_data[0][0]  # get a client id
                     client_name = client_data[0][1]  # get client name
                     client_phone = '+' + client_data[0][2]  # get client phone
                     upload_date = datetime.datetime.now()  # get upload date
@@ -1222,7 +1224,7 @@ class AppealReportListView(ListView):
 
 
 class UpdateAppealView(UpdateView):
-    """ This class view add new call report """
+    """ This class view adds a new call report """
     model = AppealReport
     form_class = AppealReportForm
     template_name = 'main/update_appeal.html'
@@ -1469,7 +1471,7 @@ class GameDisableListView(ListView):
 
 
 class AddGameDisableView(View):
-    """ This class add game to disable list """
+    """ This class adds game to a disabled list """
     model = GameDisableList
     form_class = GameDisableListForm
     template_name = 'main/add_game_disable.html'
@@ -1785,7 +1787,7 @@ class CCReportView(View):
 
 
 def first_deposit_amount_over_1000(request):
-    """" This function return all users with first deposit amount over 1000 """
+    """" This function returns all users with first deposit amount over 1000 """
     site_adm_users = User.objects.filter(groups__name='site_adm')
     heads = User.objects.filter(groups__name='heads')
     risk_heads_users = User.objects.filter(groups__name='risk_heads')
@@ -2611,7 +2613,6 @@ class MonthlyAgeView(View):
         heads = User.objects.filter(groups__name='heads')
         monthly_percent = create_df_percent()
         monthly_counts = create_df_count()
-
 
         data = {
             'site_adm': site_adm_users,
