@@ -19,9 +19,8 @@ from django.contrib.auth.tokens import default_token_generator
 
 from django.core.mail import send_mail, BadHeaderError
 
-from django.db.models import Sum, Count, Case, When, IntegerField, F, ExpressionWrapper, Value, DurationField
+from django.db.models import Sum
 from django.db.models.query_utils import Q
-from django.db.models.functions import ExtractYear, ExtractMonth, TruncMonth
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
