@@ -101,14 +101,15 @@ def get_data(url, params):
         client_birthday = str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:BirthDate']).replace(
             "{'@i:nil': 'true'}", 'Нет данных')
 
-        print('', 'Записываем дата рождения клиента:',params['id'], client_birthday.split('T')[0])
+        print('', 'Записываем дата рождения клиента:', params['id'], client_birthday.split('T')[0])
         save_birth_date(params['id'], client_birthday.split('T')[0], client_verification_date.split('T')[0])
 
     except KeyError:
         client_birthday = "Клиент не верифицирован"
         print('', client_birthday)
 
-    client_id =  str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Id']).replace("{'@i:nil': 'true'}", 'Нет данных')
+    client_id = str(parsed_data['ResponseModelOfClientModelNm0NiJ3A']['Data']['d2p1:Id']).replace("{'@i:nil': 'true'}",
+                                                                                                  'Нет данных')
 
     client_data = {
         "client_id": client_id,
@@ -202,6 +203,7 @@ def get_date_of_time_delta(delta):
     date_range = datetime.now() - timedelta(days=delta)
     return date_range
 
+
 def main():
     """ Главная функция. Main function. """
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -234,7 +236,6 @@ def main():
 
     print('Задание выполнено в:', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print("Затрачено времени:", str(timedelta(seconds=working_time)))
-
 
 
 if __name__ == "__main__":
