@@ -59,7 +59,7 @@ class MonthsForm(forms.Form):
 
 
 class YearsForm(forms.Form):
-    years = [('2021', '2021'), ('2022', '2022'), ('2023', '2023'), ]
+    years = [('2021', '2021'), ('2022', '2022'), ('2023', '2023'), ('2024', '2024')]
     year = forms.ChoiceField(choices=years, label='')
 
     def __init__(self, *args, **kwargs):
