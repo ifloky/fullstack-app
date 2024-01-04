@@ -60,7 +60,6 @@ class MonthsForm(forms.Form):
 
 class YearsForm(forms.Form):
     current_year = datetime.datetime.now().year
-    print(current_year)
     years = [(str(year), str(year)) for year in range(2021, current_year + 1)]
     year = forms.ChoiceField(choices=years, label='')
 
