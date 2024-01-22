@@ -38,6 +38,7 @@ const login = async (req, res) => {
 
 
 const register = async (req, res) => {
+
   try {
     const { email, password, name } = req.body;
 
@@ -81,7 +82,7 @@ const register = async (req, res) => {
     }
 
   } catch {
-    return res.status(500).json({ message: "something went wrong" })
+    return res.status(500).json({ message: "something went wrong!" })
   }
 
 };
