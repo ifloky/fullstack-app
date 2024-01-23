@@ -26,7 +26,7 @@ const add = async (req, res) => {
       }
     });
 
-    return res.status(204).json(employee)
+    return res.status(200).json(employee)
 
   } catch (error) {
 
@@ -36,7 +36,7 @@ const add = async (req, res) => {
 }
 
 const remove = async (req, res) => {
-  const {id} = req.body;
+  const { id } = req.body;
   try {
 
     await prisma.employee.delete({
@@ -44,7 +44,7 @@ const remove = async (req, res) => {
         id
       }
     })
-    return res.status(204).json({ message: "Deleted" })
+    return res.status(200).json({ message: "Deleted" })
 
   } catch (error) {
 
@@ -75,7 +75,7 @@ const edit = async (req, res) => {
 }
 
 const employee = async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
   try {
 
