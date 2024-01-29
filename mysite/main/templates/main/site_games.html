@@ -1,8 +1,8 @@
 {% extends 'main/header.html' %}
 
-  {% block content %}
+    {% block content %}
 
-  <style xmlns="http://www.w3.org/1999/html">
+    <style xmlns="http://www.w3.org/1999/html">
     form {
         display: flex;
         align-items: center;
@@ -92,7 +92,7 @@
     }
     </style>
 
-  {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
     <br>
     <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%">
         <span style="font-size: 32px">Всего на сайте: <b>{{ games_count }}</b> игр.</span>
@@ -135,38 +135,38 @@
         </table>
     </div>
 
-<script>
-  
-/* send form on click 'enter' */
+    <script>
 
-  $('#search_game_name').focus(function () {
+    /* send form on click 'enter' */
+
+    $('#search_game_name').focus(function () {
     form = $(this).parents('form')
     document.onkeydown = (e) => {
       if (e.keyCode === 13) {
         form.submit();
       }
     }
-  });
-  
-  $('#search_game_provider').focus(function () {
+    });
+
+    $('#search_game_provider').focus(function () {
     form = $(this).parents('form')
     document.onkeydown = (e) => {
       if (e.keyCode === 13) {
         form.submit();
       }
     }
-  });
+    });
 
-  $('#search_game_status').focus(function () {
+    $('#search_game_status').focus(function () {
     form = $(this).parents('form')
     document.onkeydown = (e) => {
       if (e.keyCode === 13) {
         form.submit();
       }
     }
-  });
+    });
 
-</script>
+    </script>
 
     {% if is_paginated %}
 
@@ -174,11 +174,11 @@
 
     {% endif %}
 
-  {% else %}
+    {% else %}
 
         {% include 'main/includes/non_authorised.html' %}
 
-  {% endif %}
+    {% endif %}
 
 
-  {% endblock %}
+{% endblock %}
