@@ -35,14 +35,8 @@ from dateutil.relativedelta import relativedelta
 from .find_call import create_df
 from .monthly_age import create_df_count, create_df_percent
 
-from .forms import NewUserForm, MonthsForm, YearsForm, RiskReportForm, GameListFromSkksForm, GameListFromSkksTestForm
-from .forms import RiskReportDayForm, CallsCheckForm, AddDataFromTextForm, AppealReportForm, GameListFromSiteForm
-from .forms import CRMCheckForm, GameDisableListForm, CloseHoldRoundForm, TransactionCancelForm, CreatePayoutRequestForm
-from .forms import CreateTransactionPlayerInForm, AddGameToSKKSHostForm
-
-from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
-from .models import GameListFromSite, GameDisableList
-from .models import CRMCheck
+from .forms import *
+from .models import *
 
 
 def homepage(request):
@@ -1390,6 +1384,7 @@ class GameListFromSiteView(ListView):
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['game_control'] = User.objects.filter(groups__name='game_control')
         context['superuser'] = User.objects.filter(is_superuser=True)
+        context['crm'] = User.objects.filter(groups__name='crm')
         context['games_count'] = GameListFromSite.objects.all().count()
         return context
 
@@ -2619,9 +2614,66 @@ class MonthlyAgeView(View):
             'game_control': game_control_users,
             'support_heads': support_heads,
             'heads': heads,
+            'crm': User.objects.filter(groups__name='crm'),
             'superuser': User.objects.filter(is_superuser=True),
             'monthly_percent': monthly_percent,
             'monthly_counts': monthly_counts,
         }
 
         return render(request, self.template_name, data)
+
+
+class BonusGamesView(ListView):
+    model = BonusGames
+    form_class = BonusGamesForm
+    template_name = 'main/bonus_games.html'
+    context_object_name = 'bonus_games'
+    paginate_by = 12
+
+    def get_queryset(self):
+        game_name = self.request.GET.get('game_name')
+        game_provider = self.request.GET.get('game_provider')
+        all_games = BonusGames.objects.all().order_by('game_provider')
+
+        try:
+            queryset = all_games
+
+            if game_name:
+                game_name = game_name.strip()
+                queryset = BonusGames.objects.filter(Q(game_name__icontains=game_name)).order_by('game_provider')
+
+            if game_provider:
+                game_provider = game_provider.strip()
+                queryset = BonusGames.objects.filter(Q(game_provider__icontains=game_provider)).order_by('game_provider')
+
+            return queryset
+
+        except ValueError:
+            return all_games
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(BonusGamesView, self).get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['game_control'] = User.objects.filter(groups__name='game_control')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['crm'] = User.objects.filter(groups__name='crm')
+        return context
+
+
+class UpdateBonusGamesView(UpdateView):
+    """ This class view adds a new call report """
+    model = BonusGames
+    form_class = BonusGamesForm
+    template_name = 'main/update_bonus.html'
+
+    def form_valid(self, form):
+        form.save()
+        return redirect(self.request.POST['return_to'])
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['support'] = User.objects.filter(groups__name='support')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        return context

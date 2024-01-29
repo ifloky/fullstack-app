@@ -3,9 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 
-from .models import RiskReport, RiskReportDay, CallsCheck, AppealReport, GameListFromSkks, GameListFromSkksTest
-from .models import GameListFromSite, GameDisableList
-from .models import CRMCheck
+from .models import *
 
 import datetime
 
@@ -685,7 +683,8 @@ class AddGameToSKKSHostForm(forms.Form):
     @staticmethod
     def get_game_provider():
         providers_name = [(i['game_provider'], i['game_provider'])
-                          for i in GameListFromSkksTest.objects.values('game_provider').distinct().order_by('game_provider')]
+                          for i in
+                          GameListFromSkksTest.objects.values('game_provider').distinct().order_by('game_provider')]
         return providers_name
 
     def clean(self):
@@ -700,3 +699,77 @@ class AddGameToSKKSHostForm(forms.Form):
                 raise forms.ValidationError('Поля должны содержать только цифры')
 
         return cleaned_data
+
+
+class BonusGamesForm(forms.ModelForm):
+    class Meta:
+        model = BonusGames
+        fields = '__all__'
+
+        widgets = {
+            'game_add_date': forms.TextInput(attrs={'type': 'datetime-local'}),
+            'game_bonus_start_date': forms.TextInput(attrs={'type': 'datetime-local'}),
+            'game_bonus_end_date': forms.TextInput(attrs={'type': 'datetime-local'}),
+            'game_bonus_buy': forms.Select(choices=[(True, 'Да'), (False, 'Нет')]),
+            'game_megaways': forms.Select(choices=[(True, 'Да'), (False, 'Нет')]),
+            'game_bonus_description': forms.Textarea(attrs={'rows': 5}),
+        }
+
+        labels = {
+            'game_id': 'ID игры',
+            'game_provider': 'Провайдер игры',
+            'game_name': 'Название игры',
+            'game_add_date': 'Дата добавления',
+            'game_min_bet': 'Минимальная ставка',
+            'game_rtp': 'RTP',
+            'game_bonus_buy': 'Купи бонус',
+            'game_megaways': 'Megaways',
+            'game_bonus_type': 'Тип бонуса',
+            'game_bonus_cost': "Стоимость бонуса",
+            'game_bonus_min_count': 'Min. кол-во',
+            'game_bonus_max_count': 'Max. кол-во',
+            'game_bonus_name': 'Название бонуса',
+            'game_bonus_id': 'ID бонуса',
+            'game_bonus_start_date': 'Дата начала бонуса',
+            'game_bonus_end_date': 'Дата окончания бонуса',
+            'game_bonus_description': 'Описание бонуса',
+            'game_section': 'Раздел',
+            'game_theme': 'Тематика',
+        }
+
+        required = {
+            'game_id': True,
+            'game_provider': True,
+            'game_name': True,
+            'game_add_date': False,
+            'game_min_bet': False,
+            'game_rtp': False,
+            'game_bonus_buy': False,
+            'game_megaways': False,
+            'game_bonus_type': False,
+            'game_bonus_cost': False,
+            'game_bonus_min_count': False,
+            'game_bonus_max_count': False,
+            'game_bonus_name': False,
+            'game_bonus_id': False,
+            'game_bonus_start_date': False,
+            'game_bonus_end_date': False,
+            'game_bonus_description': False,
+            'game_section': False,
+            'game_theme': False,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Получаем уникальные значения из поля game_provider в модели
+        unique_game_providers = BonusGames.objects.values_list('game_provider', flat=True).distinct()
+
+        # Строим список кортежей для атрибута choices
+        choices = [(provider, provider) for provider in unique_game_providers]
+
+        # Добавляем значение "Свое значение" с пустой строкой в качестве ключа
+        choices.append(('', 'Свое значение'))
+
+        # Устанавливаем виджет Select для поля game_provider
+        self.fields['game_provider'].widget = forms.Select(choices=choices)

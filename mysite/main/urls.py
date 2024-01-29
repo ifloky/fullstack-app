@@ -17,6 +17,9 @@ urlpatterns = [
     path('find_calls/', views.FindCalls.as_view(), name='find_calls'),
     path('monthly_age/', views.MonthlyAgeView.as_view(), name='monthly_age'),
 
+    path('bonus_games/', views.BonusGamesView.as_view(), name='bonus_games'),
+    path('update_bonus/<int:pk>', views.UpdateBonusGamesView.as_view(), name='update_bonus'),
+
     path('risks_rep/', views.risks_rep, name='risks_rep'),
     path('add_personal_report/', views.add_personal_report, name='add_personal_report'),
     path('add_day_report/', views.add_day_report, name='add_day_report'),

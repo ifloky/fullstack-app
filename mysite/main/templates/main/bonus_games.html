@@ -1,0 +1,193 @@
+{% extends 'main/header.html' %}
+
+    {% block content %}
+    
+    <style xmlns="http://www.w3.org/1999/html">
+        form {
+            display: flex;
+            align-items: center;
+            justify-content: right;
+        }
+
+        .flex-wrap {display:flex;}
+        .flex-wrap label {width:400px;margin-right:auto;}
+        .flex-wrap button {width:450px;margin-right:auto;}
+        .flex-wrap input {width:calc(100% - 50px);}
+        .flex-wrap select {width:calc(100% - 250px);}
+
+        input {
+            width: 20px;
+            padding: 8px 20px;
+            margin: 8px 0;
+            margin-right: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            -webkit-transition: 0.5s;
+            transition: 0.5s;
+            outline: none;
+            height: 60px;
+            border-radius: 10px;
+        }
+
+        button {
+            width: 120px;
+            padding: 6px 30px;
+            margin: 8px 0;
+        }
+
+        th {
+            vertical-align:
+            middle !important;
+            text-align: center;
+        }
+
+        label.filter {
+            margin-right: 10px;
+            display:flex;
+            align-items: center;
+            height: 60px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 0 30px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        label.filter:hover {
+            background: #d9d9d9;
+        }
+
+        select {
+            height: 60px;
+            border-radius: 10px !important;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        select:hover {
+            background: #d9d9d9;
+        }
+
+        button {
+            height: 60px;
+            border-radius: 10px !important;
+        }
+
+        button:hover {
+            background: #d9d9d9;
+        }
+
+        table {
+        counter-reset: rowNumber;
+        }
+
+        table .table_date {
+            counter-increment: rowNumber;
+        }
+
+        table .table_date th:first-child::before {
+            content: counter(rowNumber);
+            min-width: 1em;
+            margin-right: 1.5em;
+        }
+        </style>
+    
+    {% if user.is_authenticated %}
+        <br><br><br>
+        <div style="padding-left:9.5%;width:98%;display:flex">
+            <form method="GET" action="/bonus_games" style="margin-left:3%;width:35%">
+                 <label for="search_game_provider" style="display:block;width:220px">Найти игру по провайдеру:</label>
+                 <input style="width:200px;margin-right:10px" type="search" name="game_provider" value="" id="search_game_provider">
+                 <button type="submit">Найти</button>
+            </form>
+            <form method="GET" action="/bonus_games" style="margin-left:3%;width:35%">
+                 <label for="search_game_name" style="display:block;width:220px">Найти игру по названию:</label>
+                 <input style="width:200px;margin-right:10px" type="search" name="game_name" value="" id="search_game_name">
+                 <button type="submit">Найти</button>
+            </form>
+        </div>
+        {% if is_paginated %}
+
+            {% include 'main/includes/pagination.html' %}
+
+        {% endif %}
+        <div style="padding-left:9.5%;width:98%;display:flex">
+            <table class="table table-striped">
+                <thead>
+                    <tr align="center">
+                        <th>Провайдер</th>
+                        <th>Игра</th>
+                        <th>Дата подключения</th>
+                        <th>Min. ставка</th>
+                        <th>RTP</th>
+                        <th>Купи бонус</th>
+                        <th>Megaways</th>
+                        <th>Тип бонуса</th>
+                        <th>Стоимость</th>
+                        <th>Min. кол-во</th>
+                        <th>Max. кол-во</th>
+                        <th>Название бонуса</th>
+                        <th>ID бонуса</th>
+                        <th>Дата начала</th>
+                        <th>Дата завершения</th>
+                        <th>Доп. Информация</th>
+                        <th>Раздел</th>
+                        <th>Тематика</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bonus in bonus_games %}
+                        <tr align="center">
+                            <th>{{ bonus.game_provider }}</th>
+                            <th><a href="/update_bonus/{{bonus.id}}">{{ bonus.game_name }}</a></th>
+                            <th>{{ bonus.game_add_date|date:"d.m.Y H:i"  }}</th>
+                            <th>{{ bonus.game_min_bet }}</th>
+                            <th>{{ bonus.game_rtp }}</th>
+                            <th>{{ bonus.game_bonus_buy }}</th>
+                            <th>{{ bonus.game_megaways }}</th>
+                            <th>{{ bonus.game_bonus_type }}</th>
+                            <th>{{ bonus.game_bonus_cost }}</th>
+                            <th>{{ bonus.game_bonus_min_count }}</th>
+                            <th>{{ bonus.game_bonus_max_count }}</th>
+                            <th>{{ bonus.game_bonus_name }}</th>
+                            <th>{{ bonus.game_bonus_id }}</th>
+                            <th>{{ bonus.game_bonus_start_date|date:"d.m.Y H:i"  }}</th>
+                            <th>{{ bonus.game_bonus_end_date|date:"d.m.Y H:i"  }}</th>
+                            <th>{{ bonus.game_bonus_description }}</th>
+                            <th>{{ bonus.game_section }}</th>
+                            <th>{{ bonus.game_theme }}</th>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <script>
+    
+        /* send form on click 'enter' */
+    
+          $('#search_game_name').focus(function () {
+            form = $(this).parents('form')
+            document.onkeydown = (e) => {
+              if (e.keyCode === 13) {
+                form.submit();
+              }
+            }
+          });
+    
+          $('#search_game_provider').focus(function () {
+            form = $(this).parents('form')
+            document.onkeydown = (e) => {
+              if (e.keyCode === 13) {
+                form.submit();
+              }
+            }
+          });
+        </script>
+    
+    {% else %}
+    
+        {% include 'main/includes/non_authorised.html' %}
+    
+    {% endif %}
+
+{% endblock %}

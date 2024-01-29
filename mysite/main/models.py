@@ -242,3 +242,34 @@ class ClientsBirthday(models.Model):
     class Meta:
         verbose_name = 'Даты рождения клиентов'
         verbose_name_plural = 'Даты рождения клиентов'
+
+
+class BonusGames(models.Model):
+    """ Таблица с бонусными играми """
+    objects = None
+
+    game_provider = models.CharField(max_length=200, blank=True, null=True)
+    game_name = models.CharField(max_length=200, blank=True, null=True)
+    game_add_date = models.DateTimeField(default=timezone.localtime, blank=True, null=True)
+    game_min_bet = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    game_rtp = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    game_bonus_buy = models.CharField(max_length=200, blank=True, null=True)
+    game_megaways = models.CharField(max_length=200, blank=True, null=True)
+    game_bonus_type = models.CharField(max_length=200, blank=True, null=True)
+    game_bonus_cost = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    game_bonus_min_count = models.IntegerField(blank=True, null=True)
+    game_bonus_max_count = models.IntegerField(blank=True, null=True)
+    game_bonus_name = models.CharField(max_length=200, blank=True, null=True)
+    game_bonus_id = models.IntegerField(blank=True, null=True)
+    game_bonus_start_date = models.DateTimeField(default=timezone.localtime, blank=True, null=True)
+    game_bonus_end_date = models.DateTimeField(default=timezone.localtime, blank=True, null=True)
+    game_bonus_description = models.CharField(max_length=200, blank=True, null=True)
+    game_section = models.CharField(max_length=200, blank=True, null=True)
+    game_theme = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return self.game_name
+
+    class Meta:
+        verbose_name = 'Бонусные игры'
+        verbose_name_plural = 'Бонусные игры'
