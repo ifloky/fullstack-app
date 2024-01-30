@@ -1386,6 +1386,13 @@ class GameListFromSiteView(ListView):
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['crm'] = User.objects.filter(groups__name='crm')
         context['games_count'] = GameListFromSite.objects.all().count()
+
+        # Добавляем подсчет результатов при фильтрации по провайдеру
+        game_provider = self.request.GET.get('game_provider')
+        if game_provider:
+            game_provider_count = GameListFromSite.objects.filter(Q(game_provider__icontains=game_provider)).count()
+            context['games_count_find'] = game_provider_count
+
         return context
 
 
