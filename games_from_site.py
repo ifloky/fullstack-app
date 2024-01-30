@@ -104,10 +104,10 @@ def get_game_info(game_date, db_name):
         connection.commit()
         connection.close()
 
-        print(f"{counter}, Game name: {game_name}, "
-              f"Game provider: {game_provider}, "
-              f"Game status: {game_status}"
-              f"Game RTP: {game_rtp}")
+        # print(f"{counter}, Game name: {game_name}, "
+        #       f"Game provider: {game_provider}, "
+        #       f"Game status: {game_status}"
+        #       f"Game RTP: {game_rtp}")
 
     print(f"Save total games: {counter}")
 
