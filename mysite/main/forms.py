@@ -763,13 +763,11 @@ class BonusGamesForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         # Получаем уникальные значения из поля game_provider в модели
-        unique_game_providers = BonusGames.objects.values_list('game_provider', flat=True).distinct()
+        unique_game_providers = BonusGames.objects.values_list('game_provider', flat=True).distinct().order_by(
+            'game_provider')
 
         # Строим список кортежей для атрибута choices
         choices = [(provider, provider) for provider in unique_game_providers]
-
-        # Добавляем значение "Свое значение" с пустой строкой в качестве ключа
-        choices.append(('', 'Свое значение'))
 
         # Устанавливаем виджет Select для поля game_provider
         self.fields['game_provider'].widget = forms.Select(choices=choices)

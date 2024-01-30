@@ -95,15 +95,15 @@
     {% if user.is_authenticated %}
         <br><br><br>
         <div style="padding-left:9.5%;width:98%;display:flex">
-            <form method="GET" action="/bonus_games" style="margin-left:3%;width:35%">
-                 <label for="search_game_provider" style="display:block;width:220px">Найти игру по провайдеру:</label>
-                 <input style="width:200px;margin-right:10px" type="search" name="game_provider" value="" id="search_game_provider">
-                 <button type="submit">Найти</button>
+            <form method="GET" action="/bonus_games" style="margin-left:3%;width:45%">
+                 <label for="search_game_provider" style="display:block;width:260px">Найти игру по провайдеру:</label>
+                 <input style="height:40px;width:500px;margin-right:10px" type="search" name="game_provider" value="" id="search_game_provider">
+                 <button style="height:40px" type="submit">Найти</button>
             </form>
-            <form method="GET" action="/bonus_games" style="margin-left:3%;width:35%">
-                 <label for="search_game_name" style="display:block;width:220px">Найти игру по названию:</label>
-                 <input style="width:200px;margin-right:10px" type="search" name="game_name" value="" id="search_game_name">
-                 <button type="submit">Найти</button>
+            <form method="GET" action="/bonus_games" style="margin-left:3%;width:45%">
+                 <label for="search_game_name" style="display:block;width:260px">Найти игру по названию:</label>
+                 <input style="height:40px;width:500px;margin-right:10px" type="search" name="game_name" value="" id="search_game_name">
+                 <button style="height:40px" type="submit">Найти</button>
             </form>
         </div>
         {% if is_paginated %}
