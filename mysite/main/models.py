@@ -169,6 +169,7 @@ class GameListFromSite(models.Model):
     game_name = models.CharField(max_length=200)
     game_provider = models.CharField(max_length=200)
     game_status = models.CharField(max_length=200)
+    game_rtp = models.CharField(null=True, blank=True, max_length=200)
     game_name_find = models.CharField(null=True, blank=True, max_length=200)
 
     def __str__(self):

@@ -88,6 +88,7 @@ def get_game_info(game_date, db_name):
             .lower()
         game_provider = game['provider_title']
         game_status = game['status']
+        game_rtp = game['rtp']
 
         connection = psycopg2.connect(database=credentials.db_name,
                                       user=credentials.db_username,
@@ -97,13 +98,16 @@ def get_game_info(game_date, db_name):
                                       )
         cursor = connection.cursor()
         cursor.execute(
-            f"INSERT INTO {db_name} (game_name, game_provider, game_status, game_name_find) "
-            f"VALUES ('{game_name}', '{game_provider}', '{game_status}', '{game_name_find}');")
+            f"INSERT INTO {db_name} (game_name, game_provider, game_status, game_name_find, game_rtp) "
+            f"VALUES ('{game_name}', '{game_provider}', '{game_status}', '{game_name_find}', '{game_rtp}');")
         counter += 1
         connection.commit()
         connection.close()
 
-        # print(f"{counter}, Game name: {game_name}, Game provider: {game_provider}, Game status: {game_status}")
+        print(f"{counter}, Game name: {game_name}, "
+              f"Game provider: {game_provider}, "
+              f"Game status: {game_status}"
+              f"Game RTP: {game_rtp}")
 
     print(f"Save total games: {counter}")
 
