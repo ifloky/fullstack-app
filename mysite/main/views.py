@@ -7,7 +7,7 @@ import requests
 import psycopg2
 
 from django.views import View
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic.list import ListView
 
 from django.contrib import messages
@@ -2683,6 +2683,26 @@ class UpdateGamesListView(UpdateView):
     def form_valid(self, form):
         form.save()
         return redirect(self.request.POST['return_to'])
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_adm'] = User.objects.filter(groups__name='site_adm')
+        context['superuser'] = User.objects.filter(is_superuser=True)
+        context['support'] = User.objects.filter(groups__name='support')
+        context['support_heads'] = User.objects.filter(groups__name='support_heads')
+        return context
+
+
+class AddGameListView(CreateView):
+    """ This class view adds a new call report """
+    model = GamesList
+    form_class = GamesListForm
+    template_name = 'main/add_games.html'
+    success_url = reverse_lazy('main:games_list')
+
+    def form_valid(self, form):
+        form.save()
+        return redirect(self.request.POST.get('return_to', self.success_url))
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

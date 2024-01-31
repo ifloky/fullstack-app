@@ -96,9 +96,19 @@
         <br>
         <div style="padding: 20px 0px;padding-left:9.5%;margin-top:30px;width:98%">
             {% if games_count_find %}
-                <span style="font-size: 32px">Всего найдено игр: <b>{{ games_count_find }}</b>.</span>
+                <span style="font-size: 32px">Всего найдено игр: <b>{{ games_count_find }}</b></span>
+                <button style="height:40px;width:500px;margin-left:50px" type="submit">
+                  <a href="/add_games" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">
+                    Добавить новую игру
+                  </a>
+                </button>
             {% else %}
                 <span style="font-size: 32px">Всего игр: <b>{{ games_count }}</b></span>
+                <button style="height:40px;width:500px;margin-left:50px" type="submit">
+                  <a href="/add_games" style="text-decoration: none; color: inherit; display: block; height: 100%; width: 100%;">
+                    Добавить новую игру
+                  </a>
+                </button>
             {% endif %}
         </div>
         <div style="padding-left:9.5%;width:98%;display:flex">
