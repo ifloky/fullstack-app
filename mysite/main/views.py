@@ -1404,16 +1404,14 @@ class MissingGamesListView(ListView):
 
     def get_queryset(self):
         queryset = GameListFromSite.objects \
-            .filter(~Q(game_name_find__in=GameListFromSkks.objects.values('game_name_find'))
-                    & ~Q(game_name_find__in=GameDisableList.objects.values('game_name_find'))) \
+            .filter(~Q(game_name_find__in=GamesList.objects.values('game_name_find'))) \
             .order_by('game_provider')
         return queryset
 
     @staticmethod
     def missing_games_count():
         queryset = GameListFromSite.objects \
-            .filter(~Q(game_name_find__in=GameListFromSkks.objects.values('game_name_find'))
-                    & ~Q(game_name_find__in=GameDisableList.objects.values('game_name_find'))) \
+            .filter(~Q(game_name_find__in=GamesList.objects.values('game_name_find'))) \
             .count()
         return queryset
 

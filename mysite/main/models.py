@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django.utils import timezone
 import datetime
@@ -252,6 +254,13 @@ class GamesList(models.Model):
     game_provider = models.CharField(max_length=200, blank=True, null=True)
     game_name = models.CharField(max_length=200, blank=True, null=True)
     game_add_date = models.DateTimeField(default=timezone.localtime, blank=True, null=True)
+    game_name_find = models.CharField(max_length=200, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # Перед сохранением модели обновляем поле game_name_find
+        if self.game_name:
+            self.game_name_find = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '', self.game_name.lower()).replace(':', '')
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.game_name

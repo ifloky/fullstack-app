@@ -1,4 +1,5 @@
 import datetime
+import re
 
 import requests
 import psycopg2
@@ -83,9 +84,7 @@ def get_game_info(game_date, db_name):
     game_data = game_date.json()['games']
     for game in game_data:
         game_name = game['name'].replace("'", "''").replace('™', '')
-        game_name_find = game['name'].replace("'", "").replace('™', '').replace(': Hold and Win', '')\
-            .replace('-', '').replace('’', '').replace(':', '').replace(' ', '').replace('.', '').replace('&', '')\
-            .lower()
+        game_name_find = re.sub(r"[^a-zA-Zа-яА-Я0-9:]+", "", game['name'].lower()).replace(":", "")
         game_provider = game['provider_title']
         game_status = game['status']
         game_rtp = game['rtp']
