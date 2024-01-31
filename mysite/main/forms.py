@@ -702,6 +702,8 @@ class AddGameToSKKSHostForm(forms.Form):
 
 
 class GamesListForm(forms.ModelForm):
+    new_game_provider = forms.CharField(required=False, label='Новый провайдер')
+
     class Meta:
         model = GamesList
         fields = '__all__'
@@ -734,5 +736,27 @@ class GamesListForm(forms.ModelForm):
         # Строим список кортежей для атрибута choices
         choices = [(provider, provider) for provider in unique_game_providers]
 
+        # Добавляем пустой выбор для нового провайдера
+        choices.append(('', '--- Новый провайдер ---'))
+
         # Устанавливаем виджет Select для поля game_provider
         self.fields['game_provider'].widget = forms.Select(choices=choices)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_game_provider = cleaned_data.get('new_game_provider')
+        existing_game_provider = cleaned_data.get('game_provider')
+
+        # Проверяем, добавлен ли новый провайдер
+        if not existing_game_provider and new_game_provider:
+            # Перед сохранением удаляем пустое значение в поле game_provider
+            cleaned_data['game_provider'] = None
+
+            # Если выбран новый провайдер, проверяем его на уникальность
+            if GamesList.objects.filter(game_provider=new_game_provider).exists():
+                self.add_error('new_game_provider', 'Провайдер уже существует')
+            else:
+                cleaned_data['game_provider'] = new_game_provider
+
+        return cleaned_data
+
