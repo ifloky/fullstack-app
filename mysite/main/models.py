@@ -259,7 +259,7 @@ class GamesList(models.Model):
     def save(self, *args, **kwargs):
         # Перед сохранением модели обновляем поле game_name_find
         if self.game_name:
-            self.game_name_find = re.sub(r'[^a-zA-Zа-яА-Я0-9]', '', self.game_name.lower()).replace(':', '')
+            self.game_name_find = re.sub(r"[^a-zA-Zа-яА-Я0-9]+", '', self.game_name.lower())
         super().save(*args, **kwargs)
 
     def __str__(self):

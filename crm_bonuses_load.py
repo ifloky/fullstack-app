@@ -20,6 +20,12 @@ sheet = workbook.active
 # Получение названий колонок из первой строки Excel
 columns = [sheet.cell(row=1, column=col).value for col in range(1, sheet.max_column + 1)]
 
+# Удаляем старые данные из таблицы БД перед загрузкой новых данных из файла Excel с обнулением счетчика ID
+clear_data = f"TRUNCATE TABLE public.main_gameslist RESTART IDENTITY CASCADE;"
+
+# Выполнение SQL-запроса
+cursor.execute(clear_data)
+
 # Проход по строкам файла Excel, начиная со второй строки
 for row_num in range(2, sheet.max_row + 1):
     # Собираем значения из строки Excel
