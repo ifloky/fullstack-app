@@ -29,7 +29,7 @@ for row_num in range(2, sheet.max_row + 1):
     values = [None if value == 'None' else value for value in values]
 
     # Формирование SQL-запроса для вставки данных
-    query = f"INSERT INTO public.main_bonusgames ({', '.join(columns)}) VALUES ({', '.join(['%s'] * len(columns))})"
+    query = f"INSERT INTO public.main_gameslist ({', '.join(columns)}) VALUES ({', '.join(['%s'] * len(columns))})"
 
     # Выполнение SQL-запроса
     cursor.execute(query, values)

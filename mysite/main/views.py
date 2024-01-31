@@ -3,7 +3,7 @@ import re
 
 import credentials
 import requests
-import datetime
+
 import psycopg2
 
 from django.views import View
@@ -11,7 +11,6 @@ from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordResetForm
@@ -2630,28 +2629,28 @@ class MonthlyAgeView(View):
         return render(request, self.template_name, data)
 
 
-class BonusGamesView(ListView):
-    model = BonusGames
-    form_class = BonusGamesForm
-    template_name = 'main/bonus_games.html'
-    context_object_name = 'bonus_games'
+class GamesListView(ListView):
+    model = GamesList
+    form_class = GamesListForm
+    template_name = 'main/games_list.html'
+    context_object_name = 'games_list'
     paginate_by = 12
 
     def get_queryset(self):
         game_name = self.request.GET.get('game_name')
         game_provider = self.request.GET.get('game_provider')
-        all_games = BonusGames.objects.all().order_by('game_provider')
+        all_games = GamesList.objects.all().order_by('game_provider')
 
         try:
             queryset = all_games
 
             if game_name:
                 game_name = game_name.strip()
-                queryset = BonusGames.objects.filter(Q(game_name__icontains=game_name)).order_by('game_provider')
+                queryset = GamesList.objects.filter(Q(game_name__icontains=game_name)).order_by('game_provider')
 
             if game_provider:
                 game_provider = game_provider.strip()
-                queryset = BonusGames.objects.filter(Q(game_provider__icontains=game_provider)).order_by('game_provider')
+                queryset = GamesList.objects.filter(Q(game_provider__icontains=game_provider)).order_by('game_provider')
 
             return queryset
 
@@ -2659,19 +2658,27 @@ class BonusGamesView(ListView):
             return all_games
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(BonusGamesView, self).get_context_data(**kwargs)
+        context = super(GamesListView, self).get_context_data(**kwargs)
         context['site_adm'] = User.objects.filter(groups__name='site_adm')
         context['game_control'] = User.objects.filter(groups__name='game_control')
         context['superuser'] = User.objects.filter(is_superuser=True)
         context['crm'] = User.objects.filter(groups__name='crm')
+        context['games_count'] = GamesList.objects.all().count()
+
+        # Добавляем подсчет результатов при фильтрации по провайдеру
+        game_provider = self.request.GET.get('game_provider')
+        if game_provider:
+            game_provider_count = GamesList.objects.filter(Q(game_provider__icontains=game_provider)).count()
+            context['games_count_find'] = game_provider_count
+
         return context
 
 
-class UpdateBonusGamesView(UpdateView):
+class UpdateGamesListView(UpdateView):
     """ This class view adds a new call report """
-    model = BonusGames
-    form_class = BonusGamesForm
-    template_name = 'main/update_bonus.html'
+    model = GamesList
+    form_class = GamesListForm
+    template_name = 'main/update_games.html'
 
     def form_valid(self, form):
         form.save()
