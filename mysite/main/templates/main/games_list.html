@@ -122,7 +122,6 @@
             <table class="table table-striped">
                 <thead>
                     <tr align="center">
-                        <th>ID</th>
                         <th>Провайдер</th>
                         <th>Игра</th>
                         <th>Дата подключения</th>
@@ -131,7 +130,6 @@
                 <tbody>
                     {% for games in games_list %}
                         <tr align="center">
-                            <th>{{ games.id }}</th>
                             <th>{{ games.game_provider }}</th>
                             <th><a href="/update_games/{{games.id}}">{{ games.game_name }}</a></th>
                             <th>{{ games.game_add_date|date:"d.m.Y H:i"  }}</th>
