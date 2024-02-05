@@ -9,7 +9,7 @@
     "dev": "concurrently  \"npm run server\"  \"npm run client\" "
   },
   "dependencies": {
-    "@prisma/client": "^5.8.1",
+    "@prisma/client": "^5.9.1",
     "bcrypt": "^5.1.1",
     "concurrently": "^8.2.2",
     "cookie-parser": "~1.4.4",
@@ -23,6 +23,6 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "nodemon": "^3.0.3",
-    "prisma": "^5.8.1"
+    "prisma": "^5.9.1"
   }
 }

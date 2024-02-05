@@ -21,9 +21,11 @@ export const Login = () => {
       await loginUser(data).unwrap();
       navigate("/")
     } catch (err) {
+      console.log(err);
+
       const maybeError = isErrorWithMessage(err);
 
-      if(maybeError) {
+      if (maybeError) {
         setError(err.data.message);
       } else {
         setError('Unknown error')
@@ -44,7 +46,7 @@ export const Login = () => {
             <Typography.Text>
               No account? <Link to={Paths.register}>Sign in</Link>
             </Typography.Text>
-            <ErrorMessage message={error}/>
+            <ErrorMessage message={error} />
           </Space>
         </Card>
       </Row>

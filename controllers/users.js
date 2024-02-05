@@ -1,5 +1,6 @@
 const { prisma } = require('../prisma/prisma-client');
 const bcrypt = require('bcrypt');
+const { log } = require('console');
 const jwt = require('jsonwebtoken');
 
 const login = async (req, res) => {
@@ -18,6 +19,7 @@ const login = async (req, res) => {
     });
 
     const isPasswordCorrect = user && (await bcrypt.compare(password, user.password))
+    console.log(await bcrypt.compare(password, user.password));
     const secret = process.env.JWT_SECRET;
 
     if (user && isPasswordCorrect && secret) {
