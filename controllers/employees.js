@@ -1,3 +1,4 @@
+const { log } = require('console');
 const { prisma } = require('../prisma/prisma-client');
 
 const all = async (req, res) => {
@@ -13,8 +14,8 @@ const all = async (req, res) => {
 
 const add = async (req, res) => {
   try {
-    const data = req.body;
-
+    const data = req.body.employee;
+    console.log(data);
     if (!data.firstName || !data.lastName || !data.address || !data.age) {
       return res.status(400).json({ message: "all fields are required" })
     }

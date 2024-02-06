@@ -21,9 +21,9 @@ export const Header = () => {
 
   return (
     <Layout.Header className={styles.header}>
-      <Space align="center">
-        <TeamOutlined className={styles.teamIcon} />
-        <Link to={Paths.home} >
+      <Space align="center" >
+        <Link to={Paths.home} style={{ display: 'flex' }}>
+          <TeamOutlined className={styles.teamIcon} />
           <CustomButton type="link">
             <Typography.Paragraph> Employee</Typography.Paragraph>
           </CustomButton>

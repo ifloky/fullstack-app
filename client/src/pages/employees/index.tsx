@@ -18,6 +18,11 @@ const columns: ColumnsType<Employee> = [
     key: 'firstName'
   },
   {
+    title: "Last Name",
+    dataIndex: "lastName",
+    key: 'lastName'
+  },
+  {
     title: "Age",
     dataIndex: "age",
     key: 'age'

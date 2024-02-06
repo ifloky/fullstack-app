@@ -24,14 +24,14 @@ export const EmployeeForm = ({
       <Form name="employee-form" onFinish={onFinish} initialValues={employee}>
         <CustomInput type="text" name="firstName" placeholder="First Name" />
         <CustomInput type="text" name="lastName" placeholder="Last Name" />
+        <CustomInput type="text" name="age" placeholder="Age" />
         <CustomInput type="text" name="address" placeholder="Address" />
-        <CustomInput type="number" name="age" placeholder="Age" />
         <Space>
+          <ErrorMessage message={error} />
           <CustomButton htmlType="submit" type="primary">
             {btnText}
           </CustomButton>
         </Space>
-        <ErrorMessage message={error} />
       </Form>
     </Card>
   )
