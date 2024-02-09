@@ -3,30 +3,48 @@
   {% block content %}
 
   <style xmlns="http://www.w3.org/1999/html">
-    form {
-        width: 80%;
-        margin-top: 2%;
-    }
-    .flex-wrap {display:flex;}
-    .flex-wrap label {width:400px;margin-right:auto;}
-    .flex-wrap button {width:450px;margin-right:auto;}
-    .flex-wrap input {width:calc(100% - 50px);}
-    .flex-wrap select {width:calc(100% - 250px);}
+  form {
+    margin-left: 250px;
+    width: 75%;
+    margin: 0 auto;
+    margin-top: 2%;
+    display: flex;
+    flex-direction: column;
+  }
 
-    span {
-        width: 20px;
-        padding: 8px 20px;
-        margin: 8px 0;
-        margin-right: 20px;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        -webkit-transition: 0.5s;
-        transition: 0.5s;
-        outline: none;
-        height: 60px;
-        border-radius: 10px;
-    }
+  form p {
+    display: flex;
+    flex-direction: column;
+  }
 
+  form p label {
+    width: 250px;
+  }
+
+  form p button {
+    width: 450px;
+  }
+
+  form p input,
+  form p select {
+    width: calc(100% - 50px);
+    display: block;
+    width: 100%;
+    min-height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  }
   </style>
 
   {% if user.is_authenticated %}
