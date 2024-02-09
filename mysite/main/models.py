@@ -255,6 +255,7 @@ class GamesList(models.Model):
     game_name = models.CharField(max_length=200, blank=True, null=True)
     game_add_date = models.DateTimeField(default=timezone.localtime, blank=True, null=True)
     game_name_find = models.CharField(max_length=200, blank=True, null=True)
+    game_status = models.CharField(max_length=200, blank=True, null=True, default='Enable')
 
     def save(self, *args, **kwargs):
         # Перед сохранением модели обновляем поле game_name_find

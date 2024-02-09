@@ -135,6 +135,7 @@
                         <th>Провайдер</th>
                         <th>Игра</th>
                         <th>Дата подключения</th>
+                        <th>Статус игры</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -143,6 +144,7 @@
                             <th>{{ games.game_provider }}</th>
                             <th><a href="/update_games/{{games.id}}">{{ games.game_name }}</a></th>
                             <th>{{ games.game_add_date|date:"d.m.Y H:i"  }}</th>
+                            <th>{{ games.game_status }}</th>
                         </tr>
                     {% endfor %}
                 </tbody>

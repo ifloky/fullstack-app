@@ -706,10 +706,13 @@ class GamesListForm(forms.ModelForm):
 
     class Meta:
         model = GamesList
+        status_choices = [('Enable', 'Enable'), ('Disable', 'Disable')]
         fields = '__all__'
 
         widgets = {
             'game_add_date': forms.TextInput(attrs={'type': 'datetime-local'}),
+            'game_status': forms.Select(choices=status_choices, attrs={'class': 'form-control'}),
+
         }
 
         labels = {
@@ -717,6 +720,7 @@ class GamesListForm(forms.ModelForm):
             'game_provider': 'Провайдер игры',
             'game_name': 'Название игры',
             'game_add_date': 'Дата добавления',
+            'game_status': 'Статус игры',
         }
 
         required = {
@@ -724,6 +728,7 @@ class GamesListForm(forms.ModelForm):
             'game_provider': True,
             'game_name': True,
             'game_add_date': False,
+            'game_status': True,
         }
 
     def __init__(self, *args, **kwargs):
